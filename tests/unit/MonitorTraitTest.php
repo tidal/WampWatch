@@ -10,11 +10,11 @@ use Mockery as M;
 /**
  * @author Timo Michna <timomichna@yahoo.de>
  */
-class MonitorTraitTest extends M\Adapter\PHPUnit\MockeryTestCase
+class MonitorTraitTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->mock = \Mockery::mock('\Thruway\ClientSession');
+        $this->mock = M::mock('\Thruway\ClientSession');
         $this->monitorStub = new MonitorTraitImplementation($this->mock);
         $this->lastEvent = "";
         $this->lastArgs = [];
