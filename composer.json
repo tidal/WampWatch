@@ -19,5 +19,10 @@
         "mockery/mockery": "0.9.*",
         "friendsofphp/php-cs-fixer": "*",
         "squizlabs/php_codesniffer": "1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tidal\\WampWatch": "src/"
+        }
     }
 }
