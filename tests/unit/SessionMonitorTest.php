@@ -40,6 +40,27 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(true, $res);
     }
     
+    public function test_start_subscribes_to_session()
+    {
+       
+        $promise = M::mock('React\Promise\Promise');
+        $promise->shouldReceive('then')->atLeast()->once(); 
+        
+        $session = M::mock('Thruway\ClientSession');     
+        $session->shouldReceive('call')->once()
+            ->andReturn($promise);
+        $session->shouldReceive('subscribe')->once()
+            ->with('wamp.session.on_join', \Mockery::any())
+            ->andReturn($promise);
+        $session->shouldReceive('subscribe')->once()
+            ->with('wamp.session.on_leave', \Mockery::any())
+            ->andReturn($promise);
+        $monitor = M::mock('Tidal\WampWatch\SessionMonitor', [$session])
+            ->makePartial();
+
+        $monitor->start();
+
+    }
     
     
     
