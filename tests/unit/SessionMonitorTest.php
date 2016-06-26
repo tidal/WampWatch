@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../bootstrap.php';
-require_once __DIR__ . '/stub/ClientSessionStub.php';
+//require_once __DIR__ . '/stub/ClientSessionStub.php';
 
 use Mockery as M;
 use Tidal\WampWatch\SessionMonitor;
