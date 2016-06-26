@@ -1,0 +1,22 @@
+{
+    "name": "tidal/wamp_watch",
+    "description": "A set of PHP WAMP v2 (Web Application Messaging Protocol) Monitor Clients to observe WAMP router meta-events (session, registration, subscription)",   
+    "keywords" :["wamp", "thruway", "wamp_watch", "wampws", "websocket", "realtime", "real-time", "meta-event", "session", "registration", "subscription"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Timo Michna",
+            "email": "timomichna@yahoo.de"
+        }
+    ],
+    "require": {
+        "voryx/thruway": "^0.4.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "0.9.*",
+        "fabpot/php-cs-fixer": "*",
+        "squizlabs/php_codesniffer": "1.*"
+    }
+}
