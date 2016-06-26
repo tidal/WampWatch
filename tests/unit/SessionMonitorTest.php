@@ -9,7 +9,7 @@ use Tidal\WampWatch\SessionMonitor;
 /**
  * @author Timo Michna <timomichna@yahoo.de>
  */
-class SessionMonitorTest extends M\Adapter\PHPUnit\MockeryTestCase
+class SessionMonitorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
