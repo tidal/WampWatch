@@ -14,31 +14,35 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
- 
+
     }
     
     public function tearDown()
     {
          M::close();
     }
-
-    public function test_start() {
-        $this->session = $this->getMockBuilder('\Thruway\ClientSession')
-                ->disableOriginalConstructor()
-                ->getMock();
-        $futureResult = new \React\Promise\Deferred();
-        $this->session->expects($this->any())
-            ->method('call')
-            ->will(
-                $this->returnValue($futureResult->promise())
-            );
+    
+    public function test_starts_returns_true()
+    {     
+        $promise = M::mock('React\Promise\Promise');
+        $promise->shouldReceive('then')->atLeast()->once();      
         
-        $this->monitor = new SessionMonitor($this->session);
-        $this->monitor->start();
+        $session = M::mock('Thruway\ClientSession');
+        $session->shouldReceive('subscribe')->twice()
+            ->andReturn($promise);
+        $session->shouldReceive('call')->once()
+            ->andReturn($promise);
         
-       
+        $monitor = M::mock('Tidal\WampWatch\SessionMonitor', [$session])
+            ->makePartial();
+        $res = $monitor->start();
         
+        $this->assertEquals(true, $res);
     }
     
-  
+    
+    
+    
+    
+    
 }
