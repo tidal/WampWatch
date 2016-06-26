@@ -39,10 +39,11 @@ class SessionMonitor  implements
     
     public function start() {
         $this->once('list', function(){
-            $this->startSubscriptions();
             $this->doStart();
-        });
+        });     
+        $this->startSubscriptions();
         $this->retrieveSessionIds();
+        return true;
     }
   
     public function stop() {
