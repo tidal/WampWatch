@@ -9,7 +9,6 @@ namespace Tidal\WampWatch;
  * that was distributed with this source code.
  */
 
-use Evenement\EventEmitterInterface;
 
 /**
  *
