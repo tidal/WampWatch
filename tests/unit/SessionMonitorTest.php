@@ -33,8 +33,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $session->shouldReceive('call')->once()
             ->andReturn($promise);
         
-        $monitor = M::mock('Tidal\WampWatch\SessionMonitor', [$session])
-            ->makePartial();
+        $monitor = new SessionMonitor($session);    
         $res = $monitor->start();
         
         $this->assertEquals(true, $res);
