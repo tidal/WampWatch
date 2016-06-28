@@ -21,7 +21,7 @@ use React\Promise\Deferred;
 class Util {
     
     
-    public static function unsubscribe(ClientSession $session, $topic) {
+    public static function unsubscribe(ClientSession $session) {
         $requestId = Utils::getUniqueId();
         $deferred  = new Deferred();
         $unsubscribeMsg = new UnsubscribedMessage($requestId);
