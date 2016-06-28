@@ -8,9 +8,7 @@ namespace Tidal\WampWatch;
  * that was distributed with this source code.
  */
 use Phaim\Server\Wamp\Util;
-use Thruway\ClientSession;
 use Evenement\EventEmitterInterface;
-use Evenement\EventEmitterTrait;
 
 /**
  * Description of SessionMonitor
