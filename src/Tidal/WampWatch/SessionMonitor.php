@@ -77,8 +77,6 @@ class SessionMonitor  implements
                 $this->sessionIds[] = $sessionId;
                 $this->emit('join', [$sessionInfo]);
             }
-        })->then(function(){
-            
         });
         $this->session->subscribe(self::SESSION_LEAVE_TOPIC, function($res){
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
