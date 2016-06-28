@@ -75,7 +75,7 @@ class SessionMonitor  implements
         $this->session->subscribe(self::SESSION_JOIN_TOPIC, function($res){
             $sessionInfo = $res[0];
             $sessionId = $sessionInfo['session'];
-            if(($key = array_search($sessionId, $this->sessionIds)) === false) {
+            if((array_search($sessionId, $this->sessionIds)) === false) {
                 $this->sessionIds[] = $sessionId;
                 $this->emit('join', [$sessionInfo]);
             }
