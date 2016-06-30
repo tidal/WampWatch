@@ -15,10 +15,10 @@
         "voryx/thruway": "^0.4.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*",
+        "phpunit/phpunit": "5.*",
         "mockery/mockery": "0.9.*",
         "friendsofphp/php-cs-fixer": "*",
-        "squizlabs/php_codesniffer": "1.*"
+        "squizlabs/php_codesniffer": "2.*"
     },
     "autoload": {
         "psr-0": {
