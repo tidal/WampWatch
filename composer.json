@@ -15,7 +15,7 @@
         "voryx/thruway": "^0.4.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.*",
+        "phpunit/phpunit": "4.7.*@stable",
         "mockery/mockery": "0.9.*",
         "friendsofphp/php-cs-fixer": "*",
         "squizlabs/php_codesniffer": "2.*"
