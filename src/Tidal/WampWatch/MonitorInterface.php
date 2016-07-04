@@ -11,13 +11,11 @@ namespace Tidal\WampWatch;
 
 
 /**
- *
  * @author Timo Michna
  */
-interface MonitorInterface {
-    
+interface MonitorInterface
+{
     public function start();
 
     public function stop();
-    
 }
