@@ -1,4 +1,5 @@
 <?php
+
 namespace Tidal\WampWatch;
 
 /*
@@ -8,27 +9,25 @@ namespace Tidal\WampWatch;
  * that was distributed with this source code.
  */
 
-use Thruway\Common\Utils;
-use Thruway\ClientSession;
-use Thruway\Message\UnsubscribedMessage;
 use React\Promise\Deferred;
+use Thruway\ClientSession;
+use Thruway\Common\Utils;
+use Thruway\Message\UnsubscribedMessage;
 
 /**
- * Utility Class for the WampWatch package
+ * Utility Class for the WampWatch package.
  *
  * @author Timo Michna
  */
-class Util {
-    
-    
-    public static function unsubscribe(ClientSession $session) {
+class Util
+{
+    public static function unsubscribe(ClientSession $session)
+    {
         $requestId = Utils::getUniqueId();
-        $deferred  = new Deferred();
+        $deferred = new Deferred();
         $unsubscribeMsg = new UnsubscribedMessage($requestId);
         $session->sendMessage($unsubscribeMsg);
-        
+
         return $deferred->promise();
     }
-    
-    
 }

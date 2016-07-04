@@ -1,5 +1,6 @@
 <?php
-ini_set("xdebug.max_nesting_level","200");
+
+ini_set('xdebug.max_nesting_level', '200');
 if (file_exists($file = __DIR__.'/../vendor/autoload.php')) {
     $loader = require_once $file;
 } else {
