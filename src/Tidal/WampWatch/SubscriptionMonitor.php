@@ -110,7 +110,7 @@ class SubscriptionMonitor implements MonitorInterface {
         $this->getSubscriptionDetail($subId)->then(
                 function ($res)use($sessionId, $subId) {
             $this->emit('sub', [$sessionId, $subId, $res[0]]);
-        }, function ($error) {
+        }, function () use($sessionId, $subId) {
             $this->emit('sub', [$sessionId, $subId, [
                     'id' => $subId,
                     'created' => null,
