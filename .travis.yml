@@ -12,3 +12,4 @@ script:
   - ./vendor/bin/phpunit --coverage-clover=coverage.clover 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - php vendor/bin/codacycoverage clover coverage.clover
