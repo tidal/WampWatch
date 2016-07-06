@@ -88,7 +88,8 @@ class SubscriptionMonitor implements MonitorInterface {
     protected function createHandler($res) {
         $sessionInfo = $res[0];
         $sessionId = $sessionInfo['session'];
-        if (($key = array_search($sessionId, $this->subscriptionIds)) === false) {
+        $key = array_search($sessionId, $this->subscriptionIds);
+        if ($key === false) {
             $this->subscriptionIds[] = $sessionId;
             $this->emit('create', [$sessionInfo]);
         }
@@ -96,7 +97,8 @@ class SubscriptionMonitor implements MonitorInterface {
 
     protected function deleteHandler($res) {
         $sessionId = $res[0];
-        if (($key = array_search($sessionId, $this->subscriptionIds)) !== false) {
+        $key = array_search($sessionId, $this->subscriptionIds);
+        if ($key !== false) {
             unset($this->subscriptionIds[$key]);
             $this->emit('delete', [$sessionId]);
         }
