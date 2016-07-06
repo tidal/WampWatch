@@ -128,9 +128,9 @@ class SubscriptionMonitor implements MonitorInterface {
 
     public function getSubscriptionDetail($subId) {
         return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, [$subId])->then(
-                        function ($res) {
+                        function () {
                     
-                }, function ($error) {
+                }, function () {
                     
                 }
         );
