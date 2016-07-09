@@ -45,6 +45,11 @@ trait MonitorTrait
         $this->session = $session;
     }
 
+    protected function setClientSession(ClientSession $session){
+        $this->session = $session;
+    }
+
+
     /**
      * Start the monitor.
      *
