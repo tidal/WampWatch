@@ -34,17 +34,11 @@ trait MonitorTrait
      * @var bool
      */
     protected $isRunning = false;
+    
 
     /**
-     * Constructor.
-     *
      * @param \Thruway\ClientSession $session
      */
-    public function __construct(ClientSession $session)
-    {
-        $this->session = $session;
-    }
-
     protected function setClientSession(ClientSession $session)
     {
         $this->session = $session;
