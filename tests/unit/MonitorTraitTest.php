@@ -4,23 +4,34 @@ require_once __DIR__.'/../bootstrap.php';
 require_once __DIR__.'/stub/MonitorTraitImplementation.php';
 
 use Mockery as M;
+use \Tidal\WampWatch\Adapter\Thruway\ClientSession;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
  */
 class MonitorTraitTest extends PHPUnit_Framework_TestCase
 {
+
+    protected
+        $mock,
+        $session,
+        $monitorStub,
+        $lastEvent,
+        $lastArgs;
+
+
     public function setUp()
     {
         $this->mock = M::mock('\Thruway\ClientSession');
-        $this->monitorStub = new MonitorTraitImplementation($this->mock);
+        $this->session = new ClientSession($this->mock);
+        $this->monitorStub = new MonitorTraitImplementation($this->session);
         $this->lastEvent = '';
         $this->lastArgs = [];
     }
 
     public function test_get_server_session()
     {
-        $this->assertEquals($this->mock, $this->monitorStub->getServerSession());
+        $this->assertEquals($this->session, $this->monitorStub->getServerSession());
     }
 
     public function test_start()
