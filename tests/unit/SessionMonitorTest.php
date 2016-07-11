@@ -4,8 +4,8 @@ require_once __DIR__.'/../bootstrap.php';
 //require_once __DIR__ . '/stub/ClientSessionStub.php';
 
 use Mockery as M;
-use Tidal\WampWatch\SessionMonitor;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession;
+use Tidal\WampWatch\SessionMonitor;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
@@ -57,6 +57,5 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $adapter = new ClientSession($session);
         $monitor = new SessionMonitor($adapter);
         $monitor->start();
-
     }
 }
