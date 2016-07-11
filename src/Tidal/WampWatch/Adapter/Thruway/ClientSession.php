@@ -13,10 +13,8 @@ namespace Tidal\WampWatch\Adapter\Thruway;
 use Thruway\ClientSession as ThruwaySession;
 use Tidal\WampWatch\ClientSessionInterface;
 
-
 class ClientSession implements ClientSessionInterface
 {
-
     /**
      * @var ThruwaySession
      */
@@ -28,11 +26,12 @@ class ClientSession implements ClientSessionInterface
     }
 
     /**
-     * Subscribe
+     * Subscribe.
      *
      * @param string   $topicName
      * @param callable $callback
-     * @param          $options array
+     * @param          $options   array
+     *
      * @return \React\Promise\Promise
      */
     public function subscribe($topicName, callable $callback, $options = null)
@@ -41,12 +40,13 @@ class ClientSession implements ClientSessionInterface
     }
 
     /**
-     * Publish
+     * Publish.
      *
      * @param string      $topicName
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
@@ -55,11 +55,12 @@ class ClientSession implements ClientSessionInterface
     }
 
     /**
-     * Register
+     * Register.
      *
      * @param string      $procedureName
      * @param callable    $callback
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function register($procedureName, callable $callback, $options = null)
@@ -68,9 +69,10 @@ class ClientSession implements ClientSessionInterface
     }
 
     /**
-     * Unregister
+     * Unregister.
      *
      * @param string $procedureName
+     *
      * @return \React\Promise\Promise
      */
     public function unregister($procedureName)
@@ -79,12 +81,13 @@ class ClientSession implements ClientSessionInterface
     }
 
     /**
-     * Call
+     * Call.
      *
      * @param string      $procedureName
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
@@ -107,6 +110,4 @@ class ClientSession implements ClientSessionInterface
     {
         return $this->thruwaySession->getSessionId();
     }
-
-
 }

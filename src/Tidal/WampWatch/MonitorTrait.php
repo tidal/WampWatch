@@ -35,7 +35,6 @@ trait MonitorTrait
      */
     protected $isRunning = false;
 
-
     /**
      * @param ClientSession $session
      */
@@ -43,7 +42,6 @@ trait MonitorTrait
     {
         $this->session = $session;
     }
-
 
     /**
      * Start the monitor.

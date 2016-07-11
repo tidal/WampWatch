@@ -1,6 +1,6 @@
 <?php
 
-require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
+require_once realpath(__DIR__.'/..').'/bootstrap.php';
 
 /*
  * This file is part of the Tidal/WampWatch package.
@@ -11,14 +11,12 @@ require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
  */
 
 
-use Phaim\Server\Wamp\Monitor\SessionMonitor;
-
 use Thruway\ClientSession;
 use Thruway\Peer\Client;
 use Thruway\Transport\PawlTransportProvider;
 
-$client = new Client("realm1");
-$client->addTransportProvider(new PawlTransportProvider("ws://127.0.0.1:9999/"));
+$client = new Client('realm1');
+$client->addTransportProvider(new PawlTransportProvider('ws://127.0.0.1:9999/'));
 
 $client->on('open', function (ClientSession $session) {
 
@@ -29,7 +27,7 @@ $client->on('open', function (ClientSession $session) {
     $session->subscribe('com.myapp.hello', $onevent);
 
     // 2) publish an event
-    $session->publish('com.myapp.hello', ['Hello, world from PHP!!!'], [], ["acknowledge" => true])->then(
+    $session->publish('com.myapp.hello', ['Hello, world from PHP!!!'], [], ['acknowledge' => true])->then(
         function () {
             echo "Publish Acknowledged!\n";
         },

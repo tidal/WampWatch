@@ -1,6 +1,6 @@
 <?php
 
-require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
+require_once realpath(__DIR__.'/..').'/bootstrap.php';
 
 /*
  * This file is part of the Tidal/WampWatch package.
@@ -10,26 +10,21 @@ require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
  * file that was distributed with this source code.
  */
 
-use Psr\Log\NullLogger;
 use Thruway\ClientSession;
 use Thruway\Connection;
-use Thruway\Logging\Logger;
-
 
 $timer = null;
 $loop = React\EventLoop\Factory::create();
 $connection = new Connection(
     [
-        "realm" => 'realm1',
-        "url"   => 'ws://127.0.0.1:9999/ws'
+        'realm' => 'realm1',
+        'url'   => 'ws://127.0.0.1:9999/ws',
     ],
     $loop
 );
 
 $connection->on('open', function (ClientSession $session) use ($connection, $loop, &$timer) {
-
     echo "\nSession established: {$session->getSessionId()}\n";
-
 }
 );
 
@@ -38,7 +33,6 @@ $connection->on('close', function ($reason) use ($loop, &$timer) {
         $loop->cancelTimer($timer);
     }
     echo "The connected has closed with reason: {$reason}\n";
-
 });
 
 $connection->on('error', function ($reason) {
