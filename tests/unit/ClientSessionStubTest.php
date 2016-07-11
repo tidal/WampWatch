@@ -130,7 +130,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    function test_confirm_publication_throws_exception_on_unknown_subscription()
+    function test_confirm_publication_throws_exception_on_unknown_publication()
     {
         try {
             $this->session->confirmPublication(
@@ -193,7 +193,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    function test_confirm_registration_throws_exception_on_unknown_subscription()
+    function test_confirm_registration_throws_exception_on_unknown_registration()
     {
         try {
             $this->session->confirmRegistration(
