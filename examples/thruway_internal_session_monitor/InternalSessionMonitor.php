@@ -10,21 +10,20 @@
  */
 
 use Thruway\Peer\Client;
-use Tidal\WampWatch\SessionMonitor;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
+use Tidal\WampWatch\SessionMonitor;
 
 /**
- * Class InternalClient
+ * Class InternalClient.
  */
 class InternalSessionMonitor extends Client
 {
-
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
-        parent::__construct("realm1");
+        parent::__construct('realm1');
     }
 
     /**
@@ -33,8 +32,6 @@ class InternalSessionMonitor extends Client
      */
     public function onSessionStart($session, $transport)
     {
-
-
         $sessionMonitor = new SessionMonitor(new Adapter($session));
 
 
@@ -61,9 +58,7 @@ class InternalSessionMonitor extends Client
         $sessionMonitor->start();
 
         echo "\n******** SESSION MONITOR STARTED ********\n";
-
     }
-
 
     public function onMessage(Thruway\Transport\TransportInterface $transport, Thruway\Message\Message $msg)
     {
@@ -71,5 +66,4 @@ class InternalSessionMonitor extends Client
         //print_r($msg);
         parent::onMessage($transport, $msg);
     }
-
 }

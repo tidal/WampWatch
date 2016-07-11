@@ -1,6 +1,6 @@
 <?php
 
-require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
+require_once realpath(__DIR__.'/..').'/bootstrap.php';
 
 /*
  * This file is part of the Tidal/WampWatch package.
@@ -11,29 +11,23 @@ require_once realpath(__DIR__ . "/..") . "/bootstrap.php";
  */
 
 
+use Psr\Log\NullLogger;
 use Thruway\ClientSession;
-use Thruway\Peer\Client;
-use Thruway\Transport\PawlTransportProvider;
 use Thruway\Connection;
 use Thruway\Logging\Logger;
-use Psr\Log\NullLogger;
-
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 use Tidal\WampWatch\SessionMonitor;
-
 
 Logger::set(new NullLogger());
 
 $connection = new Connection(
     [
-        "realm" => 'realm1',
-        "url"   => 'ws://127.0.0.1:9999/ws'
+        'realm' => 'realm1',
+        'url'   => 'ws://127.0.0.1:9999/ws',
     ]
 );
 
 $connection->on('open', function (ClientSession $session) use ($connection, &$timer) {
-
-
     $sessionMonitor = new SessionMonitor(new Adapter($session));
 
 
@@ -62,15 +56,11 @@ $connection->on('open', function (ClientSession $session) use ($connection, &$ti
     });
 
     $sessionMonitor->start();
-
-
 }
 );
 
 $connection->on('close', function ($reason) use (&$timer) {
-
     echo "The connected has closed with reason: {$reason}\n";
-
 });
 
 $connection->on('error', function ($reason) {
@@ -78,5 +68,3 @@ $connection->on('error', function ($reason) {
 });
 
 $connection->open();
-
-
