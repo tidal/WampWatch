@@ -9,7 +9,6 @@ class MonitorTraitImplementation
 {
     use MonitorTrait;
 
-
     /**
      * Constructor.
      *
@@ -19,5 +18,4 @@ class MonitorTraitImplementation
     {
         $this->setClientSession($session);
     }
-    
 }

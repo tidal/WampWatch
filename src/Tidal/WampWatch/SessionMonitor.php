@@ -12,7 +12,6 @@ namespace Tidal\WampWatch;
 use Evenement\EventEmitterInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
-
 /**
  * Description of SessionMonitor.
  *
@@ -34,7 +33,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
 
     protected $sessionIds = [];
-
 
     /**
      * Constructor.
@@ -78,10 +76,11 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
     /**
      * Retrieves the session-info for given sessionId
-     * and populates it in via given callback
+     * and populates it in via given callback.
      *
      * @param          $sessionId
      * @param callable $callback
+     *
      * @return mixed
      */
     public function getSessionInfo($sessionId, callable $callback)
@@ -100,9 +99,10 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the Ids of the sessions currently
      * registered on the wamp-router in the monitor's realm
-     * and populates the data via given callback,
+     * and populates the data via given callback,.
      *
      * @param callable $callback
+     *
      * @return mixed
      */
     public function getSessionIds(callable $callback)
@@ -115,7 +115,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     }
 
     /**
-     * Initializes the subscription to the meta-events
+     * Initializes the subscription to the meta-events.
      */
     protected function startSubscriptions()
     {
@@ -161,7 +161,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
                 $sessionIds = $this->removeOwnSessionId($res[0]);
                 $this->setList($sessionIds);
                 $this->emit('list', [$this->getList()]);
-                if($callback !== null){
+                if ($callback !== null) {
                     $callback($this->sessionIds);
                 }
             },
@@ -170,7 +170,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             }
         );
     }
-
 
     protected function setList($list)
     {
@@ -183,14 +182,16 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     }
 
     /**
-     * remove the sessionID of the Monitor from the list
+     * remove the sessionID of the Monitor from the list.
+     *
      * @param array $sessionsIds
+     *
      * @return mixed
      */
     protected function removeOwnSessionId(array $sessionsIds)
     {
         $key = array_search($this->session->getSessionId(), $sessionsIds);
-        if($key >= 0){
+        if ($key >= 0) {
             unset($sessionsIds[$key]);
         }
 
