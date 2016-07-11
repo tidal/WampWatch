@@ -148,7 +148,7 @@ class SubscriptionMonitor implements MonitorInterface
         );
     }
 
-    protected function retrieveSubscriptionIds(callback $callback = null)
+    protected function retrieveSubscriptionIds(callable $callback = null)
     {
         return $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])->then(
             function ($res) use ($callback) {
