@@ -281,6 +281,16 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function test_sessionid_accessors()
+    {
+        $sessionId = 321;
+
+        $this->session->setSessionId($sessionId);
+
+        $this->assertEquals($sessionId, $this->session->getSessionId());
+    }
+
+
     /**
      * asserts an object to be a promise
      *
