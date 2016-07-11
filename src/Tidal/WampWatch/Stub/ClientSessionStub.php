@@ -11,6 +11,7 @@ namespace Tidal\WampWatch\Stub;
 
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\PublishedMessage;
+use Thruway\Message\RegisteredMessage;
 use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
 use React\Promise\Deferred;
@@ -33,11 +34,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     protected $sessionId;
 
-    protected $callRequests = [];
-
     protected $subscriptions = [];
 
     protected $publications = [];
+
+    protected $registrations = [];
 
 
 
@@ -99,6 +100,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         return $futureResult->promise();
     }
 
+    /**
+     * @param string $topicName
+     * @param int    $requestId
+     * @param int    $publicationId
+     */
     public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
     {
         if (!isset($this->publications[$topicName])) {
@@ -127,12 +133,30 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $futureResult = new Deferred();
 
-        $this->callRequests[$procedureName] = $futureResult;
+        $this->registrations[$procedureName] = $futureResult;
 
 
         return $futureResult->promise();
 
     }
+
+    /**
+     * @param string $topicName
+     * @param int    $requestId
+     * @param int    $registrationId
+     */
+    public function confirmRegistration($topicName, $requestId = 1, $registrationId = 1)
+    {
+        if (!isset($this->registrations[$topicName])) {
+            throw new \RuntimeException("No registration to topic '$topicName' initiated.");
+        }
+
+        $futureResult = $this->registrations[$topicName];
+        $result = new RegisteredMessage($requestId, $registrationId);
+
+        $futureResult->resolve($result);
+    }
+
 
     /**
      * Process ResultMessage
@@ -142,9 +166,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function processResult($procedureName, $result)
     {
-        if (isset($this->callRequests[$procedureName])) {
+        if (isset($this->registrations[$procedureName])) {
             /* @var $futureResult Deferred */
-            $futureResult = $this->callRequests[$procedureName];
+            $futureResult = $this->registrations[$procedureName];
 
             $futureResult->notify($result);
         }
