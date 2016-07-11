@@ -193,6 +193,26 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    function test_confirm_registration_throws_exception_on_unknown_subscription()
+    {
+        try {
+            $this->session->confirmRegistration(
+                'foo',
+                321,
+                654
+            );
+
+            $this->fail('A RuntimeException should have been thrown');
+        } catch (\RuntimeException $e) {
+
+        }
+
+    }
+
+
+    /**
+     *
+     */
     public function test_unregister_returns_promise()
     {
         $this->assertPromise(
