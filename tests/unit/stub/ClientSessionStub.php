@@ -46,12 +46,14 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     public function completeSubscription($topicName, $result)
     {
-        if (isset($this->subscriptions[$topicName])) {
-            /* @var $futureResult Deferred */
-            $futureResult = $this->subscriptions[$topicName];
-
-            $futureResult->notify($result);
+        if (!isset($this->subscriptions[$topicName])) {
+            throw new RuntimeException("No subscription to topic '$topicName' initiated.");
         }
+
+        /* @var $futureResult Deferred */
+        $futureResult = $this->subscriptions[$topicName];
+
+        $futureResult->notify($result);
 
     }
 
