@@ -12,6 +12,7 @@ namespace Tidal\WampWatch\Stub;
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\PublishedMessage;
 use Thruway\Message\RegisteredMessage;
+use Thruway\Message\UnregisteredMessage;
 use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
 use React\Promise\Deferred;
@@ -39,6 +40,8 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     protected $publications = [];
 
     protected $registrations = [];
+
+    protected $unregistrations = [];
 
 
 
@@ -187,8 +190,23 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $futureResult = new Deferred();
 
+        $this->unregistrations[$procedureName] = $futureResult;
+
+
         return $futureResult->promise();
 
+    }
+
+    public function confirmUnregistration($topicName, $requestId = 1)
+    {
+        if (!isset($this->unregistrations[$topicName])) {
+            throw new \RuntimeException("No registration to topic '$topicName' initiated.");
+        }
+
+        $futureResult = $this->unregistrations[$topicName];
+        $result = new UnregisteredMessage($requestId);
+
+        $futureResult->resolve($result);
     }
 
     /**

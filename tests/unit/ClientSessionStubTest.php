@@ -222,6 +222,34 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+
+    /**
+     *
+     */
+    public function test_unregistration_can_be_confirmed()
+    {
+
+        $unregistered = null;
+        $promise = $this->session->unregister(
+            'foo'
+        );
+
+        $promise->then(function ($message) use (&$unregistered) {
+            $unregistered = $message;
+        });
+
+        $this->session->confirmUnregistration(
+            'foo',
+            321
+        );
+        $this->assertInstanceOf(
+            'Thruway\Message\UnregisteredMessage',
+            $unregistered
+        );
+
+    }
+
+
     /**
      *
      */
