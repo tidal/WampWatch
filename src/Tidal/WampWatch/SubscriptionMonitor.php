@@ -71,9 +71,11 @@ class SubscriptionMonitor implements MonitorInterface
     {
         if (!count($this->subscriptionIds)) {
             $this->retrieveSubscriptionIds($callback);
-        } else {
-            $callback($this->subscriptionIds);
+
+            return;
         }
+
+        $callback($this->subscriptionIds);
     }
 
     protected function startSubscriptions()
