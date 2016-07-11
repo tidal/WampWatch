@@ -70,8 +70,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         /* @var $futureResult Deferred */
         $futureResult = $this->subscriptions[$topicName];
+        $result = new SubscribedMessage($requestId, $sessionId);
 
-        $futureResult->notify($result);
+        $futureResult->resolve($result);
 
     }
 

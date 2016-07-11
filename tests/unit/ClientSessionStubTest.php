@@ -17,13 +17,18 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
      */
     protected $session;
 
-
+    /**
+     *
+     */
     public function setUp()
     {
         $this->session = new ClientSessionStub();
     }
 
 
+    /**
+     *
+     */
     public function test_subscribe_returns_promise()
     {
         $this->assertPromise(
@@ -34,6 +39,38 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+
+    /**
+     *
+     */
+    public function test_subscribe_can_be_completed()
+    {
+
+        $subscribed = null;
+        $promise = $this->session->subscribe(
+            'foo',
+            $this->getEmptyFunc()
+        );
+
+        $promise->then(function ($message) use (&$subscribed) {
+            $subscribed = $message;
+        });
+
+        $this->session->completeSubscription(
+            'foo',
+            321,
+            654
+        );
+        $this->assertInstanceOf(
+            'Thruway\Message\SubscribedMessage',
+            $subscribed
+        );
+
+    }
+
+    /**
+     *
+     */
     public function test_publish_returns_promise()
     {
         $this->assertPromise(
@@ -43,6 +80,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     *
+     */
     public function test_register_returns_promise()
     {
         $this->assertPromise(
@@ -53,6 +93,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     *
+     */
     public function test_unregister_returns_promise()
     {
         $this->assertPromise(
@@ -62,6 +105,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     *
+     */
     public function test_call_returns_promise()
     {
         $this->assertPromise(
@@ -71,12 +117,40 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     *
+     */
+    function test_complete_subscrition_throws_exception_on_unknown_subscription()
+    {
+        try {
+            $this->session->completeSubscription(
+                'foo',
+                321,
+                654
+            );
 
+            $this->fail('A RuntimeException should have been thrown');
+        } catch (\RuntimeException $e) {
+
+        }
+
+    }
+
+    /**
+     * asserts an object to be a promise
+     *
+     * @param $obj
+     */
     protected function assertPromise($obj)
     {
         $this->assertInstanceOf(self::PROMISE_CLS, $obj);
     }
 
+    /**
+     * convenient function to create an empty function.
+     *
+     * @return \Closure
+     */
     protected function getEmptyFunc()
     {
         return function () {
