@@ -160,6 +160,35 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
+
+    /**
+     *
+     */
+    public function test_registration_can_be_confirmed()
+    {
+
+        $registered = null;
+        $promise = $this->session->publish(
+            'foo'
+        );
+
+        $promise->then(function ($message) use (&$registered) {
+            $registered = $message;
+        });
+
+        $this->session->confirmRegistration(
+            'foo',
+            321,
+            654
+        );
+        $this->assertInstanceOf(
+            'Thruway\Message\RegisteredMessage',
+            $registered
+        );
+
+    }
+
+
     /**
      *
      */
