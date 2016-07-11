@@ -102,7 +102,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function test_publish_can_be_confirmed()
+    public function test_publication_can_be_confirmed()
     {
 
         $published = null;
