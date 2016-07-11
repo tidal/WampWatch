@@ -293,6 +293,20 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sessionId, $this->session->getSessionId());
     }
 
+    /**
+     *
+     */
+    public function test_get_uniqueid()
+    {
+        $id = ClientSessionStub::getUniqueId();
+
+        // test 10 unique ids
+        for ($x = 0; $x < 10; $x++) {
+            $this->assertNotEquals($id, ClientSessionStub::getUniqueId());
+        }
+
+    }
+
 
     /**
      * asserts an object to be a promise
