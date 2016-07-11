@@ -6,4 +6,4 @@
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://scrutinizer-ci.com/g/tidal/WampWatch/?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/5770981a671894004e1a923a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5770981a671894004e1a923a)
 # WampWatch
-A set of PHP WAMP v2 (Web Application Messaging Protocol) Monitor Clients to observe WAMP router meta-events (session, registration, subscription). 
+A set of PHP WAMP v2 (Web Application Messaging Protocol) Monitor Clients to observe WAMP router meta-events (session, registration, subscription).
