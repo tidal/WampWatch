@@ -168,8 +168,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     {
 
         $registered = null;
-        $promise = $this->session->publish(
-            'foo'
+        $promise = $this->session->register(
+            'foo',
+            $this->getEmptyFunc()
         );
 
         $promise->then(function ($message) use (&$registered) {
