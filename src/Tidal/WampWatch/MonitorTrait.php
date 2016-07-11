@@ -10,7 +10,7 @@ namespace Tidal\WampWatch;
  */
 
 use Evenement\EventEmitterTrait;
-use Thruway\ClientSession;
+use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
  * Description of MonitorTrait.
@@ -24,7 +24,7 @@ trait MonitorTrait
     /**
      * The monitor's WAMP client session.
      *
-     * @var \Thruway\ClientSession
+     * @var ClientSession
      */
     protected $session;
 
@@ -36,11 +36,9 @@ trait MonitorTrait
     protected $isRunning = false;
 
     /**
-     * Constructor.
-     *
-     * @param \Thruway\ClientSession $session
+     * @param ClientSession $session
      */
-    public function __construct(ClientSession $session)
+    protected function setClientSession(ClientSession $session)
     {
         $this->session = $session;
     }
@@ -83,7 +81,7 @@ trait MonitorTrait
     /**
      * Get the monitor's WAMP client session.
      *
-     * @return \Thruway\ClientSession
+     * @return ClientSession
      */
     public function getServerSession()
     {

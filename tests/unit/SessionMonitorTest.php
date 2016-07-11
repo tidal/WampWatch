@@ -4,6 +4,7 @@ require_once __DIR__.'/../bootstrap.php';
 //require_once __DIR__ . '/stub/ClientSessionStub.php';
 
 use Mockery as M;
+use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Tidal\WampWatch\SessionMonitor;
 
 /**
@@ -31,7 +32,8 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $session->shouldReceive('call')->once()
             ->andReturn($promise);
 
-        $monitor = new SessionMonitor($session);
+        $adapter = new ClientSession($session);
+        $monitor = new SessionMonitor($adapter);
         $res = $monitor->start();
 
         $this->assertEquals(true, $res);
@@ -46,14 +48,14 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $session->shouldReceive('call')->once()
             ->andReturn($promise);
         $session->shouldReceive('subscribe')->once()
-            ->with('wamp.session.on_join', \Mockery::any())
+            ->with('wamp.session.on_join', \Mockery::any(), \Mockery::any())
             ->andReturn($promise);
         $session->shouldReceive('subscribe')->once()
-            ->with('wamp.session.on_leave', \Mockery::any())
+            ->with('wamp.session.on_leave', \Mockery::any(), \Mockery::any())
             ->andReturn($promise);
-        $monitor = M::mock('Tidal\WampWatch\SessionMonitor', [$session])
-            ->makePartial();
 
+        $adapter = new ClientSession($session);
+        $monitor = new SessionMonitor($adapter);
         $monitor->start();
     }
 }
