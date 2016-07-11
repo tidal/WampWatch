@@ -71,6 +71,25 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    function test_complete_subscrition_throws_exception_on_unknown_subscription()
+    {
+        try {
+            $this->session->completeSubscription(
+                'foo',
+                321,
+                654
+            );
+
+            $this->fail('A RuntimeException should have been thrown');
+        } catch (\RuntimeException $e) {
+
+        }
+
+    }
+
+    /**
+     *
+     */
     public function test_publish_returns_promise()
     {
         $this->assertPromise(
@@ -108,6 +127,25 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     *
+     */
+    function test_confirm_publication_throws_exception_on_unknown_subscription()
+    {
+        try {
+            $this->session->confirmPublication(
+                'foo',
+                321,
+                654
+            );
+
+            $this->fail('A RuntimeException should have been thrown');
+        } catch (\RuntimeException $e) {
+
+        }
+
+    }
+
 
     /**
      *
@@ -144,25 +182,6 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 'foo'
             )
         );
-    }
-
-    /**
-     *
-     */
-    function test_complete_subscrition_throws_exception_on_unknown_subscription()
-    {
-        try {
-            $this->session->completeSubscription(
-                'foo',
-                321,
-                654
-            );
-
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
-        }
-
     }
 
     /**
