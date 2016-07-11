@@ -2,4 +2,5 @@
 composer.phar
 composer.lock
 /phpunit.phar
-/coverage/
+/coverage
+/spec
