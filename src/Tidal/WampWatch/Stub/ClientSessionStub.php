@@ -10,6 +10,7 @@ namespace Tidal\WampWatch\Stub;
  */
 
 use Thruway\Message\SubscribedMessage;
+use Thruway\Message\PublishedMessage;
 use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
 use React\Promise\Deferred;
@@ -35,6 +36,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     protected $callRequests = [];
 
     protected $subscriptions = [];
+
+    protected $publications = [];
+
 
 
     /**
@@ -62,7 +66,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param $sessionId
      * @throws \RuntimeException
      */
-    public function completeSubscription($topicName, $requestId, $sessionId)
+    public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
     {
         if (!isset($this->subscriptions[$topicName])) {
             throw new \RuntimeException("No subscription to topic '$topicName' initiated.");
@@ -88,11 +92,25 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
     {
-
         $futureResult = new Deferred();
+
+        $this->publications[$topicName] = $futureResult;
 
         return $futureResult->promise();
     }
+
+    public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
+    {
+        if (!isset($this->publications[$topicName])) {
+            throw new \RuntimeException("No publication to topic '$topicName' initiated.");
+        }
+
+        $futureResult = $this->publications[$topicName];
+        $result = new PublishedMessage($requestId, $publicationId);
+
+        $futureResult->resolve($result);
+    }
+
 
     /**
      * Register.

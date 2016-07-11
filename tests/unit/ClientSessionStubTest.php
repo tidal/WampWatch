@@ -83,6 +83,35 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function test_publish_can_be_confirmed()
+    {
+
+        $published = null;
+        $promise = $this->session->publish(
+            'foo'
+        );
+
+        $promise->then(function ($message) use (&$published) {
+            $published = $message;
+        });
+
+        $this->session->confirmPublication(
+            'foo',
+            321,
+            654
+        );
+        $this->assertInstanceOf(
+            'Thruway\Message\PublishedMessage',
+            $published
+        );
+
+    }
+
+
+
+    /**
+     *
+     */
     public function test_register_returns_promise()
     {
         $this->assertPromise(
