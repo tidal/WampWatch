@@ -19,11 +19,10 @@ use Tidal\WampWatch\ClientSessionInterface as ClientSession;
  */
 class SessionMonitor implements MonitorInterface, EventEmitterInterface
 {
-    use
-        MonitorTrait {
-            start as doStart;
-            stop as doStop;
-        }
+    use MonitorTrait {
+        start as doStart;
+        stop as doStop;
+    }
 
     const SESSION_JOIN_TOPIC = 'wamp.session.on_join';
     const SESSION_LEAVE_TOPIC = 'wamp.session.on_leave';
@@ -109,9 +108,11 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     {
         if (!count($this->sessionIds)) {
             $this->retrieveSessionIds($callback);
-        } else {
-            $callback($this->sessionIds);
+
+            return;
         }
+
+        $callback($this->sessionIds);
     }
 
     /**

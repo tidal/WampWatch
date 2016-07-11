@@ -93,7 +93,7 @@ class SubscriptionMonitor implements MonitorInterface
     {
         $sessionInfo = $res[0];
         $sessionId = $sessionInfo['session'];
-        if (($key = array_search($sessionId, $this->subscriptionIds)) === false) {
+        if ((array_search($sessionId, $this->subscriptionIds)) === false) {
             $this->subscriptionIds[] = $sessionId;
             $this->emit('create', [$sessionInfo]);
         }
@@ -113,10 +113,10 @@ class SubscriptionMonitor implements MonitorInterface
         $sessionId = $res[0];
         $subId = $res[1];
         $this->getSubscriptionDetail($subId)->then(
-            function ($res) use ($sessionId,$subId) {
+            function ($res) use ($sessionId, $subId) {
                 $this->emit('sub', [$sessionId, $subId, $res[0]]);
             },
-            function ($error) {
+            function () {
                 $this->emit('sub', [$sessionId, $subId, [
                     'id'        => $subId,
                     'created'   => null,
@@ -133,17 +133,20 @@ class SubscriptionMonitor implements MonitorInterface
         Util::unsubscribe($this->session, self::SUBSCRIPTION_LEAVE_TOPIC);
     }
 
-    public function getSubscriptionDetail($subId)
+    public function getSubscriptionDetail($subId, callable $callback)
     {
         return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, [$subId])->then(
-            function ($res) {
+            function ($res) use ($callback) {
+                $this->emit('info', [$res[0]]);
+                $callback($res[0]);
             },
             function ($error) {
+                $this->emit('error', [$error]);
             }
         );
     }
 
-    protected function retrieveSubscriptionIds($callback = null)
+    protected function retrieveSubscriptionIds(callback $callback = null)
     {
         return $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])->then(
             function ($res) use ($callback) {
