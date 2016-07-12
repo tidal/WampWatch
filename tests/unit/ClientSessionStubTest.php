@@ -1,15 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__.'/../bootstrap.php';
 
-
-use Thruway\Message\SubscribedMessage;
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
 
 class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 {
-
     const PROMISE_CLS = 'React\Promise\Promise';
 
     /**
@@ -17,18 +14,13 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
      */
     protected $session;
 
-    /**
-     *
-     */
+
     public function setUp()
     {
         $this->session = new ClientSessionStub();
     }
 
 
-    /**
-     *
-     */
     public function test_subscribe_returns_promise()
     {
         $this->assertPromise(
@@ -40,12 +32,8 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     *
-     */
     public function test_subscribe_can_be_completed()
     {
-
         $subscribed = null;
         $promise = $this->session->subscribe(
             'foo',
@@ -65,13 +53,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
             'Thruway\Message\SubscribedMessage',
             $subscribed
         );
-
     }
 
-    /**
-     *
-     */
-    function test_complete_subscrition_throws_exception_on_unknown_subscription()
+
+    public function test_complete_subscrition_throws_exception_on_unknown_subscription()
     {
         try {
             $this->session->completeSubscription(
@@ -82,18 +67,12 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
             $this->fail('A RuntimeException should have been thrown');
         } catch (\RuntimeException $e) {
-
         }
-
     }
 
-    /**
-     *
-     */
 
     public function test_subscription_can_be_published_to()
     {
-
         $result = null;
 
         $this->session->subscribe(
@@ -106,14 +85,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         $this->session->emit('foo', ['bar']);
 
         $this->assertEquals('bar', $result);
-
     }
 
 
-
-    /**
-     *
-     */
     public function test_publish_returns_promise()
     {
         $this->assertPromise(
@@ -123,12 +97,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
+
     public function test_publication_can_be_confirmed()
     {
-
         $published = null;
         $promise = $this->session->publish(
             'foo'
@@ -147,14 +118,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
             'Thruway\Message\PublishedMessage',
             $published
         );
-
     }
 
 
-    /**
-     *
-     */
-    function test_confirm_publication_throws_exception_on_unknown_publication()
+    public function test_confirm_publication_throws_exception_on_unknown_publication()
     {
         try {
             $this->session->confirmPublication(
@@ -165,15 +132,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
             $this->fail('A RuntimeException should have been thrown');
         } catch (\RuntimeException $e) {
-
         }
-
     }
 
 
-    /**
-     *
-     */
     public function test_register_returns_promise()
     {
         $this->assertPromise(
@@ -185,12 +147,8 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     *
-     */
     public function test_registration_can_be_confirmed()
     {
-
         $registered = null;
         $promise = $this->session->register(
             'foo',
@@ -210,13 +168,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
             'Thruway\Message\RegisteredMessage',
             $registered
         );
-
     }
 
 
-    /**
-     *
-     */
     public function test_confirm_registration_throws_exception_on_unknown_registration()
     {
         try {
@@ -228,17 +182,12 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
             $this->fail('A RuntimeException should have been thrown');
         } catch (\RuntimeException $e) {
-
         }
-
     }
 
-    /**
-     *
-     */
+
     public function test_registration_can_be_called()
     {
-
         $registered = null;
         $this->session->register(
             'foo',
@@ -250,15 +199,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         $res = $this->session->callRegistration('foo', [1, 2]);
 
         $this->assertEquals(3, $res);
-
     }
 
 
-
-
-    /**
-     *
-     */
     public function test_unregister_returns_promise()
     {
         $this->assertPromise(
@@ -269,12 +212,8 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     *
-     */
     public function test_unregistration_can_be_confirmed()
     {
-
         $unregistered = null;
         $promise = $this->session->unregister(
             'foo'
@@ -292,14 +231,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
             'Thruway\Message\UnregisteredMessage',
             $unregistered
         );
-
     }
 
 
-    /**
-     *
-     */
-    function test_confirm_unregistration_throws_exception_on_unknown_unregistration()
+    public function test_confirm_unregistration_throws_exception_on_unknown_unregistration()
     {
         try {
             $this->session->confirmUnregistration(
@@ -309,15 +244,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
             $this->fail('A RuntimeException should have been thrown');
         } catch (\RuntimeException $e) {
-
         }
-
     }
 
 
-    /**
-     *
-     */
     public function test_call_returns_promise()
     {
         $this->assertPromise(
@@ -327,9 +257,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
+
     public function test_call_can_be_responded_to()
     {
         $response = null;
@@ -344,10 +272,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     *
-     */
-    function test_respond_to_callthrows_exception_on_unknown_call()
+    public function test_respond_to_callthrows_exception_on_unknown_call()
     {
         try {
             $this->session->respondToCall(
@@ -357,18 +282,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
             $this->fail('A RuntimeException should have been thrown');
         } catch (\RuntimeException $e) {
-
         }
-
     }
 
 
-
-
-
-    /**
-     *
-     */
     public function test_sessionid_accessors()
     {
         $sessionId = 321;
@@ -378,9 +295,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sessionId, $this->session->getSessionId());
     }
 
-    /**
-     *
-     */
+
     public function test_get_uniqueid()
     {
         $id = ClientSessionStub::getUniqueId();
@@ -389,12 +304,10 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         for ($x = 0; $x < 10; $x++) {
             $this->assertNotEquals($id, ClientSessionStub::getUniqueId());
         }
-
     }
 
-
     /**
-     * asserts an object to be a promise
+     * asserts an object to be a promise.
      *
      * @param $obj
      */
@@ -413,6 +326,4 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         return function () {
         };
     }
-
-
 }
