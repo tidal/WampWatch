@@ -5,5 +5,6 @@
 [![StyleCI](https://styleci.io/repos/61987759/shield)](https://styleci.io/repos/61987759)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://scrutinizer-ci.com/g/tidal/WampWatch/?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/5770981a671894004e1a923a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5770981a671894004e1a923a)
+[![Codacy grade](https://img.shields.io/codacy/grade/05be2051d61543abb3bac6fee7af7b44.svg?maxAge=2592000&style=flat-square)](https://www.codacy.com/app/timomichna/WampWatch?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tidal/WampWatch&amp;utm_campaign=Badge_Grade)
 # WampWatch
 A set of PHP WAMP v2 (Web Application Messaging Protocol) Monitor Clients to observe WAMP router meta-events (session, registration, subscription).
