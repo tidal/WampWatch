@@ -18,6 +18,8 @@ use Thruway\Message\RegisteredMessage;
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\UnregisteredMessage;
 use Tidal\WampWatch\ClientSessionInterface;
+use Tidal\WampWatch\Exception\UnknownProcedureException;
+use Tidal\WampWatch\Exception\UnknownTopicException;
 
 /**
  * !!! WARNING !!!!
@@ -75,12 +77,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param $requestId
      * @param $sessionId
      *
-     * @throws \RuntimeException if the topic is unknown.
+     * @throws UnknownTopicException if the topic is unknown.
      */
     public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
     {
         if (!isset($this->subscriptions[$topicName])) {
-            throw new \RuntimeException("No subscription to topic '$topicName' initiated.");
+            throw new UnknownTopicException($topicName);
         }
 
         /* @var $futureResult Deferred */
@@ -122,12 +124,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param int    $requestId
      * @param int    $publicationId
      *
-     * @throws \RuntimeException if the topic is unknown.
+     * @throws UnknownTopicException if the topic is unknown.
      */
     public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
     {
         if (!isset($this->publications[$topicName])) {
-            throw new \RuntimeException("No publication to topic '$topicName' initiated.");
+            throw new UnknownTopicException($topicName);
         }
 
         $futureResult = $this->publications[$topicName];
@@ -164,12 +166,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param int    $requestId
      * @param int    $registrationId
      *
-     * @throws \RuntimeException if the procedure is unknown.
+     * @throws UnknownProcedureException if the procedure is unknown.
      */
     public function confirmRegistration($procedureName, $requestId = 1, $registrationId = 1)
     {
         if (!isset($this->registrations[$procedureName])) {
-            throw new \RuntimeException("No registration to procedure '$procedureName' initiated.");
+            throw new UnknownProcedureException($procedureName);
         }
 
         $futureResult = $this->registrations[$procedureName];
@@ -184,14 +186,14 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param string $procedureName
      * @param array  $args
      *
-     * @throws \RuntimeException if the procedure is unknown.
+     * @throws UnknownProcedureException if the procedure is unknown.
      *
      * @return mixed the procedure result
      */
     public function callRegistration($procedureName, array $args = [])
     {
         if (!isset($this->procedures[$procedureName])) {
-            throw new \RuntimeException("No registration for procedure '$procedureName'.");
+            throw new UnknownProcedureException($procedureName);
         }
 
         $procedure = $this->procedures[$procedureName];
@@ -221,11 +223,13 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      * @param int    $requestId
+     *
+     * @throws UnknownProcedureException
      */
     public function confirmUnregistration($procedureName, $requestId = 1)
     {
         if (!isset($this->unregistrations[$procedureName])) {
-            throw new \RuntimeException("No registration to procedure '$procedureName' initiated.");
+            throw new UnknownProcedureException($procedureName);
         }
 
         $futureResult = $this->unregistrations[$procedureName];
@@ -262,7 +266,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     public function respondToCall($procedureName, $result)
     {
         if (!isset($this->calls[$procedureName])) {
-            throw new \RuntimeException("No call to topic '$procedureName' initiated.");
+            throw new UnknownProcedureException($procedureName);
         }
 
         /* @var $futureResult Deferred */

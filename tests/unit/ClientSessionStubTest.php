@@ -6,6 +6,8 @@ require_once __DIR__ . '/../bootstrap.php';
 use Thruway\Message\SubscribedMessage;
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
+use Tidal\WampWatch\Exception\UnknownProcedureException;
+use Tidal\WampWatch\Exception\UnknownTopicException;
 
 class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 {
@@ -80,9 +82,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 654
             );
 
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
+            $this->fail('An UnknownTopicException should have been thrown');
+        } catch (UnknownTopicException $e) {
+            $this->assertSame('foo', $e->getTopicName());
         }
 
     }
@@ -177,9 +179,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 654
             );
 
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
+            $this->fail('An UnknownTopicException should have been thrown');
+        } catch (UnknownTopicException $e) {
+            $this->assertSame('foo', $e->getTopicName());
         }
 
     }
@@ -240,9 +242,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 654
             );
 
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
+            $this->fail('An UnknownProcedureException should have been thrown');
+        } catch (UnknownProcedureException $e) {
+            $this->assertSame('foo', $e->getProcedureName());
         }
 
     }
@@ -319,9 +321,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 321
             );
 
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
+            $this->fail('An UnknownProcedureException should have been thrown');
+        } catch (UnknownProcedureException $e) {
+            $this->assertSame('foo', $e->getProcedureName());
         }
 
     }
@@ -376,9 +378,9 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
                 321
             );
 
-            $this->fail('A RuntimeException should have been thrown');
-        } catch (\RuntimeException $e) {
-
+            $this->fail('An UnknownProcedureException should have been thrown');
+        } catch (UnknownProcedureException $e) {
+            $this->assertSame('foo', $e->getProcedureName());
         }
 
     }
