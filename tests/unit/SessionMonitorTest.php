@@ -70,6 +70,27 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function test_start_retrieves_sessionid_list()
+    {
+        $stub = new ClientSessionStub();
+        $monitor = new SessionMonitor($stub);
+        $called = false;
+
+        $stub->setSessionId(321);
+
+        $monitor->on('list', function () use (&$called) {
+            $called = true;
+        });
+
+        $monitor->start();
+
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+
+
+        $this->assertTrue($called);
+
+    }
+
 
 
 
