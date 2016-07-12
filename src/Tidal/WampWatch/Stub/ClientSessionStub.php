@@ -97,7 +97,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         return isset($this->subscriptions[$topicName]);
     }
 
-
     /**
      * Publish.
      *
@@ -279,7 +278,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     {
         return isset($this->calls[$procedureName]);
     }
-
 
     /**
      * @param int $sessionId
