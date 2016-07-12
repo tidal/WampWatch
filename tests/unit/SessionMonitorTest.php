@@ -91,7 +91,70 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     }
 
+    public function test_get_sessionids_retrieves_session_list()
+    {
+        $stub = new ClientSessionStub();
+        $stub->setSessionId(321);
+        $monitor = new SessionMonitor($stub);
+        $listCalled = false;
+        $calledBack = false;
 
+        $monitor->on('list', function () use (&$listCalled) {
+            $listCalled = true;
+        });
+
+        $monitor->getSessionIds(function () use (&$calledBack) {
+            $calledBack = true;
+        });
+
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+
+
+        $this->assertTrue($listCalled && $calledBack);
+    }
+
+
+    public function test_list_event_getsessionid_callback_return_same_value()
+    {
+        $stub = new ClientSessionStub();
+        $stub->setSessionId(321);
+        $monitor = new SessionMonitor($stub);
+        $listCalled = null;
+        $calledBack = null;
+
+        $monitor->on('list', function ($res) use (&$listCalled) {
+            $listCalled = $res;
+        });
+
+        $monitor->getSessionIds(function ($res) use (&$calledBack) {
+            $calledBack = $res;
+        });
+
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+
+        $this->assertSame($listCalled, $calledBack);
+
+    }
+
+
+    public function test_get_sessionids_removes_monitors_sessionid()
+    {
+
+        $stub = new ClientSessionStub();
+        $stub->setSessionId(321);
+        $monitor = new SessionMonitor($stub);
+        $sessionIds = null;
+
+        $monitor->getSessionIds(function (array $ids) use (&$sessionIds) {
+            $sessionIds = $ids;
+        });
+
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+
+        $this->assertNotContains(321, $sessionIds);
+    }
+    
+    
 
 
 }
