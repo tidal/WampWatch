@@ -82,8 +82,4 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $monitor = new SessionMonitor($adapter);
         $monitor->start();
     }
-
-
-
-
 }
