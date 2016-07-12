@@ -269,6 +269,20 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     *
+     */
+    public function test_call_registration_throws_exception_on_unknown_procedure()
+    {
+        try {
+            $this->session->callRegistration('foo', [1, 2]);
+
+            $this->fail('An UnknownProcedureException should have been thrown');
+        } catch (UnknownProcedureException $e) {
+            $this->assertSame('foo', $e->getProcedureName());
+        }
+
+    }
 
     /**
      *
