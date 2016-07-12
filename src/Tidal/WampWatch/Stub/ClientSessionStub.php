@@ -1,33 +1,37 @@
 <?php
+
+/*
+ * This file is part of the Tidal/WampWatch package.
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Tidal\WampWatch\Stub;
 
-
-use Thruway\Message\SubscribedMessage;
-use Thruway\Message\PublishedMessage;
-use Thruway\Message\RegisteredMessage;
-use Thruway\Message\UnregisteredMessage;
 use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
 use React\Promise\Deferred;
-
+use Thruway\Message\PublishedMessage;
+use Thruway\Message\RegisteredMessage;
+use Thruway\Message\SubscribedMessage;
+use Thruway\Message\UnregisteredMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 
 /**
- *
  * !!! WARNING !!!!
  * This Class should only be used for testing or demos.
  * It allows for testing client method calls but behaves differently to
  * real client session implementation in that it only stores one (the last)
  * subscription, registration etc. for a specific topic/procedure.
- *
  */
 
 /**
- * Class ClientSessionStub
+ * Class ClientSessionStub.
  */
 class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 {
-
     use EventEmitterTrait;
 
     protected $sessionId;
@@ -44,14 +48,13 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     protected $procedures = [];
 
-
-
     /**
      * Subscribe.
      *
      * @param string   $topicName
      * @param callable $callback
-     * @param          $options array
+     * @param          $options   array
+     *
      * @return \React\Promise\Promise
      */
     public function subscribe($topicName, callable $callback, $options = null)
@@ -71,6 +74,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param $topicName
      * @param $requestId
      * @param $sessionId
+     *
      * @throws \RuntimeException if the topic is unknown.
      */
     public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
@@ -84,9 +88,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $result = new SubscribedMessage($requestId, $sessionId);
 
         $futureResult->resolve($result);
-
     }
-
 
     /**
      * Publish.
@@ -95,6 +97,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
@@ -112,6 +115,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param string $topicName
      * @param int    $requestId
      * @param int    $publicationId
+     *
      * @throws \RuntimeException if the topic is unknown.
      */
     public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
@@ -126,18 +130,17 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
-
     /**
      * Register.
      *
      * @param string      $procedureName
      * @param callable    $callback
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function register($procedureName, callable $callback, $options = null)
     {
-
         $this->procedures[$procedureName] = $callback;
 
         $futureResult = new Deferred();
@@ -146,7 +149,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
 
         return $futureResult->promise();
-
     }
 
     /**
@@ -155,6 +157,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param string $procedureName
      * @param int    $requestId
      * @param int    $registrationId
+     *
      * @throws \RuntimeException if the procedure is unknown.
      */
     public function confirmRegistration($procedureName, $requestId = 1, $registrationId = 1)
@@ -174,8 +177,10 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      * @param array  $args
-     * @return mixed    the procedure result
+     *
      * @throws \RuntimeException if the procedure is unknown.
+     *
+     * @return mixed the procedure result
      */
     public function callRegistration($procedureName, array $args = [])
     {
@@ -188,7 +193,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         return $procedure($args);
     }
 
-
     /**
      * Unregister.
      *
@@ -198,14 +202,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function unregister($procedureName)
     {
-
         $futureResult = new Deferred();
 
         $this->unregistrations[$procedureName] = $futureResult;
 
 
         return $futureResult->promise();
-
     }
 
     /**
@@ -233,22 +235,20 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
      * @return \React\Promise\Promise
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
-
         $futureResult = new Deferred();
 
         $this->calls[$procedureName] = $futureResult;
 
         return $futureResult->promise();
-
     }
 
-
     /**
-     * Process ResultMessage
+     * Process ResultMessage.
      *
      * @param string    $procedureName
      * @param \stdClass $result
@@ -264,7 +264,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $futureResult->resolve($result);
     }
-
 
     /**
      * @param int $sessionId
@@ -283,7 +282,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
-     * Generate a unique id for sessions and requests
+     * Generate a unique id for sessions and requests.
      *
      * @return mixed
      */
@@ -291,10 +290,8 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     {
         $filter = 0x1fffffffffffff; // 53 bits
         $randomBytes = openssl_random_pseudo_bytes(8);
-        list($high, $low) = array_values(unpack("N2", $randomBytes));
+        list($high, $low) = array_values(unpack('N2', $randomBytes));
 
         return abs(($high << 32 | $low) & $filter);
     }
-
-
 }
