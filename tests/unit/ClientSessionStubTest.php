@@ -217,7 +217,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
-    function test_confirm_registration_throws_exception_on_unknown_registration()
+    public function test_confirm_registration_throws_exception_on_unknown_registration()
     {
         try {
             $this->session->confirmRegistration(
@@ -232,6 +232,28 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         }
 
     }
+
+    /**
+     *
+     */
+    public function test_registration_can_be_called()
+    {
+
+        $registered = null;
+        $this->session->register(
+            'foo',
+            function ($args) {
+                return $args[0] + $args[1];
+            }
+        );
+
+        $res = $this->session->callRegistration('foo', [1, 2]);
+
+        $this->assertEquals(3, $res);
+
+    }
+
+
 
 
     /**
