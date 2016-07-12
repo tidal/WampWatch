@@ -90,6 +90,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    public function hasSubscription($topicName)
+    {
+        return isset($this->subscriptions[$topicName]);
+    }
+
+
     /**
      * Publish.
      *

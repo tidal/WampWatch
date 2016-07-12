@@ -109,6 +109,18 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     *
+     */
+    public function test_has_subscription()
+    {
+        $this->session->subscribe(
+            'foo',
+            $this->getEmptyFunc()
+        );
+
+        $this->assertTrue($this->session->hasSubscription('foo'));
+    }
 
 
     /**
