@@ -14,8 +14,6 @@ use Tidal\WampWatch\ClientSessionInterface;
 
 /**
  *
- * @package Tidal\WampWatch\Stub
- *
  * !!! WARNING !!!!
  * This Class should only be used for testing or demos.
  * It allows for testing client method calls but behaves differently to
