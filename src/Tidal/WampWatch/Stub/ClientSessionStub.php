@@ -43,6 +43,8 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     protected $unregistrations = [];
 
+    protected $calls = [];
+
 
 
     /**
@@ -162,23 +164,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
 
     /**
-     * Process ResultMessage
-     *
-     * @param string    $procedureName
-     * @param \stdClass $result
-     */
-    public function processResult($procedureName, $result)
-    {
-        if (isset($this->registrations[$procedureName])) {
-            /* @var $futureResult Deferred */
-            $futureResult = $this->registrations[$procedureName];
-
-            $futureResult->notify($result);
-        }
-    }
-
-
-    /**
      * Unregister.
      *
      * @param string $procedureName
@@ -221,13 +206,33 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
 
-        //$this->on($procedureName, $callback);
-
         $futureResult = new Deferred();
+
+        $this->calls[$procedureName] = $futureResult;
 
         return $futureResult->promise();
 
     }
+
+
+    /**
+     * Process ResultMessage
+     *
+     * @param string    $procedureName
+     * @param \stdClass $result
+     */
+    public function respondToCall($procedureName, $result)
+    {
+        if (!isset($this->calls[$procedureName])) {
+            throw new \RuntimeException("No call to topic '$procedureName' initiated.");
+        }
+
+        /* @var $futureResult Deferred */
+        $futureResult = $this->calls[$procedureName];
+
+        $futureResult->resolve($result);
+    }
+
 
     /**
      * @param int $sessionId

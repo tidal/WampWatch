@@ -90,6 +90,30 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+
+    public function test_subscription_can_be_published_to()
+    {
+
+        $result = null;
+
+        $this->session->subscribe(
+            'foo',
+            function ($res) use (&$result) {
+                $result = $res;
+            }
+        );
+
+        $this->session->emit('foo', ['bar']);
+
+        $this->assertEquals('bar', $result);
+
+    }
+
+
+
+    /**
+     *
+     */
     public function test_publish_returns_promise()
     {
         $this->assertPromise(
@@ -280,6 +304,45 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
             )
         );
     }
+
+    /**
+     *
+     */
+    public function test_call_can_be_responded_to()
+    {
+        $response = null;
+
+        $this->session->call('foo')->then(function ($res) use (&$response) {
+            $response = $res;
+        });
+
+        $this->session->respondToCall('foo', 'bar');
+
+        $this->assertSame('bar', $response);
+    }
+
+
+    /**
+     *
+     */
+    function test_respond_to_callthrows_exception_on_unknown_call()
+    {
+        try {
+            $this->session->respondToCall(
+                'foo',
+                321
+            );
+
+            $this->fail('A RuntimeException should have been thrown');
+        } catch (\RuntimeException $e) {
+
+        }
+
+    }
+
+
+
+
 
     /**
      *
