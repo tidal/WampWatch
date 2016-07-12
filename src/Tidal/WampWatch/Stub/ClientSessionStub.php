@@ -26,6 +26,9 @@ use Tidal\WampWatch\ClientSessionInterface;
  *
  * !!! WARNING !!!!
  * This Class should only be used for testing or demos.
+ * It allows for testing client method calls but behaves differently to
+ * real client session implementation in that it only stores one (the last)
+ * subscription, registration etc. for a specific topic/procedure.
  *
  */
 class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
@@ -44,6 +47,8 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     protected $unregistrations = [];
 
     protected $calls = [];
+
+    protected $procedures = [];
 
 
 
@@ -67,10 +72,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
+     * Trigger a SUBSCRIBED message for given topic.
+     *
      * @param $topicName
      * @param $requestId
      * @param $sessionId
-     * @throws \RuntimeException
+     * @throws \RuntimeException if the topic is unknown.
      */
     public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
     {
@@ -106,9 +113,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
+     * Trigger a PUBLISHED message for given topic.
+     *
      * @param string $topicName
      * @param int    $requestId
      * @param int    $publicationId
+     * @throws \RuntimeException if the topic is unknown.
      */
     public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
     {
@@ -134,7 +144,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     public function register($procedureName, callable $callback, $options = null)
     {
 
-        $this->on($procedureName, $callback);
+        $this->procedures[$procedureName] = $callback;
 
         $futureResult = new Deferred();
 
@@ -146,20 +156,42 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
-     * @param string $topicName
+     * Trigger a REGISTERED message for given procedure.
+     *
+     * @param string $procedureName
      * @param int    $requestId
      * @param int    $registrationId
+     * @throws \RuntimeException if the procedure is unknown.
      */
-    public function confirmRegistration($topicName, $requestId = 1, $registrationId = 1)
+    public function confirmRegistration($procedureName, $requestId = 1, $registrationId = 1)
     {
-        if (!isset($this->registrations[$topicName])) {
-            throw new \RuntimeException("No registration to topic '$topicName' initiated.");
+        if (!isset($this->registrations[$procedureName])) {
+            throw new \RuntimeException("No registration to procedure '$procedureName' initiated.");
         }
 
-        $futureResult = $this->registrations[$topicName];
+        $futureResult = $this->registrations[$procedureName];
         $result = new RegisteredMessage($requestId, $registrationId);
 
         $futureResult->resolve($result);
+    }
+
+    /**
+     * Triggers a call to a registered procedure and returns its result.
+     *
+     * @param string $procedureName
+     * @param array  $args
+     * @return mixed    the procedure result
+     * @throws \RuntimeException if the procedure is unknown.
+     */
+    public function callRegistration($procedureName, array $args = [])
+    {
+        if (!isset($this->procedures[$procedureName])) {
+            throw new \RuntimeException("No registration for procedure '$procedureName'.");
+        }
+
+        $procedure = $this->procedures[$procedureName];
+
+        return $procedure($args);
     }
 
 
@@ -182,13 +214,19 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     }
 
-    public function confirmUnregistration($topicName, $requestId = 1)
+    /**
+     * Triggers a UNREGISTERED message for given procedure.
+     *
+     * @param string $procedureName
+     * @param int    $requestId
+     */
+    public function confirmUnregistration($procedureName, $requestId = 1)
     {
-        if (!isset($this->unregistrations[$topicName])) {
-            throw new \RuntimeException("No registration to topic '$topicName' initiated.");
+        if (!isset($this->unregistrations[$procedureName])) {
+            throw new \RuntimeException("No registration to procedure '$procedureName' initiated.");
         }
 
-        $futureResult = $this->unregistrations[$topicName];
+        $futureResult = $this->unregistrations[$procedureName];
         $result = new UnregisteredMessage($requestId);
 
         $futureResult->resolve($result);
