@@ -271,6 +271,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    public function hasCall($procedureName)
+    {
+        return isset($this->calls[$procedureName]);
+    }
+
+
     /**
      * @param int $sessionId
      */

@@ -114,6 +114,8 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
      */
     public function test_has_subscription()
     {
+        $this->assertFalse($this->session->hasSubscription('foo'));
+
         $this->session->subscribe(
             'foo',
             $this->getEmptyFunc()
@@ -266,8 +268,6 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     }
 
 
-
-
     /**
      *
      */
@@ -355,6 +355,15 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         $this->assertSame('bar', $response);
     }
 
+    public function test_has_call()
+    {
+        $this->assertFalse($this->session->hasCall('foo'));
+
+        $this->session->call('foo');
+
+        $this->assertTrue($this->session->hasCall('foo'));
+    }
+
 
     /**
      *
@@ -373,9 +382,6 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         }
 
     }
-
-
-
 
 
     /**
