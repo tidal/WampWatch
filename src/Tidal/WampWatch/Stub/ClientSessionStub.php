@@ -2,13 +2,6 @@
 namespace Tidal\WampWatch\Stub;
 
 
-/*
- * Copyright 2016 Timo Michna.
- *
- * For the full copyright and license information, please view the LICENSE file
- * that was distributed with this source code.
- */
-
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\PublishedMessage;
 use Thruway\Message\RegisteredMessage;
@@ -20,7 +13,6 @@ use React\Promise\Deferred;
 use Tidal\WampWatch\ClientSessionInterface;
 
 /**
- * Class ClientSessionStub
  *
  * @package Tidal\WampWatch\Stub
  *
@@ -30,6 +22,10 @@ use Tidal\WampWatch\ClientSessionInterface;
  * real client session implementation in that it only stores one (the last)
  * subscription, registration etc. for a specific topic/procedure.
  *
+ */
+
+/**
+ * Class ClientSessionStub
  */
 class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 {
