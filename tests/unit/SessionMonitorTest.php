@@ -32,6 +32,8 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(true, $res);
     }
 
+    // SUBSCRIPTION AND CALL TESTS
+
     public function test_start_subscribes_to_join_topic()
     {
 
@@ -69,6 +71,9 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         );
 
     }
+
+
+    // SESSION IDS RETRIEVAL TESTS
 
     public function test_start_retrieves_sessionid_list()
     {
@@ -136,7 +141,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     }
 
-
     public function test_get_sessionids_removes_monitors_sessionid()
     {
 
@@ -152,6 +156,29 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
 
         $this->assertNotContains(321, $sessionIds);
+    }
+
+    public function test_second_get_sessionids_retrieves_ids_locally()
+    {
+
+        $stub = new ClientSessionStub();
+        $stub->setSessionId(321);
+        $monitor = new SessionMonitor($stub);
+        $firstResult = null;
+        $secondResult = null;
+
+        $monitor->getSessionIds(function (array $ids) use (&$firstResult) {
+            $firstResult = $ids;
+        });
+
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+
+        $monitor->getSessionIds(function (array $ids) use (&$secondResult) {
+            $secondResult = $ids;
+        });
+
+        $this->assertSame($firstResult, $secondResult);
+
     }
     
     
