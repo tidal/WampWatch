@@ -31,7 +31,11 @@ class NoSuchProcedureException extends \OutOfBoundsException
     {
         $this->setprocedureName($procedureName);
 
-        parent::__construct("unknown procedure '$procedureName'");
+        parent::__construct(sprintf(
+            "Server seems to not support meta procedure '%s'. Response was: '%s'",
+            $procedureName,
+            self::ERROR_RESPONSE
+        ));
     }
 
     /**
