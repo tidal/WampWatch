@@ -122,10 +122,10 @@ class SubscriptionMonitor implements MonitorInterface
             },
             function () {
                 $this->emit('sub', [$sessionId, $subId, [
-                    'id'      => $subId,
+                    'id' => $subId,
                     'created' => null,
-                    'uri'     => null,
-                    'match'   => null,
+                    'uri' => null,
+                    'match' => null,
                 ]]);
             }
         );
