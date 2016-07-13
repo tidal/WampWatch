@@ -154,7 +154,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $this->registrations[$procedureName] = $futureResult;
 
-
         return $futureResult->promise();
     }
 
@@ -212,7 +211,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = new Deferred();
 
         $this->unregistrations[$procedureName] = $futureResult;
-
 
         return $futureResult->promise();
     }
