@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+./vendor/bin/phpunit --coverage-clover=./report/coverage/coverage.clover
+
+

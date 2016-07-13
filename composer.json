@@ -32,5 +32,12 @@
         "psr-0": {
             "Tidal\\WampWatch": "src/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-cover": "bin/test_coverage",
+        "test-cover-html": "bin/test_coverage_html",
+        "cs": "bin/php_cs_fixer",
+        "cs-dry": "bin/php_cs_fixer_dry"
     }
 }
