@@ -31,7 +31,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     const SESSION_LIST_TOPIC = 'wamp.session.list';
     const SESSION_INFO_TOPIC = 'wamp.session.get';
 
-
     protected $sessionIds = [];
 
     /**
