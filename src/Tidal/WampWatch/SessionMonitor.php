@@ -116,27 +116,88 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     }
 
     /**
+     * Checks if a session id is known.
+     *
+     * @param $sessionId
+     *
+     * @return bool
+     */
+    public function hasSessionId($sessionId)
+    {
+        return array_search($sessionId, $this->sessionIds) !== false;
+    }
+
+    /**
+     * Removes a session id.
+     *
+     * @param int $sessionId
+     */
+    protected function removeSessionId($sessionId)
+    {
+        if (!$this->hasSessionId($sessionId)) {
+            return;
+        }
+        $key = array_search($sessionId, $this->sessionIds);
+        unset($this->sessionIds[$key]);
+        $this->emit('leave', [$sessionId]);
+    }
+
+    /**
+     * Checks if a session is known by extracting its id.
+     *
+     * @param $sessionInfo
+     *
+     * @return bool
+     */
+    protected function hasSession($sessionInfo)
+    {
+        return $this->hasSessionId($sessionInfo->session);
+    }
+
+    /**
+     * Adds and publishes a joined session.
+     *
+     * @param $sessionInfo
+     */
+    protected function addSession($sessionInfo)
+    {
+        $this->sessionIds[] = $sessionInfo->session;
+        $this->emit('join', [$sessionInfo]);
+    }
+
+    /**
+     * Validates the sessionInfo sent from the router.
+     *
+     * @param string $sessionInfo
+     *
+     * @return bool
+     */
+    protected function validateSessionInfo($sessionInfo)
+    {
+        return is_object($sessionInfo) && property_exists($sessionInfo, 'session');
+    }
+
+    /**
      * Initializes the subscription to the meta-events.
      */
     protected function startSubscriptions()
     {
-        $this->session->subscribe(self::SESSION_JOIN_TOPIC, function ($res) {
+        // subscription to 'wamp.session.on_join'
+        $this->session->subscribe(self::SESSION_JOIN_TOPIC, function (array $res) {
             $sessionInfo = $res[0];
-            $sessionId = $sessionInfo->session;
-            if ((array_search($sessionId, $this->sessionIds)) === false) {
-                $this->sessionIds[] = $sessionId;
-                $this->emit('join', [$sessionInfo]);
+            if (!$this->validateSessionInfo($sessionInfo) || $this->hasSession($sessionInfo)) {
+                return;
             }
+
+            $this->addSession($sessionInfo);
         });
-        $this->session->subscribe(self::SESSION_LEAVE_TOPIC, function ($res) {
+        // subscription to 'wamp.session.on_leave'
+        $this->session->subscribe(self::SESSION_LEAVE_TOPIC, function (array $res) {
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
             // will provide sessionID when Browser closes/reloads,
             // but not when calling connection.close();
-            $sessionId = $res[0];
-            if (($key = array_search($sessionId, $this->sessionIds)) !== false) {
-                unset($this->sessionIds[$key]);
-                $this->emit('leave', [$sessionId]);
-            }
+            $sessionId = (int)$res[0];
+            $this->removeSessionId($sessionId);
         });
     }
 
