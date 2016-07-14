@@ -11,9 +11,9 @@
 namespace Tidal\WampWatch;
 
 use React\Promise\Deferred;
-use Thruway\ClientSession;
+use Thruway\Message\UnsubscribeMessage;
 use Thruway\Common\Utils;
-use Thruway\Message\UnsubscribedMessage;
+use Tidal\WampWatch\ClientSessionInterface;
 
 /**
  * Utility Class for the WampWatch package.
@@ -22,11 +22,11 @@ use Thruway\Message\UnsubscribedMessage;
  */
 class Util
 {
-    public static function unsubscribe(ClientSession $session)
+    public static function unsubscribe(ClientSessionInterface $session, $subscriptionId)
     {
         $requestId = Utils::getUniqueId();
         $deferred = new Deferred();
-        $unsubscribeMsg = new UnsubscribedMessage($requestId);
+        $unsubscribeMsg = new UnsubscribeMessage($requestId, $subscriptionId);
         $session->sendMessage($unsubscribeMsg);
 
         return $deferred->promise();

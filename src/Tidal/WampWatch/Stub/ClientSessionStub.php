@@ -306,4 +306,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         return abs(($high << 32 | $low) & $filter);
     }
+
+    public function sendMessage($msg)
+    {
+
+    }
 }

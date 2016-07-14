@@ -33,6 +33,12 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
     protected $sessionIds = [];
 
+    protected $joinSubscriptionId = false;
+
+    protected $leaveSubscriptionId = false;
+
+    protected $calledList = false;
+
     /**
      * Constructor.
      *
@@ -50,13 +56,24 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     public function start()
     {
-        $this->once('list', function () {
-            $this->doStart();
-        });
         $this->startSubscriptions();
         $this->retrieveSessionIds();
 
         return true;
+    }
+
+    /**
+     * Checks if all necessary subscriptions and calls have been responded to.
+     */
+    protected function checkStarted()
+    {
+        if ($this->joinSubscriptionId > 0 &&
+            $this->leaveSubscriptionId > 0 &&
+            $this->calledList &&
+            !$this->isRunning()
+        ) {
+            $this->doStart();
+        }
     }
 
     /**
@@ -82,12 +99,14 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      *
      * @return mixed
      */
-    public function getSessionInfo($sessionId, callable $callback)
+    public function getSessionInfo($sessionId, callable $callback = null)
     {
         return $this->session->call(self::SESSION_INFO_TOPIC, [$sessionId])->then(
             function ($res) use ($callback) {
                 $this->emit('info', [$res[0]]);
-                $callback($res[0]);
+                if ($callback !== null) {
+                    $callback($res[0]);
+                }
             },
             function ($error) {
                 $this->emit('error', [$error]);
@@ -139,6 +158,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         }
         $key = array_search($sessionId, $this->sessionIds);
         unset($this->sessionIds[$key]);
+        $this->sessionIds = array_values($this->sessionIds);
         $this->emit('leave', [$sessionId]);
     }
 
@@ -188,9 +208,13 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             if (!$this->validateSessionInfo($sessionInfo) || $this->hasSession($sessionInfo)) {
                 return;
             }
-
             $this->addSession($sessionInfo);
+
+        })->then(function ($msg) {
+            $this->joinSubscriptionId = $msg->getSubscriptionId();
+            $this->checkStarted();
         });
+
         // subscription to 'wamp.session.on_leave'
         $this->session->subscribe(self::SESSION_LEAVE_TOPIC, function (array $res) {
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
@@ -198,6 +222,10 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             // but not when calling connection.close();
             $sessionId = (int)$res[0];
             $this->removeSessionId($sessionId);
+
+        })->then(function ($msg) {
+            $this->leaveSubscriptionId = $msg->getSubscriptionId();
+            $this->checkStarted();
         });
     }
 
@@ -206,8 +234,12 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     protected function stopSubscriptions()
     {
-        Util::unsubscribe($this->session, self::SESSION_JOIN_TOPIC);
-        Util::unsubscribe($this->session, self::SESSION_LEAVE_TOPIC);
+        if ($this->joinSubscriptionId > 0) {
+            Util::unsubscribe($this->session, $this->joinSubscriptionId);
+        }
+        if ($this->leaveSubscriptionId > 0) {
+            Util::unsubscribe($this->session, $this->leaveSubscriptionId);
+        }
     }
 
     /**
@@ -226,6 +258,8 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
                 if ($callback !== null) {
                     $callback($this->sessionIds);
                 }
+                $this->calledList = true;
+                $this->checkStarted();
             },
             function ($error) {
                 $this->emit('error', [$error]);
@@ -255,6 +289,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         $key = array_search($this->session->getSessionId(), $sessionsIds);
         if ($key >= 0) {
             unset($sessionsIds[$key]);
+            $sessionsIds = array_values($sessionsIds);
         }
 
         return $sessionsIds;
