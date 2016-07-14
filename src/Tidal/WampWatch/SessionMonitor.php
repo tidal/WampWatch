@@ -209,7 +209,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
                 return;
             }
             $this->addSession($sessionInfo);
-
         })->then(function ($msg) {
             $this->joinSubscriptionId = $msg->getSubscriptionId();
             $this->checkStarted();
@@ -220,9 +219,8 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
             // will provide sessionID when Browser closes/reloads,
             // but not when calling connection.close();
-            $sessionId = (int)$res[0];
+            $sessionId = (int) $res[0];
             $this->removeSessionId($sessionId);
-
         })->then(function ($msg) {
             $this->leaveSubscriptionId = $msg->getSubscriptionId();
             $this->checkStarted();
