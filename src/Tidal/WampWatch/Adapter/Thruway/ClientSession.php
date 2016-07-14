@@ -110,4 +110,9 @@ class ClientSession implements ClientSessionInterface
     {
         return $this->thruwaySession->getSessionId();
     }
+
+    public function sendMessage($msg)
+    {
+        $this->thruwaySession->sendMessage($msg);
+    }
 }

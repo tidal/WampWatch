@@ -68,4 +68,6 @@ interface ClientSessionInterface
      * @return int the Session Id
      */
     public function getSessionId();
+
+    public function sendMessage($msg);
 }
