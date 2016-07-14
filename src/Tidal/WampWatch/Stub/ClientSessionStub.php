@@ -309,6 +309,5 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     public function sendMessage($msg)
     {
-
     }
 }

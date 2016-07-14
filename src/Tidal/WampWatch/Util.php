@@ -13,7 +13,6 @@ namespace Tidal\WampWatch;
 use React\Promise\Deferred;
 use Thruway\Message\UnsubscribeMessage;
 use Thruway\Common\Utils;
-use Tidal\WampWatch\ClientSessionInterface;
 
 /**
  * Utility Class for the WampWatch package.

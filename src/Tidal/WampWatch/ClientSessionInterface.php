@@ -70,5 +70,4 @@ interface ClientSessionInterface
     public function getSessionId();
 
     public function sendMessage($msg);
-    
 }
