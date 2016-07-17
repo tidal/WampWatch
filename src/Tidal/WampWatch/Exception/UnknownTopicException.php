@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Tidal\WampWatch\Exception;
 
 class UnknownTopicException extends \OutOfBoundsException

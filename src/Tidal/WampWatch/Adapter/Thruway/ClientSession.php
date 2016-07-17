@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Tidal\WampWatch\Adapter\Thruway;
 
 use Thruway\ClientSession as ThruwaySession;
