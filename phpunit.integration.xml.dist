@@ -11,7 +11,7 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="WampWatch Unit Test Suite">
+        <testsuite name="WampWatch Integration Test Suite">
             <directory>./tests/integration</directory>
         </testsuite>
     </testsuites>
