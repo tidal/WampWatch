@@ -97,9 +97,11 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
             $sessionMonitor = new SessionMonitor(new Adapter($session));
 
-            $sessionMonitor->on('join', function (\stdClass $id) {
+            $sessionMonitor->on('join', function (\stdClass $info) use ($sessionMonitor) {
 
-                $this->monitoredSessionId = $id->session;
+                $this->monitoredSessionId = $info->session;
+                $sessionMonitor->stop();
+                $this->connection->close();
 
             });
 
@@ -114,8 +116,6 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
                 });
                 $clientConnection->open();
 
-                $sessionMonitor->stop();
-                $this->connection->close();
             });
 
             $sessionMonitor->start();
@@ -140,13 +140,15 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
             $sessionMonitor = new SessionMonitor(new Adapter($session));
 
-            $sessionMonitor->on('leave', function ($id) {
+            $sessionMonitor->on('leave', function ($id) use ($sessionMonitor) {
 
                 $this->monitoredSessionId = $id;
+                $sessionMonitor->stop();
+                $this->connection->close();
 
             });
 
-            $sessionMonitor->on('start', function () use ($sessionMonitor) {
+            $sessionMonitor->on('start', function () {
 
                 // create a client session
                 $clientConnection = $this->createConnection();
@@ -157,8 +159,7 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
                 });
                 $clientConnection->open();
 
-                $sessionMonitor->stop();
-                $this->connection->close();
+
             });
 
             $sessionMonitor->start();
