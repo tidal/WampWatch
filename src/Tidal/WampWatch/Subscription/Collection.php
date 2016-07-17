@@ -17,7 +17,6 @@ use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Util;
 
-
 class Collection
 {
     /**
@@ -47,12 +46,10 @@ class Collection
      */
     private $isSubscribing = false;
 
-
     /**
      * @var Deferred
      */
     private $subscriptionPromise;
-
 
     /**
      * Collection constructor.
@@ -83,7 +80,6 @@ class Collection
     public function subscribe()
     {
         if (!$this->isSubscribed() && !$this->isSubscribing()) {
-
             $this->isSubscribing = true;
             $this->subscriptionPromise = new Deferred();
             $this->doSubscribe();
@@ -114,7 +110,6 @@ class Collection
      */
     public function unsubscribe()
     {
-
         $resolver = function (callable $resolve) {
             $resolve();
         };
@@ -147,7 +142,6 @@ class Collection
         return $this->isSubscribing;
     }
 
-
     /**
      * Check if all subscriptions have been successfully confirmed.
      */
@@ -155,7 +149,6 @@ class Collection
     {
         foreach ($this->subscriptions as $topic => $subId) {
             if ($subId === 0) {
-
                 return false;
             }
         }
@@ -165,5 +158,4 @@ class Collection
 
         return true;
     }
-
 }
