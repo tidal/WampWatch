@@ -4,16 +4,25 @@ php:
   - 7
   - hhvm 
 
+sudo: required
+
+services:
+  - docker
+
 matrix:
     allow_failures:
         - php: hhvm
+
+before_install:
+  - sudo docker run -it -d -p 8080:8080 crossbario/crossbar
 
 before_script:
   - composer selfupdate
   - composer install --no-interaction
 
 script:
-  - ./vendor/bin/phpunit --coverage-clover=coverage.clover 
+  - ./vendor/bin/phpunit --coverage-clover=coverage.clover
+  - ./vendor/bin/phpunit --configuration ./phpunit.integration.xml.dist
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   - php vendor/bin/codacycoverage clover coverage.clover
