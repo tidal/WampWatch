@@ -1,6 +1,5 @@
 /vendor
 composer.phar
-composer.lock
 /phpunit.phar
 /coverage
 /spec
