@@ -6,9 +6,7 @@
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
- *
  */
-
 
 namespace Tidal\WampWatch;
 
@@ -34,12 +32,24 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     const SESSION_LIST_TOPIC = 'wamp.session.list';
     const SESSION_INFO_TOPIC = 'wamp.session.get';
 
+    /**
+     * @var array monitored session ids
+     */
     protected $sessionIds = [];
 
-    protected $joinSubscriptionId = false;
+    /**
+     * @var int subscription id for on_join
+     */
+    protected $joinSubscriptionId = 0;
 
-    protected $leaveSubscriptionId = false;
+    /**
+     * @var int subscription id for on_leave
+     */
+    protected $leaveSubscriptionId = 0;
 
+    /**
+     * @var bool flag if list call has returned
+     */
     protected $calledList = false;
 
     /**
