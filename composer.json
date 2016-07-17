@@ -20,12 +20,6 @@
         "mockery/mockery": "0.9.*",
         "friendsofphp/php-cs-fixer": "*",
         "squizlabs/php_codesniffer": "2.*",
-        "phpspec/phpspec": "@dev",
-        "coduo/phpspec-data-provider-extension": "@dev",
-        "henrikbjorn/phpspec-code-coverage": "@dev",
-        "memio/spec-gen": "0.4.1",
-        "ciaranmcnulty/phpspec-typehintedmethods": "~1.1",
-        "phpspec/prophecy": "^1.6",
         "codacy/coverage": "dev-master"
     },
     "autoload": {

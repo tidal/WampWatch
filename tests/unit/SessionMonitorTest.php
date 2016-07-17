@@ -4,7 +4,6 @@ require_once __DIR__.'/../bootstrap.php';
 
 
 use Mockery as M;
-use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Tidal\WampWatch\SessionMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 
