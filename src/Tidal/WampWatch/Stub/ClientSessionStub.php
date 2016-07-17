@@ -6,7 +6,9 @@
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
+ *
  */
+
 
 namespace Tidal\WampWatch\Stub;
 
@@ -77,7 +79,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param $requestId
      * @param $sessionId
      *
-     * @throws UnknownTopicException if the topic is unknown.
+     * @throws UnknownTopicException if the topic is unknown
      */
     public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
     {
@@ -123,7 +125,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param int    $requestId
      * @param int    $publicationId
      *
-     * @throws UnknownTopicException if the topic is unknown.
+     * @throws UnknownTopicException if the topic is unknown
      */
     public function confirmPublication($topicName, $requestId = 1, $publicationId = 1)
     {
@@ -164,7 +166,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param int    $requestId
      * @param int    $registrationId
      *
-     * @throws UnknownProcedureException if the procedure is unknown.
+     * @throws UnknownProcedureException if the procedure is unknown
      */
     public function confirmRegistration($procedureName, $requestId = 1, $registrationId = 1)
     {
@@ -184,7 +186,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param string $procedureName
      * @param array  $args
      *
-     * @throws UnknownProcedureException if the procedure is unknown.
+     * @throws UnknownProcedureException if the procedure is unknown
      *
      * @return mixed the procedure result
      */
