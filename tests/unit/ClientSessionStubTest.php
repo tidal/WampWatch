@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../bootstrap.php';
 
 
-use Thruway\Message\SubscribedMessage;
-
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
