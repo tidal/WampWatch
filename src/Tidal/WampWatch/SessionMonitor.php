@@ -12,6 +12,7 @@ namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
+use Thruway\Message\SubscribedMessage;
 
 /**
  * Description of SessionMonitor.
@@ -209,7 +210,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
                 return;
             }
             $this->addSession($sessionInfo);
-        })->then(function ($msg) {
+        })->then(function (SubscribedMessage $msg) {
             $this->joinSubscriptionId = $msg->getSubscriptionId();
             $this->checkStarted();
         });
@@ -221,7 +222,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             // but not when calling connection.close();
             $sessionId = (int) $res[0];
             $this->removeSessionId($sessionId);
-        })->then(function ($msg) {
+        })->then(function (SubscribedMessage $msg) {
             $this->leaveSubscriptionId = $msg->getSubscriptionId();
             $this->checkStarted();
         });
