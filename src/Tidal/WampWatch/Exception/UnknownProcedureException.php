@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Tidal\WampWatch\Exception;
 
 class UnknownProcedureException extends \OutOfBoundsException

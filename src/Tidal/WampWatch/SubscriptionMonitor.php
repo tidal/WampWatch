@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Phaim\Server\Wamp\Monitor;
 
 use Phaim\Server\Wamp\Util;
