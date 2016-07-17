@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Tidal\WampWatch;
 
 use React\Promise\Deferred;
