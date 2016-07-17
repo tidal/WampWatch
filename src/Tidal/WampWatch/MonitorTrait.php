@@ -31,7 +31,7 @@ trait MonitorTrait
     protected $session;
 
     /**
-     * Wether the monitor is running.
+     * if the monitor is running.
      *
      * @var bool
      */
@@ -60,7 +60,7 @@ trait MonitorTrait
 
     /**
      * Stop the monitor.
-     * Returns boolean wether the monitor could be started.
+     * Returns boolean if the monitor could be started.
      *
      * @return bool
      */
