@@ -18,7 +18,7 @@ $loop = React\EventLoop\Factory::create();
 $connection = new Connection(
     [
         'realm' => 'realm1',
-        'url'   => 'ws://127.0.0.1:9999/ws',
+        'url'   => 'ws://127.0.0.1:8080/ws',
     ],
     $loop
 );

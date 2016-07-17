@@ -36,7 +36,7 @@
           "type": "web",
           "endpoint": {
             "type": "tcp",
-            "port": 9999
+            "port": 8080
           },
           "paths": {
             "/": {
