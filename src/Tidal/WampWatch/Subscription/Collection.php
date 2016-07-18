@@ -96,7 +96,6 @@ class Collection
         foreach (array_keys($this->subscriptions) as $topic) {
             $this->session->subscribe($topic, $this->subscriptionCallbacks[$topic])
                 ->done(function (SubscribedMessage $msg) use ($topic) {
-
                     $this->subscriptions[$topic] = $msg->getSubscriptionId();
                     $this->subscriptionPromise->notify($topic);
 
