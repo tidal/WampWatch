@@ -76,11 +76,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param $topicName
      * @param $requestId
-     * @param $sessionId
+     * @param $subscriptionId
      *
      * @throws UnknownTopicException if the topic is unknown
      */
-    public function completeSubscription($topicName, $requestId = 1, $sessionId = 1)
+    public function completeSubscription($topicName, $requestId = 1, $subscriptionId = 1)
     {
         if (!isset($this->subscriptions[$topicName])) {
             throw new UnknownTopicException($topicName);
@@ -88,7 +88,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         /* @var $futureResult Deferred */
         $futureResult = $this->subscriptions[$topicName];
-        $result = new SubscribedMessage($requestId, $sessionId);
+        $result = new SubscribedMessage($requestId, $subscriptionId);
 
         $futureResult->resolve($result);
     }

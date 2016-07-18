@@ -13,7 +13,6 @@ namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
-use Thruway\Message\SubscribedMessage;
 
 /**
  * Description of SessionMonitor.
@@ -24,7 +23,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 {
     use MonitorTrait {
         start as doStart;
-        stop as doStop;
     }
 
     const SESSION_JOIN_TOPIC = 'wamp.session.on_join';
@@ -70,7 +68,10 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     public function start()
     {
-        $this->startSubscriptions();
+        $this->initSetupCalls();
+        $this->getSubscriptionCollection()->subscribe()->done(function () {
+            $this->checkStarted();
+        });
         $this->retrieveSessionIds();
 
         return true;
@@ -81,27 +82,12 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     protected function checkStarted()
     {
-        if ($this->joinSubscriptionId > 0 &&
-            $this->leaveSubscriptionId > 0 &&
+        if ($this->getSubscriptionCollection()->isSubscribed() &&
             $this->calledList &&
             !$this->isRunning()
         ) {
             $this->doStart();
         }
-    }
-
-    /**
-     * Stop the monitor.
-     * Returns boolean wether the monitor could be started.
-     *
-     * @return bool
-     */
-    public function stop()
-    {
-        $this->stopSubscriptions();
-        $this->doStop();
-
-        return true;
     }
 
     /**
@@ -214,44 +200,28 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Initializes the subscription to the meta-events.
      */
-    protected function startSubscriptions()
+    protected function initSetupCalls()
     {
-        // subscription to 'wamp.session.on_join'
-        $this->session->subscribe(self::SESSION_JOIN_TOPIC, function (array $res) {
+        // @var \Tidal\WampWatch\Subscription\Collection
+        $collection = $this->getSubscriptionCollection();
+
+        $collection->addSubscription(self::SESSION_JOIN_TOPIC, function (array $res) {
             $sessionInfo = $res[0];
             if (!$this->validateSessionInfo($sessionInfo) || $this->hasSession($sessionInfo)) {
                 return;
             }
             $this->addSession($sessionInfo);
-        })->then(function (SubscribedMessage $msg) {
-            $this->joinSubscriptionId = $msg->getSubscriptionId();
-            $this->checkStarted();
         });
 
-        // subscription to 'wamp.session.on_leave'
-        $this->session->subscribe(self::SESSION_LEAVE_TOPIC, function (array $res) {
+        $collection->addSubscription(self::SESSION_LEAVE_TOPIC, function (array $res) {
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
             // will provide sessionID when Browser closes/reloads,
             // but not when calling connection.close();
             $sessionId = (int) $res[0];
             $this->removeSessionId($sessionId);
-        })->then(function (SubscribedMessage $msg) {
-            $this->leaveSubscriptionId = $msg->getSubscriptionId();
-            $this->checkStarted();
         });
-    }
 
-    /**
-     * Unsubscribes from the meta-events.
-     */
-    protected function stopSubscriptions()
-    {
-        if ($this->joinSubscriptionId > 0) {
-            Util::unsubscribe($this->session, $this->joinSubscriptionId);
-        }
-        if ($this->leaveSubscriptionId > 0) {
-            Util::unsubscribe($this->session, $this->leaveSubscriptionId);
-        }
+        $this->setInitialCall(self::SESSION_LIST_TOPIC, $this->getSessionIdRetrievalCallback());
     }
 
     /**
@@ -261,22 +231,28 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     protected function retrieveSessionIds(callable $callback = null)
     {
-        $this->session->call(self::SESSION_LIST_TOPIC, [])->then(
-            function ($res) use ($callback) {
-                // remove our own sessionID from the tracked sessions
-                $sessionIds = $this->removeOwnSessionId($res[0]);
-                $this->setList($sessionIds);
-                $this->emit('list', [$this->getList()]);
+        $this->session->call(self::SESSION_LIST_TOPIC, [])
+            ->then(
+                $this->getSessionIdRetrievalCallback()
+            )->done(function ($res) use ($callback) {
                 if ($callback !== null) {
-                    $callback($this->sessionIds);
+                    $callback($res);
                 }
-                $this->calledList = true;
-                $this->checkStarted();
-            },
-            function ($error) {
-                $this->emit('error', [$error]);
-            }
-        );
+            });
+    }
+
+    protected function getSessionIdRetrievalCallback()
+    {
+        return function ($res) {
+            // remove our own sessionID from the tracked sessions
+            $sessionIds = $this->removeOwnSessionId($res[0]);
+            $this->setList($sessionIds);
+            $this->emit('list', [$this->getList()]);
+            $this->calledList = true;
+            $this->checkStarted();
+
+            return $this->getList();
+        };
     }
 
     protected function setList($list)
