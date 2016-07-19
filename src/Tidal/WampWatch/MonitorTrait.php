@@ -74,8 +74,12 @@ trait MonitorTrait
      */
     public function start()
     {
-        $this->isRunning = true;
-        $this->emit('start', [$this->getList()]);
+        $this->getSubscriptionCollection()->subscribe()->done(function () {
+            $this->checkStarted();
+        });
+        $this->callInitialProcedure()->done(function () {
+            $this->checkStarted();
+        });
 
         return true;
     }
@@ -147,6 +151,7 @@ trait MonitorTrait
     protected function callInitialProcedure()
     {
         if (!isset($this->initialCallProcedure) || !isset($this->initialCallCallback)) {
+            $this->initialCallDone = true;
             $resolver = function (callable $resolve) {
                 $resolve();
             };
@@ -154,8 +159,10 @@ trait MonitorTrait
             return new  Promise($resolver);
         }
 
-        return $this->session->call($this->initialCallProcedure)->then(function ($res) {
+        return $this->session->call($this->initialCallProcedure, [])->then(function ($res) {
             $this->initialCallDone = true;
+            $cb = $this->initialCallCallback;
+            $cb($res);
 
             return $res;
         });
@@ -166,11 +173,21 @@ trait MonitorTrait
      */
     protected function checkStarted()
     {
-        if ($this->getSubscriptionCollection()->isSubscribed() &&
+        if ($this->isSubscribed() &&
             $this->initialCallDone &&
             !$this->isRunning()
         ) {
-            $this->doStart();
+            $this->isRunning = true;
+            $this->emit('start', [$this->getList()]);
         }
+    }
+
+    protected function isSubscribed()
+    {
+        if (!$this->getSubscriptionCollection()->hasSubscription()) {
+            return true;
+        }
+
+        return $this->getSubscriptionCollection()->isSubscribed();
     }
 }
