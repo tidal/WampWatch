@@ -19,7 +19,7 @@
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
             <exclude>
-                <directory suffix=".php">./coverage</directory>
+                <directory suffix=".php">./report</directory>
                 <directory suffix=".php">./examples</directory>
                 <directory suffix=".php">./spec</directory>
                 <directory suffix=".php">./tests</directory>
