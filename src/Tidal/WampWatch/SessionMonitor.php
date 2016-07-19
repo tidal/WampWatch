@@ -21,9 +21,7 @@ use Tidal\WampWatch\ClientSessionInterface as ClientSession;
  */
 class SessionMonitor implements MonitorInterface, EventEmitterInterface
 {
-    use MonitorTrait {
-        start as doStart;
-    }
+    use MonitorTrait;
 
     const SESSION_JOIN_TOPIC = 'wamp.session.on_join';
     const SESSION_LEAVE_TOPIC = 'wamp.session.on_leave';
@@ -47,11 +45,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     protected $leaveSubscriptionId = 0;
 
     /**
-     * @var bool flag if list call has returned
-     */
-    protected $calledList = false;
-
-    /**
      * Constructor.
      *
      * @param ClientSession $session
@@ -59,35 +52,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     public function __construct(ClientSession $session)
     {
         $this->setClientSession($session);
-    }
-
-    /**
-     * Start the monitor.
-     *
-     * @return bool
-     */
-    public function start()
-    {
         $this->initSetupCalls();
-        $this->getSubscriptionCollection()->subscribe()->done(function () {
-            $this->checkStarted();
-        });
-        $this->retrieveSessionIds();
-
-        return true;
-    }
-
-    /**
-     * Checks if all necessary subscriptions and calls have been responded to.
-     */
-    protected function checkStarted()
-    {
-        if ($this->getSubscriptionCollection()->isSubscribed() &&
-            $this->calledList &&
-            !$this->isRunning()
-        ) {
-            $this->doStart();
-        }
     }
 
     /**
@@ -248,7 +213,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             $sessionIds = $this->removeOwnSessionId($res[0]);
             $this->setList($sessionIds);
             $this->emit('list', [$this->getList()]);
-            $this->calledList = true;
             $this->checkStarted();
 
             return $this->getList();
