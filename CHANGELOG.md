@@ -1,4 +1,4 @@
-### [0.2.0] - 2016-07-19
+### [0.2.1] - 2016-07-19
 
   * Reworked MonitorTrait to provide a generic interface for initial calls to wamp router
 
