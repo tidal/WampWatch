@@ -72,6 +72,14 @@ class Collection
     }
 
     /**
+     * @return bool
+     */
+    public function hasSubscription()
+    {
+        return count($this->subscriptions) > 0;
+    }
+
+    /**
      * Subscribe to all topics added with 'addSubscription'.
      * Returns false if already subscribed or curretly subscribing.
      *
