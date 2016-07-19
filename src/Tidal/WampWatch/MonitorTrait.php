@@ -146,7 +146,7 @@ trait MonitorTrait
     }
 
     /**
-     * @return \React\Promise\PromiseInterface
+     * @return \React\Promise\Promise
      */
     protected function callInitialProcedure()
     {
