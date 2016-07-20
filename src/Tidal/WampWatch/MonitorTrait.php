@@ -147,9 +147,9 @@ trait MonitorTrait
             : $this->metaSubscriptionCollection = new SubscriptionCollection($this->session);
     }
 
-    protected function setInitialCall($pocedure, callable $callback)
+    protected function setInitialCall($procedure, callable $callback)
     {
-        $this->initialCallProcedure = (string) $pocedure;
+        $this->initialCallProcedure = (string)$procedure;
         $this->initialCallCallback = $callback;
     }
 
