@@ -7,7 +7,9 @@ use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 class MonitorTraitImplementation
 {
-    use MonitorTrait;
+    use MonitorTrait {
+        setInitialCall as doSetInitialCall;
+    }
 
     /**
      * Constructor.
@@ -17,5 +19,10 @@ class MonitorTraitImplementation
     public function __construct(ClientSession $session)
     {
         $this->setClientSession($session);
+    }
+
+    public function setInitialCall($procedure, callable $callback)
+    {
+        $this->doSetInitialCall($procedure, $callback);
     }
 }
