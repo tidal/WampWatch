@@ -168,7 +168,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     protected function initSetupCalls()
     {
         // @var \Tidal\WampWatch\Subscription\Collection
-        $collection = $this->getSubscriptionCollection();
+        $collection = $this->getMetaSubscriptionCollection();
 
         $collection->addSubscription(self::SESSION_JOIN_TOPIC, function (array $res) {
             $sessionInfo = $res[0];

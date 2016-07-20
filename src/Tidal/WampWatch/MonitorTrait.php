@@ -40,9 +40,9 @@ trait MonitorTrait
     protected $isRunning = false;
 
     /**
-     * @var SubscriptionCollection
+     * @var SubscriptionCollection collection for meta subscriptions
      */
-    protected $subscriptionCollection;
+    protected $metaSubscriptionCollection;
 
     /**
      * @var string
@@ -74,7 +74,7 @@ trait MonitorTrait
      */
     public function start()
     {
-        $this->getSubscriptionCollection()->subscribe()->done(function () {
+        $this->getMetaSubscriptionCollection()->subscribe()->done(function () {
             $this->checkStarted();
         });
         $this->callInitialProcedure()->done(function () {
@@ -96,7 +96,7 @@ trait MonitorTrait
             return false;
         }
 
-        $this->getSubscriptionCollection()->unsubscribe();
+        $this->getMetaSubscriptionCollection()->unsubscribe();
 
         $this->isRunning = false;
         $this->emit('stop', [$this]);
@@ -130,13 +130,21 @@ trait MonitorTrait
     }
 
     /**
+     * @param \Tidal\WampWatch\Subscription\Collection $collection
+     */
+    public function setMetaSubscriptionCollection(SubscriptionCollection $collection)
+    {
+        $this->metaSubscriptionCollection = $collection;
+    }
+
+    /**
      * @return \Tidal\WampWatch\Subscription\Collection
      */
-    protected function getSubscriptionCollection()
+    public function getMetaSubscriptionCollection()
     {
-        return isset($this->subscriptionCollection)
-            ? $this->subscriptionCollection
-            : $this->subscriptionCollection = new SubscriptionCollection($this->session);
+        return isset($this->metaSubscriptionCollection)
+            ? $this->metaSubscriptionCollection
+            : $this->metaSubscriptionCollection = new SubscriptionCollection($this->session);
     }
 
     protected function setInitialCall($pocedure, callable $callback)
@@ -173,7 +181,7 @@ trait MonitorTrait
      */
     protected function checkStarted()
     {
-        if ($this->isSubscribed() &&
+        if ($this->isMetaSubscribed() &&
             $this->initialCallDone &&
             !$this->isRunning()
         ) {
@@ -182,12 +190,12 @@ trait MonitorTrait
         }
     }
 
-    protected function isSubscribed()
+    protected function isMetaSubscribed()
     {
-        if (!$this->getSubscriptionCollection()->hasSubscription()) {
+        if (!$this->getMetaSubscriptionCollection()->hasSubscription()) {
             return true;
         }
 
-        return $this->getSubscriptionCollection()->isSubscribed();
+        return $this->getMetaSubscriptionCollection()->isSubscribed();
     }
 }
