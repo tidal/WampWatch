@@ -89,10 +89,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     {
         if (!count($this->sessionIds)) {
 
-            return $this->retrieveSessionIds()->then(function ($res) {
-
-                return $res;
-            });
+            return $this->retrieveSessionIds();
         }
 
         return new Promise(function (callable $resolve) {
