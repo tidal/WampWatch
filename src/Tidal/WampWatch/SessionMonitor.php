@@ -196,7 +196,8 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     {
         return $this->session->call(self::SESSION_LIST_TOPIC, [])
             ->then(
-                $this->getSessionIdRetrievalCallback()
+                $this->getSessionIdRetrievalCallback(),
+                $this->getErrorCallback()
             );
     }
 

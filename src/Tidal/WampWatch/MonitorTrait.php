@@ -173,7 +173,9 @@ trait MonitorTrait
             $cb($res);
 
             return $res;
-        });
+        },
+            $this->getErrorCallback()
+        );
     }
 
     /**
@@ -197,5 +199,14 @@ trait MonitorTrait
         }
 
         return $this->getMetaSubscriptionCollection()->isSubscribed();
+    }
+
+    private function getErrorCallback()
+    {
+        return function ($error) {
+            $this->emit('error', [$error]);
+
+            return $error;
+        };
     }
 }
