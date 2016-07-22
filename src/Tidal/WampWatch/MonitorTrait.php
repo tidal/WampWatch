@@ -147,9 +147,9 @@ trait MonitorTrait
             : $this->metaSubscriptionCollection = new SubscriptionCollection($this->session);
     }
 
-    protected function setInitialCall($pocedure, callable $callback)
+    protected function setInitialCall($procedure, callable $callback)
     {
-        $this->initialCallProcedure = (string) $pocedure;
+        $this->initialCallProcedure = (string) $procedure;
         $this->initialCallCallback = $callback;
     }
 
@@ -173,7 +173,9 @@ trait MonitorTrait
             $cb($res);
 
             return $res;
-        });
+        },
+            $this->getErrorCallback()
+        );
     }
 
     /**
@@ -197,5 +199,14 @@ trait MonitorTrait
         }
 
         return $this->getMetaSubscriptionCollection()->isSubscribed();
+    }
+
+    private function getErrorCallback()
+    {
+        return function ($error) {
+            $this->emit('error', [$error]);
+
+            return $error;
+        };
     }
 }

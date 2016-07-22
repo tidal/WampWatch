@@ -9,9 +9,10 @@
  *
  */
 
-namespace Phaim\Server\Wamp\Monitor;
+namespace Tidal\WampWatch;
 
-use Phaim\Server\Wamp\Util;
+use React\Promise\Promise;
+use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
  * Description of SessionMonitor.
@@ -20,10 +21,7 @@ use Phaim\Server\Wamp\Util;
  */
 class SubscriptionMonitor implements MonitorInterface
 {
-    use MonitorTrait {
-        start as doStart;
-        stop as doStop;
-    }
+    use MonitorTrait;
 
     const SUBSCRIPTION_CREATE_TOPIC = 'wamp.subscription.on_create';
     const SUBSCRIPTION_SUB_TOPIC = 'wamp.subscription.on_subscribe';
@@ -40,135 +38,116 @@ class SubscriptionMonitor implements MonitorInterface
     const LOOKUP_MATCH_PREFIX = 'prefix';
 
     protected $sessionIds = [];
-    protected $subscriptionIds = [];
 
-    public function start()
+    /**
+     * @var \stdClass Objects withs lists of subscriptions (exact, prefix, wildcard)
+     */
+    protected $subscriptionIds = null;
+
+    /**
+     * Constructor.
+     *
+     * @param ClientSession $session
+     */
+    public function __construct(ClientSession $session)
     {
-        $this->once('list', function () {
-            $this->startSubscriptions();
-            $this->doStart();
-        });
-        $this->retrieveSubscriptionIds();
+        $this->setClientSession($session);
+        $this->initSetupCalls();
     }
 
-    public function stop()
+    /**
+     * @param string $topic
+     *
+     * @return Promise
+     */
+    public function getSubscriptionInfo($topic)
     {
-        $this->stopSubscriptions();
-        $this->doStart();
-    }
+        return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, $topic)->then(
+            function ($res) {
+                $this->emit('info', [$res]);
 
-    public function getSessionInfo($sessionId, callable $callback)
-    {
-        return $this->session->call(self::SUBSCRIPTION_INFO_TOPIC, $sessionId)->then(
-            function ($res) use ($callback) {
-                $this->emit('info', $res);
-                $callback($res[0]);
+                return $res;
             },
-            function ($error) {
-                $this->emit('error', [$error]);
-            }
+            $this->getErrorCallback()
         );
     }
 
-    public function getSessionIds(callable $callback)
+    public function getSubscriptionIds()
     {
-        if (!count($this->subscriptionIds)) {
-            $this->retrieveSubscriptionIds($callback);
-
-            return;
+        if (!isset($this->subscriptionIds)) {
+            return $this->retrieveSubscriptionIds();
         }
 
-        $callback($this->subscriptionIds);
-    }
-
-    protected function startSubscriptions()
-    {
-        $this->session->subscribe(self::SUBSCRIPTION_CREATE_TOPIC, function ($res) {
-            return $this->createHandler($res);
-        });
-        $this->session->subscribe(self::SUBSCRIPTION_DELETE_TOPIC, function ($res) {
-            return $this->deleteHandler($res);
-        });
-        $this->session->subscribe(self::SUBSCRIPTION_SUB_TOPIC, function ($res) {
-            return $this->subHandler($res);
+        return new Promise(function (callable $resolve) {
+            $resolve($this->subscriptionIds);
         });
     }
 
-    protected function createHandler($res)
+    /**
+     * Initializes the subscription to the meta-events.
+     */
+    protected function initSetupCalls()
     {
-        $sessionInfo = $res[0];
-        $sessionId = $sessionInfo['session'];
-        if ((array_search($sessionId, $this->subscriptionIds)) === false) {
-            $this->subscriptionIds[] = $sessionId;
-            $this->emit('create', [$sessionInfo]);
-        }
+        // @var \Tidal\WampWatch\Subscription\Collection
+        $collection = $this->getMetaSubscriptionCollection();
+
+        $collection->addSubscription(self::SUBSCRIPTION_CREATE_TOPIC, $this->getCreateHandler());
+        $collection->addSubscription(self::SUBSCRIPTION_DELETE_TOPIC, $this->getSubscriptionHandler('delete'));
+        $collection->addSubscription(self::SUBSCRIPTION_SUB_TOPIC, $this->getSubscriptionHandler('subscribe'));
+        $collection->addSubscription(self::SUBSCRIPTION_UNSUB_TOPIC, $this->getSubscriptionHandler('unsubscribe'));
+
+        $this->setInitialCall(self::SUBSCRIPTION_LIST_TOPIC, $this->getSubscriptionIdRetrievalCallback());
     }
 
-    protected function deleteHandler($res)
+    private function getCreateHandler()
     {
-        $sessionId = $res[0];
-        if (($key = array_search($sessionId, $this->subscriptionIds)) !== false) {
-            unset($this->subscriptionIds[$key]);
-            $this->emit('delete', [$sessionId]);
-        }
+        return function ($res) {
+            $sessionId = $res[0];
+            $subscriptionInfo = $res[1];
+            $this->emit('create', [$sessionId, $subscriptionInfo]);
+        };
     }
 
-    protected function subHandler($res)
+    private function getSubscriptionHandler($event)
     {
-        $sessionId = $res[0];
-        $subId = $res[1];
-        $this->getSubscriptionDetail($subId)->then(
-            function ($res) use ($sessionId, $subId) {
-                $this->emit('sub', [$sessionId, $subId, $res[0]]);
-            },
-            function () {
-                $this->emit('sub', [$sessionId, $subId, [
-                    'id' => $subId,
-                    'created' => null,
-                    'uri' => null,
-                    'match' => null,
-                ]]);
-            }
-        );
+        return function ($res) use ($event) {
+            $sessionId = $res[0];
+            $subscriptionId = $res[1];
+            $this->emit($event, [$sessionId, $subscriptionId]);
+        };
     }
 
-    protected function stopSubscriptions()
+    protected function retrieveSubscriptionIds()
     {
-        Util::unsubscribe($this->session, self::SUBSCRIPTION_JOIN_TOPIC);
-        Util::unsubscribe($this->session, self::SUBSCRIPTION_LEAVE_TOPIC);
+        return $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])
+            ->then(
+                $this->getSubscriptionIdRetrievalCallback(),
+                $this->getErrorCallback()
+            );
     }
 
-    public function getSubscriptionDetail($subId, callable $callback)
+    protected function setList($list)
     {
-        return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, [$subId])->then(
-            function ($res) use ($callback) {
-                $this->emit('info', [$res[0]]);
-                $callback($res[0]);
-            },
-            function ($error) {
-                $this->emit('error', [$error]);
-            }
-        );
-    }
-
-    protected function retrieveSubscriptionIds(callable $callback = null)
-    {
-        return $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])->then(
-            function ($res) use ($callback) {
-                $this->subscriptionIds = $res[0];
-                $this->emit('list', [$this->subscriptionIds]);
-                if ($callback) {
-                    $callback($this->subscriptionIds);
-                }
-            },
-            function ($error) {
-                $this->emit('error', [$error]);
-            }
-        );
+        $this->subscriptionIds = $list;
     }
 
     protected function getList()
     {
         return $this->subscriptionIds;
+    }
+
+    protected function getSubscriptionIdRetrievalCallback()
+    {
+        return function ($res) {
+            $this->setList($res);
+            $this->emit('list', [
+                $this->subscriptionIds->exact,
+                $this->subscriptionIds->prefix,
+                $this->subscriptionIds->wildcard,
+            ]);
+            $this->checkStarted();
+
+            return $res;
+        };
     }
 }
