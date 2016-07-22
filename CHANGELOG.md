@@ -1,3 +1,8 @@
+### [0.4.0] - 2016-07-21
+
+  * Changed SessionMonitor to use promises instead of callbacks
+  * Added SubscriptionMonitor
+
 ### [0.3.0] - 2016-07-20
 
   * Renamed methods dealing with meta subscriptions to be more distinct
