@@ -60,7 +60,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * Retrieves the session-info for given sessionId
      * and populates it in via given callback.
      *
-     * @param          $sessionId
+     * @param   $sessionId
      *
      * @return \React\Promise\Promise;
      */
@@ -81,14 +81,13 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the Ids of the sessions currently
      * registered on the wamp-router in the monitor's realm
-     * and populates the data via given callback,
+     * and populates the data via given callback,.
      *
      * @return Promise
      */
     public function getSessionIds()
     {
         if (!count($this->sessionIds)) {
-
             return $this->retrieveSessionIds();
         }
 

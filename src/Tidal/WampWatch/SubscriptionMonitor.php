@@ -11,7 +11,6 @@
 
 namespace Tidal\WampWatch;
 
-use Evenement\EventEmitterInterface;
 use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
@@ -56,7 +55,6 @@ class SubscriptionMonitor implements MonitorInterface
         $this->initSetupCalls();
     }
 
-
     /**
      * @param string $topic
      *
@@ -77,7 +75,6 @@ class SubscriptionMonitor implements MonitorInterface
     public function getSubscriptionIds()
     {
         if (!isset($this->subscriptionIds)) {
-
             return $this->retrieveSubscriptionIds();
         }
 
@@ -85,7 +82,6 @@ class SubscriptionMonitor implements MonitorInterface
             $resolve($this->subscriptionIds);
         });
     }
-
 
     /**
      * Initializes the subscription to the meta-events.
@@ -102,7 +98,6 @@ class SubscriptionMonitor implements MonitorInterface
 
         $this->setInitialCall(self::SUBSCRIPTION_LIST_TOPIC, $this->getSubscriptionIdRetrievalCallback());
     }
-
 
     private function getCreateHandler()
     {
@@ -148,7 +143,7 @@ class SubscriptionMonitor implements MonitorInterface
             $this->emit('list', [
                 $this->subscriptionIds->exact,
                 $this->subscriptionIds->prefix,
-                $this->subscriptionIds->wildcard
+                $this->subscriptionIds->wildcard,
             ]);
             $this->checkStarted();
 
