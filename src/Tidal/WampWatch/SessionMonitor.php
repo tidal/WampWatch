@@ -12,6 +12,7 @@
 namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
+use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
@@ -60,18 +61,16 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * and populates it in via given callback.
      *
      * @param          $sessionId
-     * @param callable $callback
      *
-     * @return mixed
+     * @return \React\Promise\Promise;
      */
-    public function getSessionInfo($sessionId, callable $callback = null)
+    public function getSessionInfo($sessionId)
     {
         return $this->session->call(self::SESSION_INFO_TOPIC, [$sessionId])->then(
-            function ($res) use ($callback) {
-                $this->emit('info', [$res[0]]);
-                if ($callback !== null) {
-                    $callback($res[0]);
-                }
+            function ($res) {
+                $this->emit('info', [$res]);
+
+                return $res;
             },
             function ($error) {
                 $this->emit('error', [$error]);
@@ -82,21 +81,20 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the Ids of the sessions currently
      * registered on the wamp-router in the monitor's realm
-     * and populates the data via given callback,.
+     * and populates the data via given callback,
      *
-     * @param callable $callback
-     *
-     * @return mixed
+     * @return Promise
      */
-    public function getSessionIds(callable $callback)
+    public function getSessionIds()
     {
         if (!count($this->sessionIds)) {
-            $this->retrieveSessionIds($callback);
 
-            return;
+            return $this->retrieveSessionIds();
         }
 
-        $callback($this->sessionIds);
+        return new Promise(function (callable $resolve) {
+            $resolve($this->sessionIds);
+        });
     }
 
     /**
@@ -192,18 +190,15 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the list of current sessionIds on the router.
      *
-     * @param callable|null $callback
+     * @return \React\Promise\Promise;
      */
-    protected function retrieveSessionIds(callable $callback = null)
+    protected function retrieveSessionIds()
     {
-        $this->session->call(self::SESSION_LIST_TOPIC, [])
+        return $this->session->call(self::SESSION_LIST_TOPIC, [])
             ->then(
-                $this->getSessionIdRetrievalCallback()
-            )->done(function ($res) use ($callback) {
-                if ($callback !== null) {
-                    $callback($res);
-                }
-            });
+                $this->getSessionIdRetrievalCallback(),
+                $this->getErrorCallback()
+            );
     }
 
     protected function getSessionIdRetrievalCallback()

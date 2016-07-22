@@ -187,7 +187,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
             $listCalled = true;
         });
 
-        $monitor->getSessionIds(function () use (&$calledBack) {
+        $monitor->getSessionIds()->done(function () use (&$calledBack) {
             $calledBack = true;
         });
 
@@ -210,7 +210,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
             $listCalled = $res;
         });
 
-        $monitor->getSessionIds(function ($res) use (&$calledBack) {
+        $monitor->getSessionIds()->done(function ($res) use (&$calledBack) {
             $calledBack = $res;
         });
 
@@ -228,7 +228,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $monitor = new SessionMonitor($stub);
         $sessionIds = null;
 
-        $monitor->getSessionIds(function (array $ids) use (&$sessionIds) {
+        $monitor->getSessionIds()->done(function (array $ids) use (&$sessionIds) {
             $sessionIds = $ids;
         });
 
@@ -246,13 +246,13 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $firstResult = null;
         $secondResult = null;
 
-        $monitor->getSessionIds(function (array $ids) use (&$firstResult) {
+        $monitor->getSessionIds()->done(function (array $ids) use (&$firstResult) {
             $firstResult = $ids;
         });
 
         $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
 
-        $monitor->getSessionIds(function (array $ids) use (&$secondResult) {
+        $monitor->getSessionIds()->done(function (array $ids) use (&$secondResult) {
             $secondResult = $ids;
         });
 
@@ -363,21 +363,21 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
     // SESSION INFO TESTS
 
 
-    public function test_get_sessioninfo_calls_callback()
+    public function test_get_sessioninfo_calls_promise()
     {
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
         $response = null;
 
-        $monitor->getSessionInfo(654, function ($res) use (&$response) {
+        $monitor->getSessionInfo(654)->done(function ($res) use (&$response) {
             $response = $res;
         });
 
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, [$sessionInfo]);
+        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
 
         $this->assertSame($sessionInfo, $response);
     }
@@ -398,7 +398,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, [$sessionInfo]);
+        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
 
         $this->assertSame($sessionInfo, $response);
     }
