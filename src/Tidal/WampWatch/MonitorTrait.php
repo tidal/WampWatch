@@ -149,7 +149,7 @@ trait MonitorTrait
 
     protected function setInitialCall($procedure, callable $callback)
     {
-        $this->initialCallProcedure = (string)$procedure;
+        $this->initialCallProcedure = (string) $procedure;
         $this->initialCallCallback = $callback;
     }
 
