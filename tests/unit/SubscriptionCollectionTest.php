@@ -202,6 +202,18 @@ class SubscriptionCollectionTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function test_has_subscription_without_subscriptions()
+    {
+        $this->assertFalse($this->collection->hasSubscription('foo'));
+    }
+
+    public function test_has_subscription_with_subscriptions()
+    {
+        $this->collection->addSubscription('foo', $this->getEmptyFunc());
+
+        $this->assertTrue($this->collection->hasSubscription('foo'));
+    }
+
 
     private function getEmptyFunc()
     {
