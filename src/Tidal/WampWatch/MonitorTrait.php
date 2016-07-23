@@ -74,10 +74,9 @@ trait MonitorTrait
      */
     public function start()
     {
-
         $promises = [
             $this->getMetaSubscriptionCollection()->subscribe(),
-            $this->callInitialProcedure()
+            $this->callInitialProcedure(),
         ];
 
         \React\Promise\all($promises)->done(function () {
