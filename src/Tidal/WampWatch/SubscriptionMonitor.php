@@ -145,7 +145,6 @@ class SubscriptionMonitor implements MonitorInterface
                 $this->subscriptionIds->prefix,
                 $this->subscriptionIds->wildcard,
             ]);
-            $this->checkStarted();
 
             return $res;
         };

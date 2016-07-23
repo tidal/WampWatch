@@ -74,11 +74,15 @@ trait MonitorTrait
      */
     public function start()
     {
-        $this->getMetaSubscriptionCollection()->subscribe()->done(function () {
-            $this->checkStarted();
-        });
-        $this->callInitialProcedure()->done(function () {
-            $this->checkStarted();
+
+        $promises = [
+            $this->getMetaSubscriptionCollection()->subscribe(),
+            $this->callInitialProcedure()
+        ];
+
+        \React\Promise\all($promises)->done(function () {
+            $this->isRunning = true;
+            $this->emit('start', [$this->getList()]);
         });
 
         return true;
@@ -160,11 +164,10 @@ trait MonitorTrait
     {
         if (!isset($this->initialCallProcedure) || !isset($this->initialCallCallback)) {
             $this->initialCallDone = true;
-            $resolver = function (callable $resolve) {
-                $resolve();
-            };
 
-            return new  Promise($resolver);
+            return new  Promise(function (callable $resolve) {
+                $resolve();
+            });
         }
 
         return $this->session->call($this->initialCallProcedure, [])->then(function ($res) {
@@ -176,20 +179,6 @@ trait MonitorTrait
         },
             $this->getErrorCallback()
         );
-    }
-
-    /**
-     * Checks if all necessary subscriptions and calls have been responded to.
-     */
-    protected function checkStarted()
-    {
-        if ($this->isMetaSubscribed() &&
-            $this->initialCallDone &&
-            !$this->isRunning()
-        ) {
-            $this->isRunning = true;
-            $this->emit('start', [$this->getList()]);
-        }
     }
 
     protected function isMetaSubscribed()
