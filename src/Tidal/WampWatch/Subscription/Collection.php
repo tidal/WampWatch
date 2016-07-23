@@ -88,8 +88,8 @@ class Collection
     public function subscribe()
     {
         if (!$this->isSubscribed() && !$this->isSubscribing()) {
-            $this->isSubscribing = true;
             $this->subscriptionPromise = new Deferred();
+            $this->isSubscribing = true;
             $this->doSubscribe();
         }
 
@@ -101,15 +101,31 @@ class Collection
      */
     protected function doSubscribe()
     {
+        \React\Promise\all($this->getSubscriptionPromises())->done(function () {
+            $this->isSubscribed = true;
+            $this->isSubscribing = false;
+            $this->subscriptionPromise->resolve($this->subscriptions);
+        });
+    }
+
+    /**
+     * @return Promise[]
+     */
+    private function getSubscriptionPromises()
+    {
+        $promises = [];
+
         foreach (array_keys($this->subscriptions) as $topic) {
-            $this->session->subscribe($topic, $this->subscriptionCallbacks[$topic])
-                ->done(function (SubscribedMessage $msg) use ($topic) {
+            $promises[] = $this->session->subscribe($topic, $this->subscriptionCallbacks[$topic])
+                ->then(function (SubscribedMessage $msg) use ($topic) {
                     $this->subscriptions[$topic] = $msg->getSubscriptionId();
                     $this->subscriptionPromise->notify($topic);
 
-                    $this->checkSubscribed();
+                    return $topic;
                 });
         }
+
+        return $promises;
     }
 
     /**
@@ -149,20 +165,4 @@ class Collection
         return $this->isSubscribing;
     }
 
-    /**
-     * Check if all subscriptions have been successfully confirmed.
-     */
-    protected function checkSubscribed()
-    {
-        foreach ($this->subscriptions as $topic => $subId) {
-            if ($subId === 0) {
-                return false;
-            }
-        }
-        $this->isSubscribed = true;
-        $this->isSubscribing = false;
-        $this->subscriptionPromise->resolve($this->subscriptions);
-
-        return true;
-    }
 }
