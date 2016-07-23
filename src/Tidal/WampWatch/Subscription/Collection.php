@@ -164,5 +164,4 @@ class Collection
     {
         return $this->isSubscribing;
     }
-
 }

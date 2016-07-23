@@ -207,7 +207,6 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             $sessionIds = $this->removeOwnSessionId($res[0]);
             $this->setList($sessionIds);
             $this->emit('list', [$this->getList()]);
-            $this->checkStarted();
 
             return $this->getList();
         };
