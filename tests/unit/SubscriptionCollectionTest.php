@@ -177,6 +177,43 @@ class SubscriptionCollectionTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function test_subscribe_promise_resolves_after_being_already_subscribed()
+    {
+
+        $result1 = null;
+        $result2 = null;
+
+        $this->collection->addSubscription('foo', $this->getEmptyFunc());
+        $this->collection->addSubscription('bar', $this->getEmptyFunc());
+
+        $this->collection->subscribe()->done(function ($res) use (&$result1) {
+            $result1 = $res;
+        });
+
+        $this->session->completeSubscription('foo', 1, 1);
+        $this->session->completeSubscription('bar', 2, 2);
+
+        $this->collection->subscribe()->done(function ($res) use (&$result2) {
+            $result2 = $res;
+        });
+
+        $this->assertTrue($result1 !== null);
+        $this->assertEquals($result1, $result2, "Results should be the same even if subscriptions have already been resolved.");
+
+    }
+
+    public function test_has_subscription_without_subscriptions()
+    {
+        $this->assertFalse($this->collection->hasSubscription('foo'));
+    }
+
+    public function test_has_subscription_with_subscriptions()
+    {
+        $this->collection->addSubscription('foo', $this->getEmptyFunc());
+
+        $this->assertTrue($this->collection->hasSubscription('foo'));
+    }
+
 
     private function getEmptyFunc()
     {
