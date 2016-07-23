@@ -180,15 +180,6 @@ trait MonitorTrait
         );
     }
 
-    protected function isMetaSubscribed()
-    {
-        if (!$this->getMetaSubscriptionCollection()->hasSubscription()) {
-            return true;
-        }
-
-        return $this->getMetaSubscriptionCollection()->isSubscribed();
-    }
-
     private function getErrorCallback()
     {
         return function ($error) {
