@@ -273,6 +273,20 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    public function failCall($procedureName, $error)
+    {
+        if (!isset($this->calls[$procedureName])) {
+            throw new UnknownProcedureException($procedureName);
+        }
+
+        /* @var $futureResult Deferred */
+        $futureResult = $this->calls[$procedureName];
+
+        $futureResult->reject($error);
+    }
+
+
+
     public function hasCall($procedureName)
     {
         return isset($this->calls[$procedureName]);
