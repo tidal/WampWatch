@@ -18,6 +18,7 @@ use Thruway\Message\PublishedMessage;
 use Thruway\Message\RegisteredMessage;
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\UnregisteredMessage;
+use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
@@ -136,6 +137,18 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $result = new PublishedMessage($requestId, $publicationId);
 
         $futureResult->resolve($result);
+    }
+
+    public function failPublication($topicName, $error)
+    {
+        if (!isset($this->publications[$topicName])) {
+            throw new UnknownTopicException($topicName);
+        }
+
+        $futureResult = $this->publications[$topicName];
+        $result = new PublishedMessage($requestId, $publicationId);
+
+        $futureResult->reject($error);
     }
 
     /**
