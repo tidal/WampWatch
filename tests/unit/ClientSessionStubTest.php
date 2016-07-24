@@ -397,6 +397,39 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     *
+     */
+    function test_call_can_be_failed()
+    {
+        $error = $this->getErrorMessage();
+
+        $response = null;
+
+        $this->session->call('foo')->otherwise(function ($err) use (&$response) {
+            $response = $err;
+        });
+
+        $this->session->failCall('foo', $error);
+
+        $this->assertSame($error, $response);
+
+    }
+
+
+    /**
+     *
+     */
+    function test_fail_call_throws_exception_on_unknown_call()
+    {
+
+        $this->setExpectedException(UnknownProcedureException::class);
+
+        $this->session->failCall('foo', $this->getErrorMessage());
+
+    }
+
+    // ACCESSOR TESTS
 
     /**
      *
@@ -440,11 +473,22 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
      *
      * @return \Closure
      */
-    protected function getEmptyFunc()
+    private function getEmptyFunc()
     {
         return function () {
         };
     }
 
+    private function getErrorMessage()
+    {
+        return new Thruway\Message\ErrorMessage(
+            "wamp.error.not_authorized",
+            321,
+            new stdClass(),
+            "foo",
+            ["session is not authorized to do 'foo'"],
+            new stdClass()
+        );
+    }
 
 }
