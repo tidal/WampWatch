@@ -164,6 +164,32 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     *
+     */
+    public function test_publication_can_be_failed()
+    {
+
+        $published = null;
+        $promise = $this->session->publish(
+            'foo'
+        );
+
+        $promise->otherwise(function ($message) use (&$published) {
+            $published = $message;
+        });
+
+        $this->session->failPublication(
+            'foo',
+            321
+        );
+        $this->assertInstanceOf(
+            'Thruway\Message\ErrorMessage',
+            $published
+        );
+
+    }
+
 
     /**
      *
