@@ -29,7 +29,7 @@ class NotAuthorizedException extends \OutOfBoundsException
 
     /**
      * @param string $topicName
-     * @param string $errorMsg the router error message
+     * @param string $errorMsg
      */
     public function __construct($topicName, $errorMsg = self::DEFAULT_ERROR_MSG)
     {
