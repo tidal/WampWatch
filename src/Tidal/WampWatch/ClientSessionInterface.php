@@ -11,6 +11,8 @@
 
 namespace Tidal\WampWatch;
 
+use Tidal\WampWatch\Async\PromiseInterface;
+
 interface ClientSessionInterface
 {
     /**
@@ -19,6 +21,8 @@ interface ClientSessionInterface
      * @param string   $topicName
      * @param callable $callback
      * @param $options array
+     *
+     * @return PromiseInterface
      */
     public function subscribe($topicName, callable $callback, $options = null);
 
@@ -29,6 +33,8 @@ interface ClientSessionInterface
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
+     * @return PromiseInterface
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null);
 
@@ -38,6 +44,8 @@ interface ClientSessionInterface
      * @param string      $procedureName
      * @param callable    $callback
      * @param array|mixed $options
+     *
+     * @return PromiseInterface
      */
     public function register($procedureName, callable $callback, $options = null);
 
@@ -46,7 +54,7 @@ interface ClientSessionInterface
      *
      * @param string $procedureName
      *
-     * @return \React\Promise\Promise|false
+     * @return PromiseInterface
      */
     public function unregister($procedureName);
 
@@ -57,6 +65,8 @@ interface ClientSessionInterface
      * @param array|mixed $arguments
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
+     *
+     * @return PromiseInterface
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null);
 
@@ -70,5 +80,8 @@ interface ClientSessionInterface
      */
     public function getSessionId();
 
+    /**
+     * @param $msg
+     */
     public function sendMessage($msg);
 }
