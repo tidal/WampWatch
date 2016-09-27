@@ -20,6 +20,8 @@ class NotAuthorizedException extends \OutOfBoundsException
 {
     const ERROR_RESPONSE = 'wamp.error.not_authorized';
 
+    const DEFAULT_ERROR_MSG = 'session is not authorized';
+
     /**
      * @var string name of the topic
      */
@@ -27,29 +29,13 @@ class NotAuthorizedException extends \OutOfBoundsException
 
     /**
      * @param string $topicName
-     * @param        string the router error message
+     * @param string $errorMsg the router error message
      */
-    public function __construct($topicName, $errorMsg = 'session is not authorized')
+    public function __construct($topicName, $errorMsg = self::DEFAULT_ERROR_MSG)
     {
         $this->setTopicName($topicName);
 
         parent::__construct($errorMsg);
-    }
-
-    /**
-     * @param string $topicName
-     */
-    protected function setTopicName($topicName)
-    {
-        $this->topicName = $topicName;
-    }
-
-    /**
-     * @return string the topic name
-     */
-    public function getTopicName()
-    {
-        return $this->topicName;
     }
 
     /**
@@ -62,5 +48,21 @@ class NotAuthorizedException extends \OutOfBoundsException
     public static function isNotAuthrorizedError($errorResponse)
     {
         return $errorResponse == self::ERROR_RESPONSE;
+    }
+
+    /**
+     * @return string the topic name
+     */
+    public function getTopicName()
+    {
+        return $this->topicName;
+    }
+
+    /**
+     * @param string $topicName
+     */
+    protected function setTopicName($topicName)
+    {
+        $this->topicName = $topicName;
     }
 }
