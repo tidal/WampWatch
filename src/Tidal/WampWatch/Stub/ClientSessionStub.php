@@ -18,6 +18,7 @@ use Thruway\Message\PublishedMessage;
 use Thruway\Message\RegisteredMessage;
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\UnregisteredMessage;
+use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
@@ -138,6 +139,18 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    public function failPublication($topicName, $error, $requestId = 1)
+    {
+        if (!isset($this->publications[$topicName])) {
+            throw new UnknownTopicException($topicName);
+        }
+
+        $futureResult = $this->publications[$topicName];
+        $result = new ErrorMessage($error, $requestId, new \stdClass(), $topicName);
+
+        $futureResult->reject($result);
+    }
+
     /**
      * Register.
      *
@@ -205,7 +218,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      *
-     * @return \React\Promise\Promise|false
+     * @return \React\Promise\PromiseInterface
      */
     public function unregister($procedureName)
     {
@@ -258,8 +271,8 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     /**
      * Process ResultMessage.
      *
-     * @param string    $procedureName
-     * @param \stdClass $result
+     * @param string $procedureName
+     * @param mixed  $result
      */
     public function respondToCall($procedureName, $result)
     {
@@ -271,6 +284,18 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = $this->calls[$procedureName];
 
         $futureResult->resolve($result);
+    }
+
+    public function failCall($procedureName, $error)
+    {
+        if (!isset($this->calls[$procedureName])) {
+            throw new UnknownProcedureException($procedureName);
+        }
+
+        /* @var $futureResult Deferred */
+        $futureResult = $this->calls[$procedureName];
+
+        $futureResult->reject($error);
     }
 
     public function hasCall($procedureName)
