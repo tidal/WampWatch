@@ -13,7 +13,7 @@
 namespace Tidal\WampWatch\Contract\Event;
 
 
-interface EventEmitter
+interface EventEmitterInterface
 {
     /**
      * Registers a subscriber to be notified on given event.
