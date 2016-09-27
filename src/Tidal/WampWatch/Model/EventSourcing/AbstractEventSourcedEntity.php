@@ -10,27 +10,27 @@
  */
 
 
-namespace Tidal\WampWatch\Model\EventSourcing\Event;
+namespace Tidal\WampWatch\Model\EventSourcing;
 
 
 use Broadway\EventSourcing\EventSourcedEntity as AbstractEntity;
 use Tidal\WampWatch\Model\EventSourcing\Event\DomainEvent;
 use Tidal\WampWatch\Model\EventSourcing\Event\DomainEventInterface;
+use Tidal\WampWatch\Model\EventSourcing\Event\DomainEventEmitterTrait;
+use Tidal\WampWatch\Model\EventSourcing\ValueObject\ValueObjectInterface;
+use Tidal\WampWatch\Model\EventSourcing\ValueObject\ValueObjectTrait;
 
 
-abstract class AbstractEventSourcedEntity extends AbstractEntity
+abstract class AbstractEventSourcedEntity extends AbstractEntity implements ValueObjectInterface
 {
 
-    private $eventHandler = [];
+    use DomainEventEmitterTrait;
+    use ValueObjectTrait;
 
     /**
      * @var RealmInterface
      */
     private $entityInstance;
-
-    private $events = [];
-
-    private $domainEvent;
 
     private function __construct($entityInstance)
     {
@@ -52,68 +52,4 @@ abstract class AbstractEventSourcedEntity extends AbstractEntity
 
     }
 
-    private function handleNamedEvent(DomainEventInterface $event)
-    {
-        if($event->getScope() !== self::class){
-
-            return;
-        }
-
-        if(!$this->hasEvent($event->getName())){
-
-            return;
-        }
-
-        $this->getEvent($event->getName())->publish($event->getData());
-    }
-
-    public function listen(EventInterface $event, callable $callback)
-    {
-        if(!$this->hasEvent($event->getName())){
-            return;
-        }
-
-        $this->getEvent($event->getName());
-    }
-
-    protected function exposeEvent($name)
-    {
-        return $this->events[$name] = $this->getDomainEvent()->name($name);
-    }
-
-    protected function exposeEvents(array $names)
-    {
-        foreach ($names as  $name){
-            $this->exposeEvent((string) $name);
-        }
-    }
-
-
-    /**
-     * @param string $name
-     *
-     * @return DomainEventInterface
-     */
-    protected function getEvent($name)
-    {
-        if(!$this->hasEvent($name)){
-            throw new \OutOfBoundsException("No event '$name' exposed.");
-        }
-
-        return $this->events[$name];
-    }
-    protected function hasEvent($name)
-    {
-        return isset($this->events[$name]);
-    }
-
-    /**
-     * @return DomainEventInterface
-     */
-    private function getDomainEvent()
-    {
-        return isset($this->domainEvent)
-            ? $this->domainEvent
-            : $this->domainEvent = DomainEvent::bind(self::class);
-    }
 }

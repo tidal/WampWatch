@@ -13,7 +13,7 @@
 namespace Tidal\WampWatch\Model\EventSourcing\Command;
 
 use Broadway\CommandHandling;
-use Tidal\WampWatch\Model\CommandSourcing\Command\DomainCommandHandlerTrait;
+use Tidal\WampWatch\Model\EventSourcing\Repository\RepositoryInterface;
 
 
 abstract class AbstractDomainCommandHandler extends CommandHandling\CommandHandler implements CommandHandlerInterface
@@ -21,14 +21,21 @@ abstract class AbstractDomainCommandHandler extends CommandHandling\CommandHandl
 
     use DomainCommandHandlerTrait;
 
-    /**
-     * {@inheritDoc}
-     */
+    private $repository;
+
+    public function __construct(RepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function handle($command)
     {
-        parent::handle($command);
+        return $this->handleCommand($command);
+    }
 
-
+    public function getRepository()
+    {
+        return $this->repository;
     }
 
 }

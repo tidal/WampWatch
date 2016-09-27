@@ -19,8 +19,7 @@ use
     Countable;
 
 
-
-interface CollectionInterface extends IteratorAggregate, Traversable, ArrayAccess, Serializable, Countable
+interface CollectionInterface extends IteratorAggregate, ArrayAccess, Serializable, Countable
 {
     /**
      * Sets a property type constrain for collection items

@@ -15,11 +15,17 @@ use Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait;
 use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
 use Tidal\WampWatch\Model\Contract\RealmInterface;
 
-
-trait RealmsTrait
+/**
+ * Class HasRealmsTrait
+ *
+ * Important! Classes using this trait have to also use trait
+ * Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait
+ * for this trait to work;
+ */
+trait HasRealmsTrait
 {
 
-    use HasCollectionsTrait;
+    //use HasCollectionsTrait;
 
     protected $realmsPropertyName = 'realms';
 
@@ -28,16 +34,10 @@ trait RealmsTrait
      */
     private $realms;
 
-    /**
-     * @param ObjectCollectionInterface $realms
-     * @return \ArrayObject
-     */
-    private function setRealms(ObjectCollectionInterface $realms)
+    public function addRealm(Contract\RealmInterface $realm)
     {
-        $this->initCollection($this->realmsPropertyName, $realms);
-        $realms->setObjectConstrain(RealmInterface::class);
+        $this->getRealms()->set($realm->getName(), $realm);
     }
-
 
     /**
      * @return ObjectCollectionInterface
@@ -46,12 +46,6 @@ trait RealmsTrait
     {
         return $this->getCollection($this->realmsPropertyName);
     }
-
-    public function addRealm(Contract\RealmInterface $realm)
-    {
-        $this->getRealms()->set($realm->getName(), $realm);
-    }
-
 
     public function hasRealm($name)
     {
@@ -76,6 +70,16 @@ trait RealmsTrait
         foreach ($this->getRealms()->getIterator() as $name => $realm){
             yield $name => $realm;
         }
+    }
+
+    /**
+     * @param ObjectCollectionInterface $realms
+     * @return \ArrayObject
+     */
+    private function setRealms(ObjectCollectionInterface $realms)
+    {
+        $this->initCollection($this->realmsPropertyName, $realms);
+        $realms->setObjectConstrain(RealmInterface::class);
     }
 
 

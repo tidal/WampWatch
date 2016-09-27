@@ -6,36 +6,19 @@
  *  *
  *  * For the full copyright and license information, please view the LICENSE
  *  * file that was distributed with this source code.
- *
+ *  
  */
 
-
-namespace Tidal\WampWatch\Model\Property\Object;
+namespace Tidal\WampWatch\Model\Contract\Property\Object;
 
 use Tidal\WampWatch\Model\Contract;
 
-trait HasTopicTrait
+
+interface HasTopicInterface
 {
-    /**
-     * @var Contract\TopicInterface
-     */
-    private $topic;
-
-    /**
-     * @param Contract\TopicInterface $topic
-     */
-    private function setTopic(Contract\TopicInterface $topic)
-    {
-        $this->topic = $topic;
-    }
-
     /**
      * @return Contract\TopicInterface
      */
-    public function getTopic()
-    {
-        return $this->topic;
-    }
-
+    public function getTopic();
 
 }

@@ -14,5 +14,28 @@ namespace Tidal\WampWatch\Model\EventSourcing\Action;
 
 interface ActionInterface
 {
+    /**
+     * @return string
+     */
+    public function __toString();
 
+    /**
+     * @return mstring fully qualified class name
+     */
+    public function getScope();
+
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * @return mixed
+     */
+    public function getData();
+
+    /**
+     * @return float
+     */
+    public function getTime();
 }

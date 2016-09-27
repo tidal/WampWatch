@@ -12,7 +12,7 @@
 namespace Tidal\WampWatch\Model\Contract\Property;
 
 
-interface ObjectCollection extends Collection
+interface ObjectCollectionInterface extends CollectionInterface
 {
     /**
      * Set a constrain on a class or interface name the collection's items must be an instance of.

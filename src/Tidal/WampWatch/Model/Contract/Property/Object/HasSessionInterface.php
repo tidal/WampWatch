@@ -6,36 +6,19 @@
  *  *
  *  * For the full copyright and license information, please view the LICENSE
  *  * file that was distributed with this source code.
- *
+ *  
  */
 
-
-namespace Tidal\WampWatch\Model\Property\Object;
+namespace Tidal\WampWatch\Model\Contract\Property\Object;
 
 use Tidal\WampWatch\Model\Contract;
 
-trait HasSessionTrait
+
+interface HasSessionInterface
 {
-    /**
-     * @var Contract\SessionInterface
-     */
-    private $session;
-
-    /**
-     * @param Contract\SessionInterface $session
-     */
-    private function setSession(Contract\SessionInterface $session)
-    {
-        $this->session = $session;
-    }
-
     /**
      * @return Contract\SessionInterface
      */
-    public function getSession()
-    {
-        return $this->session;
-    }
-
+    public function getSession();
 
 }

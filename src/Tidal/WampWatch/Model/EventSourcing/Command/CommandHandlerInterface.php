@@ -10,7 +10,7 @@
  */
 
 
-namespace Tidal\WampWatch\Model\EventSourcing\CommandHandling;
+namespace Tidal\WampWatch\Model\EventSourcing\Command;
 
 use Broadway\CommandHandling\CommandHandlerInterface as BaseInterface;
 

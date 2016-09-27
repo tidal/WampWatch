@@ -9,14 +9,8 @@
  *
  */
 
-/**
- * Created by PhpStorm.
- * User: Timo
- * Date: 27.07.2016
- * Time: 20:48
- */
 
-namespace src\Tidal\WampWatch\Model\CommandSourcing\CommandHandling;
+namespace Tidal\WampWatch\Model\EventSourcing\Command;
 
 
 trait DomainCommandHandlerTrait
@@ -26,43 +20,42 @@ trait DomainCommandHandlerTrait
 
     private $domainCommand;
 
+    /**
+     * @param mixed $command
+     */
+    public function handleCommand($command)
+    {
+        if (is_a($command, DomainCommandInterface::class)) {
+            $this->handleNamedCommand($command);
+
+            return;
+        }
+
+        $this->handleWithMethod($command);
+    }
+
     private function handleNamedCommand(DomainCommandInterface $command)
     {
-        if($command->getScope() !== self::class){
 
-            return;
+
+        if ($command->getScope() !== static::class && !is_a($this, $command->getScope())) {
+
+            //return;
         }
+
+
 
         if(!$this->hasCommand($command->getName())){
 
             return;
         }
 
-        $this->getCommand($command->getName())->publish($command->getData());
+        $this->getCommand($command->getName())->issue($command->getData());
     }
 
-    public function listen(DomainCommandInterface $command, callable $callback)
+    protected function hasCommand($name)
     {
-        if(!$this->hasCommand($command->getName())){
-            return;
-        }
-        if($command->getScope() !== self::class){
-            return;
-        }
-
-        $command->subscribe($callback);
-    }
-
-    protected function exposeCommand($name)
-    {
-        return $this->commands[$name] = $this->getDomainCommand()->name($name);
-    }
-
-    protected function exposeCommands(array $names)
-    {
-        foreach ($names as  $name){
-            $this->exposeCommand((string) $name);
-        }
+        return isset($this->commands[$name]);
     }
 
     /**
@@ -77,35 +70,6 @@ trait DomainCommandHandlerTrait
         }
 
         return $this->commands[$name];
-    }
-    protected function hasCommand($name)
-    {
-        return isset($this->commands[$name]);
-    }
-
-    /**
-     * @return DomainCommandInterface
-     */
-    private function getDomainCommand()
-    {
-        return isset($this->domainCommand)
-            ? $this->domainCommand
-            : $this->domainCommand = DomainCommand::bind(self::class);
-    }
-
-    /**
-     * @param mixed $command
-     */
-    public function handle($command)
-    {
-        $this->handleWithMethod($command);
-    }
-
-
-
-    private function handleDomainCommand($command)
-    {
-
     }
 
     private function handleWithMethod($command)
@@ -128,6 +92,28 @@ trait DomainCommandHandlerTrait
         $classParts = explode('\\', get_class($command));
 
         return 'handle' . end($classParts);
+    }
+
+    protected function exposeCommands(array $names)
+    {
+        foreach ($names as $name) {
+            $this->exposeCommand((string)$name);
+        }
+    }
+
+    protected function exposeCommand($name)
+    {
+        return $this->commands[$name] = $this->getDomainCommand()->name($name);
+    }
+
+    /**
+     * @return DomainCommandInterface
+     */
+    private function getDomainCommand()
+    {
+        return isset($this->domainCommand)
+            ? $this->domainCommand
+            : $this->domainCommand = DomainCommand::create()->bind(static::class);
     }
 
 }
