@@ -18,7 +18,6 @@ use Thruway\Message\PublishedMessage;
 use Thruway\Message\RegisteredMessage;
 use Thruway\Message\SubscribedMessage;
 use Thruway\Message\UnregisteredMessage;
-use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
@@ -218,7 +217,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      *
-     * @return \React\Promise\Promise|false
+     * @return \React\Promise\PromiseInterface
      */
     public function unregister($procedureName)
     {
@@ -297,8 +296,6 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $futureResult->reject($error);
     }
-
-
 
     public function hasCall($procedureName)
     {
