@@ -167,6 +167,25 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    function test_confirm_publication_throws_exception_on_unknown_publication()
+    {
+        try {
+            $this->session->confirmPublication(
+                'foo',
+                321,
+                654
+            );
+
+            $this->fail('An UnknownTopicException should have been thrown');
+        } catch (UnknownTopicException $e) {
+            $this->assertSame('foo', $e->getTopicName());
+        }
+
+    }
+
+    /**
+     *
+     */
     public function test_publication_can_be_failed()
     {
 
@@ -190,17 +209,15 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     }
 
-
     /**
      *
      */
-    function test_confirm_publication_throws_exception_on_unknown_publication()
+    function test_fail_publication_throws_exception_on_unknown_publication()
     {
         try {
-            $this->session->confirmPublication(
+            $this->session->failPublication(
                 'foo',
-                321,
-                654
+                321
             );
 
             $this->fail('An UnknownTopicException should have been thrown');
@@ -209,7 +226,6 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
         }
 
     }
-
 
     /**
      *
