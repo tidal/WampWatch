@@ -217,7 +217,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      *
-     * @return \React\Promise\Promise|false
+     * @return \React\Promise\PromiseInterface
      */
     public function unregister($procedureName)
     {
