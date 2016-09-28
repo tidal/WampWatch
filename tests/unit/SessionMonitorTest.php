@@ -429,17 +429,15 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
-        $response = null;
-
-        $monitor->on('info', function ($res) use (&$response) {
-            $response = $res;
-        });
-
-        $monitor->getSessionInfo(654);
 
         $sessionInfo = new stdClass();
+        $sessionInfo->id = 654;
 
-        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
+        $monitor->start();
+
+        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+
+        $stub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
 
         $this->assertFalse($monitor->hasSessionId(654));
     }
