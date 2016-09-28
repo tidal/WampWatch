@@ -1,3 +1,10 @@
+### [0.4.1] - 2016-09-28
+
+  * Refactored Subscription\Collection
+  * Refactored MonitorTrait
+  * Added NotAuthorizedException
+  * Fixed several issues
+  
 ### [0.4.0] - 2016-07-21
 
   * Changed SessionMonitor to use promises instead of callbacks
