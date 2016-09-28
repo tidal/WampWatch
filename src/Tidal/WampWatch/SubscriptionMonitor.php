@@ -62,7 +62,7 @@ class SubscriptionMonitor implements MonitorInterface
      */
     public function getSubscriptionInfo($topic)
     {
-        return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, $topic)->then(
+        return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, [$topic])->then(
             function ($res) {
                 $this->emit('info', [$res]);
 
