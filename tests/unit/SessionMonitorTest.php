@@ -424,8 +424,27 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertSame($sessionInfo, $response);
     }
 
-    // STOP MONITOR TESTS
+    public function test_invalid_sessioninfo_does_not_get_added()
+    {
+        $stub = new ClientSessionStub();
+        $stub->setSessionId(321);
+        $monitor = new SessionMonitor($stub);
+        $response = null;
 
+        $monitor->on('info', function ($res) use (&$response) {
+            $response = $res;
+        });
+
+        $monitor->getSessionInfo(654);
+
+        $sessionInfo = new stdClass();
+
+        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
+
+        $this->assertFalse($monitor->hasSessionId(654));
+    }
+
+    // STOP MONITOR TESTS
 
     public function test_is_not_running_after_stop()
     {
