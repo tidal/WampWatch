@@ -139,7 +139,7 @@ class Collection
         $promise = new  Promise($resolver);
 
         if ($this->isSubscribed()) {
-            foreach ($this->subscriptions as $topic => $subId) {
+            foreach ($this->subscriptions as $subId) {
                 Util::unsubscribe($this->session, $subId);
             }
 
