@@ -109,7 +109,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $this->subscriptions[$topicName] = $futureResult;
         $this->subscribing[$topicName] = new SubscribeMessage(
             count($this->subscriptions),
-            (object)$options,
+            (object) $options,
             $topicName
         );
 
