@@ -21,10 +21,6 @@ class MonitorTraitImplementation
         $this->setClientSession($session);
     }
 
-    /**
-     * @param string   $procedure
-     * @param callable $callback
-     */
     public function setInitialCall($procedure, callable $callback)
     {
         $this->doSetInitialCall($procedure, $callback);
