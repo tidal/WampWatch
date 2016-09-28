@@ -3,7 +3,6 @@
 require_once __DIR__.'/../bootstrap.php';
 require_once __DIR__.'/stub/MonitorTraitImplementation.php';
 
-use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Subscription\Collection;
 use Mockery as M;
@@ -210,6 +209,24 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
             $stub->hasCall('bar')
         );
 
+    }
+
+    public function test_failed_initial_procedure_emits_event()
+    {
+        $stub = new ClientSessionStub();
+        $monitor = new MonitorTraitImplementation($stub);
+        $called = null;
+
+        $monitor->on('error', function () use (&$called) {
+            $called = true;
+        });
+
+        $monitor->setInitialCall('bar', $this->getEmptyFunc());
+        $monitor->start();
+
+        $stub->failCall('bar', 'foo');
+
+        $this->assertTrue($called);
     }
 
 
