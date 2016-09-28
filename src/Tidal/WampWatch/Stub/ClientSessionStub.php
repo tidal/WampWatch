@@ -21,6 +21,7 @@ use Thruway\Message\SubscribeMessage;
 use Thruway\Message\RegisteredMessage;
 use Thruway\Message\RegisterMessage;
 use Thruway\Message\UnregisteredMessage;
+use Thruway\Message\CallMessage;
 use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
@@ -85,6 +86,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @var array
      */
     protected $calls = [];
+
+    /**
+     * @var array
+     */
+    protected $calling = [];
 
     /**
      * @var array
@@ -161,7 +167,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $this->publishing[$topicName] = new PublishMessage(
             count($this->publishing),
             $options,
-            $topicName
+            $topicName,
+            $arguments,
+            $argumentsKw
         );
 
         return $futureResult->promise();
@@ -318,6 +326,13 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = new Deferred();
 
         $this->calls[$procedureName] = $futureResult;
+        $this->calling[$procedureName] = new CallMessage(
+            count($this->calling),
+            $options,
+            $procedureName,
+            $arguments,
+            $argumentsKw
+        );
 
         return $futureResult->promise();
     }
@@ -387,7 +402,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         return abs(($high << 32 | $low) & $filter);
     }
 
+    /**
+     * @param $msg
+     * @return mixed
+     */
     public function sendMessage($msg)
     {
+        return $msg;
     }
 }
