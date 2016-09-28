@@ -1,3 +1,11 @@
+### [0.5.0] - 2016-09-28
+
+  * added DeferredInterface
+  * added PromiseInterface
+  * added React\DeferredAdapter
+  * added React\PromiseAdapter
+  * 100 % code-coverage
+  
 ### [0.4.1] - 2016-09-28
 
   * Refactored Subscription\Collection
