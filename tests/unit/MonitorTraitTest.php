@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__.'/../bootstrap.php';
-require_once __DIR__.'/stub/MonitorTraitImplementation.php';
+require_once __DIR__ . '/Stub/MonitorTraitImplementation.php';
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Subscription\Collection;
