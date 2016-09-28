@@ -15,8 +15,11 @@ use Evenement\EventEmitterInterface;
 use Evenement\EventEmitterTrait;
 use React\Promise\Deferred;
 use Thruway\Message\PublishedMessage;
-use Thruway\Message\RegisteredMessage;
+use Thruway\Message\PublishMessage;
 use Thruway\Message\SubscribedMessage;
+use Thruway\Message\SubscribeMessage;
+use Thruway\Message\RegisteredMessage;
+use Thruway\Message\RegisterMessage;
 use Thruway\Message\UnregisteredMessage;
 use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
@@ -38,18 +41,54 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 {
     use EventEmitterTrait;
 
+    /**
+     * @var int
+     */
     protected $sessionId;
 
+    /**
+     * @var array
+     */
     protected $subscriptions = [];
 
+    /**
+     * @var array
+     */
+    protected $subscribing = [];
+
+    /**
+     * @var array
+     */
     protected $publications = [];
 
+    /**
+     * @var array
+     */
+    protected $publishing = [];
+
+    /**
+     * @var array
+     */
     protected $registrations = [];
 
+    /**
+     * @var array
+     */
+    protected $registering = [];
+
+    /**
+     * @var array
+     */
     protected $unregistrations = [];
 
+    /**
+     * @var array
+     */
     protected $calls = [];
 
+    /**
+     * @var array
+     */
     protected $procedures = [];
 
     /**
@@ -68,6 +107,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = new Deferred();
 
         $this->subscriptions[$topicName] = $futureResult;
+        $this->subscribing[$topicName] = new SubscribeMessage(
+            count($this->subscriptions),
+            (object)$options,
+            $topicName
+        );
 
         return $futureResult->promise();
     }
@@ -114,6 +158,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = new Deferred();
 
         $this->publications[$topicName] = $futureResult;
+        $this->publishing[$topicName] = new PublishMessage(
+            count($this->publishing),
+            $options,
+            $topicName
+        );
 
         return $futureResult->promise();
     }
@@ -167,6 +216,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult = new Deferred();
 
         $this->registrations[$procedureName] = $futureResult;
+        $this->registering[$procedureName] = new RegisterMessage(
+            count($this->registering),
+            $options,
+            $procedureName
+        );
 
         return $futureResult->promise();
     }
