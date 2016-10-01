@@ -1,4 +1,9 @@
 
+### [0.5.1] - 2016-10-01
+
+  * added integration test for subscription monitor
+  * added configuration for codeclimate
+
 ### [0.5.0] - 2016-09-28
 
   * added DeferredInterface
