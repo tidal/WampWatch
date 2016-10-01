@@ -6,6 +6,8 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use Tidal\WampWatch\SubscriptionMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
+use Thruway\CallResult;
+use Thruway\Message\ResultMessage;
 
 
 class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
@@ -143,7 +145,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $stub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_SUB_TOPIC);
         $stub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_UNSUB_TOPIC);
 
-        $this->assertEquals($subIdMap, $response);
+        $this->assertEquals($subIdMap->getResultMessage()->getArguments()[0], $response);
     }
 
     // META SUBSCRIPTION AND CALL TESTS
@@ -366,7 +368,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $stub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
 
-        $this->assertSame($subIdMap, $res);
+        $this->assertEquals($subIdMap->getResultMessage()->getArguments()[0], $res);
     }
 
     public function test_2nd_get_seesion_ids_returns_subscription_map_locally()
@@ -387,7 +389,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             $second = $r;
         });
 
-        $this->assertSame($first, $second);
+        $this->assertEquals($first, $second);
     }
 
 
@@ -403,7 +405,47 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     private function getSubscriptionIdMap()
     {
-        return json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}');
+        return $this->getCallResultMock();
     }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|CallResult
+     */
+    private function getCallResultMock()
+    {
+        $mock = $this->getMockBuilder(CallResult::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getResultMessage')
+            ->willReturn(
+                $this->getResultMessageMock()
+            );
+
+        return $mock;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|
+     */
+    private function getResultMessageMock()
+    {
+        $mock = $this->getMockBuilder(ResultMessage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getArguments')
+            ->willReturn(
+                [
+                    json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}')
+                ]
+            );
+
+        return $mock;
+    }
+
+
 
 }
