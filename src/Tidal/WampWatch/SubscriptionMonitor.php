@@ -139,14 +139,15 @@ class SubscriptionMonitor implements MonitorInterface
         return function (\Thruway\CallResult $res) {
             /** @var \Thruway\Message\ResultMessage $message */
             $message = $res->getResultMessage();
-            $this->setList($message->getArguments()[0]);
+            $list = $message->getArguments()[0];
+            $this->setList($list);
             $this->emit('list', [
                 $this->subscriptionIds->exact,
                 $this->subscriptionIds->prefix,
                 $this->subscriptionIds->wildcard,
             ]);
 
-            return $res;
+            return $list;
         };
     }
 }
