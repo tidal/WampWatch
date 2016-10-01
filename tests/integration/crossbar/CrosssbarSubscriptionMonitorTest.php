@@ -76,10 +76,14 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_oncreate()
     {
+        $info = new \stdClass();
+        $info->session = null;
+        $info->subscription = null;
+
         $subscriptionSessionId = null;
         $subscriptionInfo = null;
 
-        $this->connection->on('open', function (ClientSession $session) use (&$subscriptionInfo, &$subscriptionSessionId) {
+        $this->connection->on('open', function (ClientSession $session) use ($info) {
 
             $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
 
@@ -100,10 +104,10 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
                 $this->connection->close();
             });
 
-            $subscriptionMonitor->on('create', function ($sessionId, \stdClass $subInfo) use (&$subscriptionInfo, &$subscriptionSessionId, $subscriptionMonitor) {
+            $subscriptionMonitor->on('create', function ($sessionId, \stdClass $subInfo) use ($info, $subscriptionMonitor) {
 
-                $subscriptionInfo = $subInfo;
-                $subscriptionSessionId = $sessionId;
+                $info->subscription = $subInfo;
+                $info->session = $sessionId;
 
                 $subscriptionMonitor->stop();
                 $this->connection->close();
@@ -127,11 +131,11 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->connection->open();
 
         //$this->assertInternalType('int', $subscriptionSessionId);
-        $this->assertInstanceOf(\stdClass::class, $subscriptionInfo);
-        $this->assertAttributeEquals('foo', 'uri', $subscriptionInfo);
-        $this->assertAttributeEquals('exact', 'match', $subscriptionInfo);
-        $this->assertAttributeInternalType('int', 'id', $subscriptionInfo);
-        $this->assertAttributeInternalType('string', 'created', $subscriptionInfo);
+        $this->assertInstanceOf(\stdClass::class, $info->subscription);
+        $this->assertAttributeEquals('foo', 'uri', $info->subscription);
+        $this->assertAttributeEquals('exact', 'match', $info->subscription);
+        $this->assertAttributeInternalType('int', 'id', $info->subscription);
+        $this->assertAttributeInternalType('string', 'created', $info->subscription);
     }
 
     public function test_onsubscribe()
