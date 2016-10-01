@@ -3,59 +3,31 @@
 namespace integration\crossbar;
 
 require_once realpath(__DIR__ . "/../..") . "/bootstrap.php";
+require_once __DIR__ . "/CrossbarTestingTrait.php";
 
-
-use Psr\Log\NullLogger;
-use Thruway\Logging\Logger;
 use Thruway\ClientSession;
-use Thruway\Connection;
-use React\EventLoop\Factory as LoopFactory;
-use React\EventLoop\LoopInterface;
 use Tidal\WampWatch\SessionMonitor;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 
 class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 {
+    use CrossbarTestingTrait;
 
     const REALM_NAME = 'realm1';
 
     const ROUTER_URL = 'ws://127.0.0.1:8080/ws';
 
     /**
-     * @var Connection
+     *
      */
-    private $connection;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
-
-    /**
-     * @var int
-     */
-    private $clientSessionId = -1;
-
-    /**
-     * @var int
-     */
-    private $monitoredSessionId = -2;
-
     public function setup()
     {
-
-        $this->clientSessionId = -1;
-        $this->monitoredSessionId = -2;
-
-        Logger::set(new NullLogger());
-
-        $this->loop = LoopFactory::create();
-
-        $this->connection = $this->createConnection($this->loop);
-
+        $this->setupConnection();
     }
 
-
+    /**
+     *
+     */
     public function test_onstart()
     {
 
@@ -174,21 +146,6 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->clientSessionId, $this->monitoredSessionId);
 
-    }
-
-    private function createConnection(LoopInterface $loop = null)
-    {
-        if ($loop = null) {
-            $loop = LoopFactory::create();
-        }
-
-        return new Connection(
-            [
-                'realm' => self::REALM_NAME,
-                'url'   => self::ROUTER_URL,
-            ],
-            $loop
-        );
     }
 
 }
