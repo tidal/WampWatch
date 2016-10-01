@@ -15,9 +15,7 @@ use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
- * Description of SessionMonitor.
- *
- * @author Timo
+ * Class SubscriptionMonitor.
  */
 class SubscriptionMonitor implements MonitorInterface
 {
@@ -138,15 +136,18 @@ class SubscriptionMonitor implements MonitorInterface
 
     protected function getSubscriptionIdRetrievalCallback()
     {
-        return function ($res) {
-            $this->setList($res);
+        return function (\Thruway\CallResult $res) {
+            /** @var \Thruway\Message\ResultMessage $message */
+            $message = $res->getResultMessage();
+            $list = $message->getArguments()[0];
+            $this->setList($list);
             $this->emit('list', [
                 $this->subscriptionIds->exact,
                 $this->subscriptionIds->prefix,
                 $this->subscriptionIds->wildcard,
             ]);
 
-            return $res;
+            return $list;
         };
     }
 }
