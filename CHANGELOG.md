@@ -3,6 +3,7 @@
 
   * added integration test for subscription monitor
   * added configuration for codeclimate
+  * bug fixes
 
 ### [0.5.0] - 2016-09-28
 
