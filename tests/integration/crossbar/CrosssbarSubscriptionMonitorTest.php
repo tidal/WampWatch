@@ -205,7 +205,7 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
 
             // create an additional client session
-            $clientConnection = $this->createConnection();
+            $clientConnection = $this->createConnection($this->loop);
             $clientSession = null;
 
             $subscriptionMonitor->on('start', function () use ($subscriptionMonitor, $clientConnection, $clientConnection) {
@@ -271,34 +271,24 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
 
             // create an additional client session
-            $clientConnection = $this->createConnection();
+            $clientConnection = $this->createConnection($this->loop);
             $clientSession = null;
 
-            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor, $clientConnection, $clientConnection) {
-                $clientConnection->open();
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
-            });
-
             $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection, &$subscriptionMonitor) {
-
+                $adapter = new Adapter($clientSession);
                 $topicName = "foo-bar-baz-boo";
-                $this->clientSessionId = $clientSession->getSessionId();
+                $this->clientSessionId = $adapter->getSessionId();
 
-                $subscriptionMonitor->on('subscribe', function () use ($clientSession) {
-                    Util::unsubscribe(new Adapter($clientSession), func_get_args()[1]);
+
+                $subscriptionMonitor->on('subscribe', function () use (&$sessionId, &$subscriptionId, $subscriptionMonitor, $clientConnection, $adapter) {
+                    Util::unsubscribe($adapter, func_get_args()[1]);
                 });
 
-                $clientSession->subscribe($topicName, function () {
+                $adapter->subscribe($topicName, function () {
                 });
-
-                $clientConnection->close();
-
             });
 
             $subscriptionMonitor->on('delete', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $subscriptionMonitor, $clientConnection) {
-
                 $sessionId = $sesId;
                 $subscriptionId = $subId;
 
@@ -308,10 +298,13 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $subscriptionMonitor->on('error', function ($error) use ($subscriptionMonitor) {
-
                 var_dump($error);
                 $subscriptionMonitor->stop();
                 $this->connection->close();
+            });
+
+            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor, $clientConnection, $clientConnection) {
+                $clientConnection->open();
             });
 
             $subscriptionMonitor->start();
