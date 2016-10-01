@@ -1,11 +1,11 @@
 <?php
-/**
+
+/*
+ * This file is part of the Tidal/WampWatch package.
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
  *
- *  * This file is part of the Tidal/WampWatch package.
- *  * (c) 2016 Timo Michna <timomichna/yahoo.de>
- *  *
- *  * For the full copyright and license information, please view the LICENSE
- *  * file that was distributed with this source code.
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  *
  */
 
@@ -13,19 +13,17 @@ namespace Tidal\WampWatch\Adapter\React;
 
 use Tidal\WampWatch\Async\DeferredInterface;
 use Tidal\WampWatch\Async\PromiseInterface;
-
 use React\Promise\Deferred;
 
 class DeferredAdapter implements DeferredInterface
 {
-
     /**
      * @var Deferred
      */
     private $adaptee;
 
     /**
-     * @var string fully qualified class name of the promise to create.
+     * @var string fully qualified class name of the promise to create
      */
     private $promiseClass = PromiseAdapter::class;
 
@@ -112,5 +110,4 @@ class DeferredAdapter implements DeferredInterface
             $this->adaptee->promise()
         );
     }
-
 }
