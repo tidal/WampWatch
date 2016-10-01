@@ -279,7 +279,7 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
             $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection, &$subscriptionMonitor) {
 
-                $topicName = bin2hex(random_bytes(10));
+                $topicName = "foo-bar-baz-boo";
                 $this->clientSessionId = $clientSession->getSessionId();
 
                 $subscriptionMonitor->on('subscribe', function () use ($clientSession) {
