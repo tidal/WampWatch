@@ -404,6 +404,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
     /**
      * @param $msg
+     *
      * @return mixed
      */
     public function sendMessage($msg)

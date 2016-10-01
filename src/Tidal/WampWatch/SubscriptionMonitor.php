@@ -15,7 +15,7 @@ use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
- * Class SubscriptionMonitor
+ * Class SubscriptionMonitor.
  */
 class SubscriptionMonitor implements MonitorInterface
 {
@@ -136,7 +136,6 @@ class SubscriptionMonitor implements MonitorInterface
 
     protected function getSubscriptionIdRetrievalCallback()
     {
-
         return function (\Thruway\CallResult $res) {
             /** @var \Thruway\Message\ResultMessage $message */
             $message = $res->getResultMessage();
