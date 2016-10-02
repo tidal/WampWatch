@@ -1,9 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Timo
- * Date: 24.07.2016
- * Time: 17:10.
+
+/*
+ * This file is part of the Tidal/WampWatch package.
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ *
  */
 
 namespace Tidal\WampWatch\Model;
