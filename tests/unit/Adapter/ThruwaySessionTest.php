@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\unit\Adapter;
+namespace Tidal\WampWatch\Test\Unit\Adapter;
 
 require_once __DIR__ . '/../../bootstrap.php';
 

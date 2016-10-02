@@ -1,4 +1,8 @@
 
+### [0.6.0] - 2016-10-02
+
+  * added basic meta model
+  
 ### [0.5.3] - 2016-10-02
 
   * fixed subscription monitor integration test
