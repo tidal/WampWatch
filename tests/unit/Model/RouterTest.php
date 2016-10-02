@@ -1,13 +1,13 @@
 <?php
 /**
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *  (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\Unit\Model;
+namespace Tidal\WampWatch\Test\unit\Model;
 
 use Tidal\WampWatch\Model\Connection;
 use Tidal\WampWatch\Model\Router;
@@ -111,7 +111,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $realms = [
             $this->getRealmMock('foo'),
             $this->getRealmMock('bar'),
-            $this->getRealmMock('baz')
+            $this->getRealmMock('baz'),
         ];
 
         foreach ($realms as $realm) {
@@ -122,8 +122,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         foreach ($this->router->listRealms() as $name => $realm) {
             $this->assertEquals($realms[$x], $realm);
             $this->assertEquals($realms[$x], $this->router->getRealm($name));
-            $x++;
+            ++$x;
         }
     }
-
 }

@@ -8,14 +8,14 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Exception;
+namespace Tidal\WampWatch\Test\unit\Exception;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 use Tidal\WampWatch\Exception\UnknownTopicException;
 use PHPUnit_Framework_TestCase;
 
-class UnknownUnknownTopicExceptionTest extends PHPUnit_Framework_TestCase
+class UnknownTopicExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function test_topic_name_can_be_retrieved()
     {
@@ -23,5 +23,4 @@ class UnknownUnknownTopicExceptionTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('foo', $e->getTopicName());
     }
-
 }

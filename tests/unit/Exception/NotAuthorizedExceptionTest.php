@@ -8,14 +8,13 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Exception;
+namespace Tidal\WampWatch\Test\unit\Exception;
 
 use Tidal\WampWatch\Exception\NotAuthorizedException;
 use PHPUnit_Framework_TestCase;
 
 class NotAuthorizedExceptionTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var NotAuthorizedException
      */
@@ -46,5 +45,4 @@ class NotAuthorizedExceptionTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue(NotAuthorizedException::isNotAuthrorizedError('wamp.error.not_authorized'));
     }
-
 }

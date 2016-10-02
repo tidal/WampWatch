@@ -1,4 +1,8 @@
 
+### [0.6.1] - 2016-10-02
+
+  * maintenance
+  
 ### [0.6.0] - 2016-10-02
 
   * added basic meta model

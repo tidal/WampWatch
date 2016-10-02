@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Exception;
+namespace Tidal\WampWatch\Test\unit\Exception;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -17,13 +17,10 @@ use PHPUnit_Framework_TestCase;
 
 class UnknownProcedureExceptionTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_procedure_name_can_be_retrieved()
     {
         $e = new UnknownProcedureException('foo');
 
         $this->assertSame('foo', $e->getProcedureName());
     }
-
-
 }
