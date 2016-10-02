@@ -11,7 +11,6 @@
 namespace Tidal\WampWatch\Model\Property\Collection;
 
 use Tidal\WampWatch\Model\Contract;
-use Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait;
 use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
 use Tidal\WampWatch\Model\Contract\RealmInterface;
 
@@ -24,8 +23,6 @@ use Tidal\WampWatch\Model\Contract\RealmInterface;
  */
 trait HasRealmsTrait
 {
-
-    //use HasCollectionsTrait;
 
     protected $realmsPropertyName = 'realms';
 
@@ -63,6 +60,14 @@ trait HasRealmsTrait
     }
 
     /**
+     * @param $name
+     */
+    public function removeRealm($name)
+    {
+        $this->getRealms()->offsetUnset($name);
+    }
+
+    /**
      * @return \Generator
      */
     public function listRealms()
@@ -74,7 +79,6 @@ trait HasRealmsTrait
 
     /**
      * @param ObjectCollectionInterface $realms
-     * @return \ArrayObject
      */
     private function setRealms(ObjectCollectionInterface $realms)
     {
