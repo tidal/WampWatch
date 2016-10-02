@@ -1,13 +1,24 @@
 <?php
+/*
+ * This file is part of the Tidal/WampWatch package.
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ *
+ */
+
+namespace Tidal\WampWatch\Test\Unit;
 
 require_once __DIR__ . '/../bootstrap.php';
-
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
+use Thruway\Message\ErrorMessage as ThruwayErrorMessage;
+use stdClass;
 
-class ClientSessionStubTest extends PHPUnit_Framework_TestCase
+class ClientSessionStubTest extends \PHPUnit_Framework_TestCase
 {
 
     const PROMISE_CLS = 'React\Promise\Promise';
@@ -523,7 +534,7 @@ class ClientSessionStubTest extends PHPUnit_Framework_TestCase
 
     private function getErrorMessage()
     {
-        return new Thruway\Message\ErrorMessage(
+        return new ThruwayErrorMessage(
             "wamp.error.not_authorized",
             321,
             new stdClass(),

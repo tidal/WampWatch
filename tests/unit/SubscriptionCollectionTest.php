@@ -10,7 +10,6 @@
 
 namespace Tidal\WampWatch\Test\Unit;
 
-
 use React\Promise\Promise;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Subscription\Collection;
