@@ -24,8 +24,7 @@ class Connection implements Contract\ConnectionInterface
     public function __construct(Contract\RouterInterface $router,
                                 Contract\RealmInterface $realm,
                                 Contract\SessionInterface $session = null
-    )
-    {
+    ) {
         $this->setRouter($router);
         $this->setRealm($realm);
         if ($session !== null) {
