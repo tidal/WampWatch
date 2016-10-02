@@ -96,9 +96,6 @@ class Collection
         return $this->subscriptionPromise->promise();
     }
 
-    /**
-     *
-     */
     protected function doSubscribe()
     {
         \React\Promise\all($this->getSubscriptionPromises())->done(function () {

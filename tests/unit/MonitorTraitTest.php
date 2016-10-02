@@ -1,11 +1,23 @@
 <?php
+/*
+ * This file is part of the Tidal/WampWatch package.
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ *
+ */
+
+namespace Tidal\WampWatch\Test\Unit;
 
 require_once __DIR__.'/../bootstrap.php';
 require_once __DIR__ . '/Stub/MonitorTraitImplementation.php';
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
+use Tidal\WampWatch\Test\Unit\Stub\MonitorTraitImplementation;
 use Tidal\WampWatch\Subscription\Collection;
 use Mockery as M;
+use PHPUnit_Framework_TestCase;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>

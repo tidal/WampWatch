@@ -23,8 +23,10 @@
         "codacy/coverage": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Tidal\\WampWatch": "src/"
+        "psr-4": {
+            "Tidal\\WampWatch\\Test\\Unit\\": "tests/unit",
+            "Tidal\\WampWatch\\Test\\Integration\\": "tests/integration",
+            "Tidal\\WampWatch\\": "src/Tidal/WampWatch"
         }
     },
     "scripts": {
