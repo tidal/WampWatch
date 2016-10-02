@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: Timo
  * Date: 24.07.2016
- * Time: 17:11
+ * Time: 17:11.
  */
 
 namespace Tidal\WampWatch\Model;
 
-use Tidal\WampWatch\Model\Contract;
 use Tidal\WampWatch\Model\Property\Scalar\HasNameTrait;
 use Tidal\WampWatch\Model\Property\Collection\HasTopicsTrait;
 use Tidal\WampWatch\Model\Property\Collection\HasProceduresTrait;

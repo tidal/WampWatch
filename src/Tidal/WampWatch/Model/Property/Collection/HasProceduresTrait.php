@@ -1,12 +1,10 @@
 <?php
 /**
- *
  * This file is part of the Tidal/WampWatch package.
- * (c) 2016 Timo Michna <timomichna/yahoo.de>
+ * (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace Tidal\WampWatch\Model\Property\Collection;
@@ -15,7 +13,7 @@ use Tidal\WampWatch\Model\Contract;
 use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
 
 /**
- * Class HasProceduresTrait
+ * Class HasProceduresTrait.
  *
  * Important! Classes using this trait have to also use trait
  * Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait
@@ -23,7 +21,6 @@ use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
  */
 trait HasProceduresTrait
 {
-
     protected static $proceduresPropertyName = 'procedures';
 
     /**

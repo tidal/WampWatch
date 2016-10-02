@@ -1,14 +1,11 @@
 <?php
 /**
- *
  * This file is part of the Tidal/WampWatch package.
- * (c) 2016 Timo Michna <timomichna/yahoo.de>
+ * (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
-
 
 namespace Tidal\WampWatch\Model\Factory;
 
@@ -18,10 +15,8 @@ use Tidal\WampWatch\Model\Contract\RealmInterface;
 use Tidal\WampWatch\Model\Contract\SessionInterface;
 use Tidal\WampWatch\Model\Connection;
 
-
 class ConnectionFactory
 {
-
     private $router;
 
     private $realm;
@@ -59,7 +54,6 @@ class ConnectionFactory
      * @param SessionInterface $session
      *
      * @return ConnectionFactory
-     *
      */
     public function establish(SessionInterface $session)
     {
@@ -72,11 +66,9 @@ class ConnectionFactory
     public function create()
     {
         if (!isset($this->realm)) {
-            throw new RuntimeException("No realm set.");
+            throw new RuntimeException('No realm set.');
         }
-
 
         return new Connection($this->router, $this->realm, $this->session);
     }
-
 }

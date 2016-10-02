@@ -1,14 +1,11 @@
 <?php
 /**
- *
  * This file is part of the Tidal/WampWatch package.
- * (c) 2016 Timo Michna <timomichna/yahoo.de>
+ * (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
-
 
 namespace Tidal\WampWatch\Model\Property;
 
@@ -39,7 +36,6 @@ class Collection extends ArrayObject implements CollectionInterface
     private function validateItemType($item)
     {
         if (isset($this->itemType) && $type = gettype($item) !== $this->itemType) {
-
             throw new InvalidArgumentException("Expected item of type '{$this->itemType}'. -> '$type' given.");
         }
     }
@@ -47,14 +43,12 @@ class Collection extends ArrayObject implements CollectionInterface
     private function validateCallback($item)
     {
         if (!isset($this->validationCallback)) {
-
             return;
         }
 
         $callback = $this->validationCallback;
 
         if (!$callback($item)) {
-
             throw new InvalidArgumentException('Item failed validation.');
         }
     }
@@ -87,7 +81,6 @@ class Collection extends ArrayObject implements CollectionInterface
     }
 
     /**
-     *
      * @return Generator
      */
     public function getGenerator()

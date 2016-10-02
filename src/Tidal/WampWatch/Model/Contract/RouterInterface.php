@@ -1,21 +1,18 @@
 <?php
 
-
 namespace Tidal\WampWatch\Model\Contract;
 
-use Psr\Http\Message\UriInterface;
 use Tidal\WampWatch\Model\Contract;
 
 interface RouterInterface
 {
-
     /**
-     * @return UriInterface;
+     * @return string;
      */
     public function getUri();
 
     /**
-     * @param  RealmInterface $realm
+     * @param RealmInterface $realm
      */
     public function addRealm(Contract\RealmInterface $realm);
 
@@ -23,5 +20,4 @@ interface RouterInterface
      * @return \Generator
      */
     public function listRealms();
-
 }

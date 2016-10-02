@@ -10,12 +10,11 @@
 
 namespace Tidal\WampWatch\Model;
 
-
 use Guzzle\Common\Exception\RuntimeException;
-use Tidal\WampWatch\Model\Contract;
 use Tidal\WampWatch\Model\Property\Collection\HasRealmsTrait;
 use Tidal\WampWatch\Model\Property\Scalar\HasUriTrait;
 use Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait;
+use Tidal\WampWatch\Model\Property\ObjectCollection;
 use Exception;
 
 class Router implements Contract\RouterInterface
@@ -31,8 +30,8 @@ class Router implements Contract\RouterInterface
     public function __construct($uri)
     {
         $this->setUri((string)$uri);
+        $this->setRealms(new ObjectCollection());
     }
-
 
     /**
      * @param callable $factory
@@ -44,7 +43,9 @@ class Router implements Contract\RouterInterface
 
     /**
      * @param \Tidal\WampWatch\Model\Contract\RealmInterface $realm
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function connect(Contract\RealmInterface $realm)
@@ -54,9 +55,8 @@ class Router implements Contract\RouterInterface
             /** @var Contract\ConnectionInterface $connection */
             $connection = $factory($this, $realm);
             if (!is_a($connection, Contract\ConnectionInterface::class)) {
-                throw new RuntimeException("Callable registered as factory for Connection did not return Connection instance");
+                throw new RuntimeException('Callable registered as factory for Connection did not return Connection instance');
             }
-
         } catch (Exception $e) {
             throw $e;
         }
