@@ -15,7 +15,6 @@
  * Date: 25.07.2016
  * Time: 20:07.
  */
-
 namespace Tidal\WampWatch\Model\Property\Scalar;
 
 trait HasUriTrait
