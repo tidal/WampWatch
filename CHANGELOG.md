@@ -1,8 +1,12 @@
 
-### [0.5.2] - 2016-10-01
+### [0.5.3] - 2016-10-02
 
   * fixed subscription monitor integration test
-  
+ 
+### [0.5.3] - 2016-10-01
+
+  * fixed subscription monitor integration test
+   
 ### [0.5.1] - 2016-10-01
 
   * added integration test for subscription monitor
