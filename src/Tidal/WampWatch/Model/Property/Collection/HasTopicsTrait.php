@@ -23,8 +23,6 @@ use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
 trait HasTopicsTrait
 {
 
-    //use HasCollectionsTrait;
-
     protected $topicsPropertyName = 'topics';
 
     /**
@@ -61,6 +59,14 @@ trait HasTopicsTrait
     }
 
     /**
+     * @param string $uri
+     */
+    public function removeTopic($uri)
+    {
+        $this->getTopics()->offsetUnset($uri);
+    }
+
+    /**
      * @return \Generator
      */
     public function listTopics()
@@ -72,7 +78,6 @@ trait HasTopicsTrait
 
     /**
      * @param ObjectCollectionInterface $topics
-     * @return \ArrayObject
      */
     private function setTopics(ObjectCollectionInterface $topics)
     {
