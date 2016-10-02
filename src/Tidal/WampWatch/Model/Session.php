@@ -9,7 +9,6 @@
  *
  */
 
-
 namespace Tidal\WampWatch\Model;
 
 use Tidal\WampWatch\Model\Property\Scalar\HasIdTrait;
