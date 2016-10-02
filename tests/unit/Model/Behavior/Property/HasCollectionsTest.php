@@ -1,13 +1,13 @@
 <?php
 /**
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *  (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\Unit\Model\Behavior\Property;
+namespace Tidal\WampWatch\Test\unit\Model\Behavior\Property;
 
 use Tidal\WampWatch\Model\Property\ObjectCollection;
 use Tidal\WampWatch\Test\Unit\Stub\HasCollectionsImplementation;
@@ -20,7 +20,6 @@ class HasCollectionsTest extends PHPUnit_Framework_TestCase
      * @var HasCollectionsImplementation
      */
     private $mock;
-
 
     public function setUp()
     {
@@ -76,5 +75,4 @@ class HasCollectionsTest extends PHPUnit_Framework_TestCase
 
         $this->mock->get('foo');
     }
-
 }

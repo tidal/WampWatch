@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit;
+namespace Tidal\WampWatch\Test\unit;
 
 require_once __DIR__.'/../bootstrap.php';
 require_once __DIR__ . '/Stub/MonitorTraitImplementation.php';
@@ -16,7 +16,6 @@ require_once __DIR__ . '/Stub/MonitorTraitImplementation.php';
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Test\Unit\Stub\MonitorTraitImplementation;
 use Tidal\WampWatch\Subscription\Collection;
-use Mockery as M;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -38,7 +37,6 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
 
     public function test_get_server_session()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new MonitorTraitImplementation($stub);
         $this->assertEquals($stub, $monitor->getServerSession());
@@ -99,10 +97,8 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame(false, $monitor->isRunning(), 'monitor should not be running, when it was stopped');
     }
 
-
     public function test_starts_returns_true()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new MonitorTraitImplementation($stub);
         $res = $monitor->start();
@@ -112,7 +108,6 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_started()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new MonitorTraitImplementation($stub);
 
@@ -133,7 +128,6 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($monitor->isRunning());
     }
-
 
     public function test_is_not_running_before_initial_call()
     {
@@ -204,7 +198,6 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription('foo')
         );
-
     }
 
     public function test_start_calls_procedure()
@@ -220,7 +213,6 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasCall('bar')
         );
-
     }
 
     public function test_failed_initial_procedure_emits_event()
@@ -241,9 +233,7 @@ class MonitorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($called);
     }
 
-
     // STOP MONITOR TESTS
-
 
     public function test_is_not_running_after_stop()
     {

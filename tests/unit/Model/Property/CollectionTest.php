@@ -1,13 +1,13 @@
 <?php
 /**
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *  (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\Unit\Model\Property;
+namespace Tidal\WampWatch\Test\unit\Model\Property;
 
 use Tidal\WampWatch\Model\Property\Collection;
 use PHPUnit_Framework_TestCase;
@@ -15,7 +15,6 @@ use InvalidArgumentException;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Collection
      */
@@ -46,9 +45,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     *
-     */
     public function test_can_set_valid_callback()
     {
         $res = null;
@@ -64,9 +60,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $res);
     }
 
-    /**
-     *
-     */
     public function test_failed_validation_callback_throws_exception()
     {
         $this->setExpectedException(InvalidArgumentException::class);
@@ -78,9 +71,6 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->collection->append('foo');
     }
 
-    /**
-     *
-     */
     public function test_can_access_values()
     {
         $this->assertFalse($this->collection->has('foo'));
@@ -115,7 +105,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             ['double', 3.21],
             ['boolean', true],
             ['array', []],
-            ['object', new \stdClass()]
+            ['object', new \stdClass()],
         ];
     }
 
@@ -168,9 +158,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase
             ['object', 3.21],
             ['object', true],
             ['object', '321'],
-            ['object', []]
+            ['object', []],
         ];
     }
-
-
 }

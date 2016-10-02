@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Exception;
+namespace Tidal\WampWatch\Test\unit\Exception;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -17,7 +17,6 @@ use PHPUnit_Framework_TestCase;
 
 class NoSuchProcedureExceptionTest extends PHPUnit_Framework_TestCase
 {
-
     public function test_topic_name_can_be_retrieved()
     {
         $e = new NoSuchProcedureException('foo');
@@ -27,12 +26,7 @@ class NoSuchProcedureExceptionTest extends PHPUnit_Framework_TestCase
 
     public function test_is_no_procecure_error()
     {
-
         $this->assertTrue(NoSuchProcedureException::isNoProcedureError('wamp.error.no_such_procedure'));
         $this->assertFalse(NoSuchProcedureException::isNoProcedureError('foo'));
-
     }
-
 }
-
-

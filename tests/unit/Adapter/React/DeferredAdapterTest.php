@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Adapter\React;
+namespace Tidal\WampWatch\Test\unit\Adapter\React;
 
 require_once __DIR__ . '/../../Stub/PromiseStub.php';
 
@@ -20,7 +20,6 @@ use PHPUnit_Framework_TestCase;
 
 class DeferredAdapterTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * @var DeferredAdapter
      */
@@ -49,7 +48,7 @@ class DeferredAdapterTest extends PHPUnit_Framework_TestCase
 
     public function test_can_access_promise_class()
     {
-        $promiseClass = "Foo";
+        $promiseClass = 'Foo';
         $this->adapter->setPromiseClass($promiseClass);
 
         $this->assertEquals(

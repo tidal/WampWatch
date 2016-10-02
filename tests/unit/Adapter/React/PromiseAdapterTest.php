@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit\Adapter\React;
+namespace Tidal\WampWatch\Test\unit\Adapter\React;
 
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use React\Promise\Promise;
