@@ -11,13 +11,13 @@
 
 namespace Tidal\WampWatch\Test\Unit\Model;
 
-use Tidal\WampWatch\Model\Procedure;
-use Tidal\WampWatch\Model\Session;
 use Tidal\WampWatch\Model\Registration;
-
 
 class RegistrationTest extends \PHPUnit_Framework_TestCase
 {
+    use HasSessionTrait;
+    use HasProcedureTrait;
+
     /**
      * @var Registration
      */
@@ -27,8 +27,8 @@ class RegistrationTest extends \PHPUnit_Framework_TestCase
     {
         $this->registration = new Registration(
             321,
-            $this->getSessionMock(),
-            $this->getProcedureMock()
+            $this->getSessionMock('baz'),
+            $this->getProcedureMock('foo')
         );
     }
 
@@ -45,43 +45,5 @@ class RegistrationTest extends \PHPUnit_Framework_TestCase
     public function test_can_retrieve_topic()
     {
         $this->assertSame('foo', $this->registration->getProcedure()->getUri());
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Session
-     */
-    private function getSessionMock()
-    {
-        $mock = $this->getNoConstructorMock(Session::class);
-        $mock->expects($this->any())
-            ->method('getId')
-            ->willReturn('baz');
-
-        return $mock;
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Procedure
-     */
-    private function getProcedureMock()
-    {
-        $mock = $this->getNoConstructorMock(Procedure::class);
-        $mock->expects($this->any())
-            ->method('getUri')
-            ->willReturn('foo');
-
-        return $mock;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getNoConstructorMock($class)
-    {
-        return $this->getMockBuilder($class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }

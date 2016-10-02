@@ -11,13 +11,13 @@
 
 namespace Tidal\WampWatch\Test\Unit\Model;
 
-use Tidal\WampWatch\Model\Topic;
-use Tidal\WampWatch\Model\Session;
 use Tidal\WampWatch\Model\Subscription;
-
 
 class SubscriptionTest extends \PHPUnit_Framework_TestCase
 {
+    use HasSessionTrait;
+    use HasTopicTrait;
+
     /**
      * @var Subscription
      */
@@ -45,43 +45,5 @@ class SubscriptionTest extends \PHPUnit_Framework_TestCase
     public function test_can_retrieve_topic()
     {
         $this->assertSame('foo', $this->subscription->getTopic()->getUri());
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Session
-     */
-    private function getSessionMock()
-    {
-        $mock = $this->getNoConstructorMock(Session::class);
-        $mock->expects($this->any())
-            ->method('getId')
-            ->willReturn('baz');
-
-        return $mock;
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Topic
-     */
-    private function getTopicMock()
-    {
-        $mock = $this->getNoConstructorMock(Topic::class);
-        $mock->expects($this->any())
-            ->method('getUri')
-            ->willReturn('foo');
-
-        return $mock;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getNoConstructorMock($class)
-    {
-        return $this->getMockBuilder($class)
-            ->disableOriginalConstructor()
-            ->getMock();
     }
 }
