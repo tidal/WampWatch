@@ -78,4 +78,52 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function test_can_add_realm()
+    {
+        $realm = $this->getRealmMock();
+        $name = $realm->getName();
+        $this->router->addRealm($realm);
+
+        $this->assertTrue($this->router->hasRealm($name));
+    }
+
+    public function test_can_remove_realm()
+    {
+        $realm = $this->getRealmMock();
+        $name = $realm->getName();
+        $this->router->addRealm($realm);
+        $this->router->removeRealm($name);
+
+        $this->assertFalse($this->router->hasRealm($name));
+    }
+
+    public function test_can_retrieve_realm()
+    {
+        $realm = $this->getRealmMock();
+        $name = $realm->getName();
+        $this->router->addRealm($realm);
+
+        $this->assertEquals($realm, $this->router->getRealm($name));
+    }
+
+    public function test_can_list_realms()
+    {
+        $realms = [
+            $this->getRealmMock('foo'),
+            $this->getRealmMock('bar'),
+            $this->getRealmMock('baz')
+        ];
+
+        foreach ($realms as $realm) {
+            $this->router->addRealm($realm);
+        }
+
+        $x = 0;
+        foreach ($this->router->listRealms() as $name => $realm) {
+            $this->assertEquals($realms[$x], $realm);
+            $this->assertEquals($realms[$x], $this->router->getRealm($name));
+            $x++;
+        }
+    }
+
 }
