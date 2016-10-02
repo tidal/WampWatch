@@ -17,8 +17,5 @@ use Tidal\WampWatch\Model\Contract\Property\Scalar\HasUriInterface;
 
 interface ProcedureInterface extends HasUriInterface
 {
-    public function register(callable $callback);
-
-    public function call(array $args = []);
 
 }
