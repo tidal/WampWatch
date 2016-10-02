@@ -41,7 +41,7 @@ trait HasProceduresTrait
      */
     private function getProcedures()
     {
-        return $this->getCollection($this->proceduresPropertyName);
+        return $this->getCollection(static::$proceduresPropertyName);
     }
 
     public function hasProcedure($uri)
@@ -60,6 +60,14 @@ trait HasProceduresTrait
     }
 
     /**
+     * @param string $uri
+     */
+    public function removeProcedure($uri)
+    {
+        $this->getProcedures()->offsetUnset($uri);
+    }
+
+    /**
      * @return \Generator
      */
     public function listProcedures()
@@ -71,7 +79,6 @@ trait HasProceduresTrait
 
     /**
      * @param ObjectCollectionInterface $procedures
-     * @return \ArrayObject
      */
     private function setProcedures(ObjectCollectionInterface $procedures)
     {
