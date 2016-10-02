@@ -39,11 +39,11 @@ interface PromiseInterface
     public function otherwise(callable $onRejected);
 
     /**
-     * @param callable $onFulfilledOrRejected
+     * @param callable $onAlways
      *
      * @return PromiseInterface
      */
-    public function always(callable $onFulfilledOrRejected);
+    public function always(callable $onAlways);
 
     /**
      * @param callable $onProgress

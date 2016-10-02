@@ -43,6 +43,13 @@ trait HasTopicsTrait
         return $this->getCollection($this->topicsPropertyName);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return ObjectCollectionInterface
+     */
+    abstract protected function getCollection($name);
+
     public function hasTopic($uri)
     {
         return $this->getTopics()->has($uri);
