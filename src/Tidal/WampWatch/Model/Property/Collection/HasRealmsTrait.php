@@ -44,6 +44,13 @@ trait HasRealmsTrait
         return $this->getCollection($this->realmsPropertyName);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return ObjectCollectionInterface
+     */
+    abstract protected function getCollection($name);
+
     public function hasRealm($name)
     {
         return $this->getRealms()->has($name);

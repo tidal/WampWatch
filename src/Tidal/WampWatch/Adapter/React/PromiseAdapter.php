@@ -88,13 +88,13 @@ class PromiseAdapter implements PromiseInterface
     }
 
     /**
-     * @param callable $onFulfilledOrRejected
+     * @param callable $onAlways
      *
      * @return self
      */
-    public function always(callable $onFulfilledOrRejected)
+    public function always(callable $onAlways)
     {
-        $this->adaptee->always($onFulfilledOrRejected);
+        $this->adaptee->always($onAlways);
 
         return $this;
     }
