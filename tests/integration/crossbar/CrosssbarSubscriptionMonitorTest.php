@@ -15,9 +15,11 @@ require_once realpath(__DIR__ . "/../..") . "/bootstrap.php";
 require_once __DIR__ . "/CrossbarTestingTrait.php";
 
 use Thruway\ClientSession;
+use Thruway\Message\SubscribedMessage;
 use Tidal\WampWatch\SubscriptionMonitor;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 use Tidal\WampWatch\Util;
+use stdClass;
 
 class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,166 +30,150 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     const ROUTER_URL = 'ws://127.0.0.1:8080/ws';
 
+    /**
+     * @var SubscriptionMonitor
+     */
+    private $subscriptionMonitor;
+
+    /**
+     * @var stdClass
+     */
+    private $initialSubscriptionInfo;
+
+    /**
+     * @var int
+     */
+    private $creatorSessionId;
+
+    /**
+     * @var stdClass
+     */
+    private $clientSubscriptionInfo;
+
+    /**
+     * @var int
+     */
+    private $subscriberSessionId;
+
+    /**
+     * @var int
+     */
+    private $subscriberSubId;
+
     public function setup()
     {
         $this->setupConnection();
+
+        $this->getConnection()->on('open', function (ClientSession $session) {
+            $this->setupSubscriptionMonitor($session);
+        });
     }
 
     public function test_onstart()
     {
+        $this->getConnection()->on('open', function () {
 
-        $subscriptionInfo = null;
+            $this->subscriptionMonitor->on('start', [$this->subscriptionMonitor, 'stop']);
 
-        $this->connection->on('open', function (ClientSession $session) use (&$subscriptionInfo) {
-
-            $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
-
-            $subscriptionMonitor->on('start', function ($ids) use (&$subscriptionInfo, $subscriptionMonitor) {
-
-                $subscriptionInfo = $ids;
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
-            });
-
-            $subscriptionMonitor->on('error', function ($error) use (&$subscriptionInfo, $subscriptionMonitor) {
-
-                var_dump($error);
-
-                $this->connection->close();
-
-                die();
-            });
-
-            $subscriptionMonitor->start();
-        });
-
-        $this->connection->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
+            $this->subscriptionMonitor->start();
         });
 
         $this->connection->open();
 
-        $this->assertInstanceOf(\stdClass::class, $subscriptionInfo);
-        $this->assertAttributeInternalType('array', 'exact', $subscriptionInfo);
-        $this->assertAttributeInternalType('array', 'prefix', $subscriptionInfo);
-        $this->assertAttributeInternalType('array', 'wildcard', $subscriptionInfo);
+        $this->validateSubscriptionInfo($this->initialSubscriptionInfo);
+    }
+
+    public function test_onstart_delivers_current_list()
+    {
+        $subscriptionId = null;
+
+        // create an additional client session
+        $clientConnection = $this->createClientConnection();
+        $clientConnection->on('open', function () use (&$subscriptionId, $clientConnection) {
+
+            $this->clientSession->subscribe($this->testTopicName, function () {
+            })
+                ->done(function (SubscribedMessage $message) use (&$subscriptionId) {
+                    $subscriptionId = $message->getSubscriptionId();
+
+                    $this->getConnection()->open();
+                });
+
+        });
+
+        $this->getConnection()->on('open', function () use ($clientConnection) {
+            $this->subscriptionMonitor->on('start', [$this->subscriptionMonitor, 'stop']);
+            $this->subscriptionMonitor->start();
+        });
+
+        $clientConnection->open();
+
+        $this->validateSubscriptionInfo($this->initialSubscriptionInfo);
+        $this->assertArraySubset([$subscriptionId], $this->initialSubscriptionInfo->exact);
     }
 
     public function test_oncreate()
     {
-        $subscriptionSessionId = null;
-        $subscriptionInfo = null;
+        $this->getConnection()->on('open', function () {
 
-        $this->connection->on('open', function (ClientSession $session) use (&$subscriptionInfo, &$subscriptionSessionId) {
-
-            $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
-
-            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor) {
-
-                // create an additional client session
-                $clientConnection = $this->createConnection();
-
-                $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection) {
-                    $this->clientSessionId = $clientSession->getSessionId();
-                    $clientSession->subscribe('foo', function () {
-                    });
-                    $clientConnection->close();
+            // create an additional client session
+            $clientConnection = $this->createClientConnection();
+            $clientConnection->on('open', function () use ($clientConnection) {
+                $this->clientSession->subscribe($this->testTopicName, function () {
                 });
+            });
+
+            $this->subscriptionMonitor->on('start', function () use ($clientConnection) {
                 $clientConnection->open();
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
             });
 
-            $subscriptionMonitor->on('create', function ($sessionId, \stdClass $subInfo) use (&$subscriptionInfo, &$subscriptionSessionId, $subscriptionMonitor) {
+            $this->subscriptionMonitor->on('create', function ($sessionId) {
+                $this->assertEquals($this->clientSession->getSessionId(), $sessionId);
 
-                $subscriptionInfo = $subInfo;
-                $subscriptionSessionId = $sessionId;
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
+                $this->subscriptionMonitor->stop();
             });
 
-            $subscriptionMonitor->on('error', function ($error) use (&$subscriptionInfo, $subscriptionMonitor) {
-
-                var_dump($error);
-
-                $this->connection->close();
-            });
-
-            $subscriptionMonitor->start();
-
+            $this->subscriptionMonitor->start();
         });
 
-        $this->connection->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
-        });
+        $this->getConnection()->open();
 
-        $this->connection->open();
-
-        $this->assertInternalType('int', $subscriptionSessionId);
-        $this->assertInstanceOf(\stdClass::class, $subscriptionInfo);
-        $this->assertAttributeEquals('foo', 'uri', $subscriptionInfo);
-        $this->assertAttributeEquals('exact', 'match', $subscriptionInfo);
-        $this->assertAttributeInternalType('int', 'id', $subscriptionInfo);
-        $this->assertAttributeInternalType('string', 'created', $subscriptionInfo);
+        $this->assertInternalType('int', $this->creatorSessionId);
+        $this->assertInstanceOf(\stdClass::class, $this->clientSubscriptionInfo);
+        $this->assertAttributeEquals($this->testTopicName, 'uri', $this->clientSubscriptionInfo);
+        $this->assertAttributeEquals('exact', 'match', $this->clientSubscriptionInfo);
+        $this->assertAttributeInternalType('int', 'id', $this->clientSubscriptionInfo);
+        $this->assertAttributeInternalType('string', 'created', $this->clientSubscriptionInfo);
     }
 
     public function test_onsubscribe()
     {
-        $sessionId = null;
-        $subscriptionId = null;
+        $this->connection->on('open', function () {
 
-        $this->connection->on('open', function (ClientSession $session) use (&$sessionId, &$subscriptionId) {
+            $this->subscriptionMonitor->on('subscribe', function () {
+                $this->subscriptionMonitor->stop();
+            });
 
-            $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
-
-            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor) {
+            $this->subscriptionMonitor->on('start', function () {
 
                 // create an additional client session
-                $clientConnection = $this->createConnection();
+                $clientConnection = $this->createClientConnection();
 
-                $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection) {
-                    $this->clientSessionId = $clientSession->getSessionId();
-                    $clientSession->subscribe('foo', function () {
+                $clientConnection->on('open', function () use ($clientConnection) {
+                    $this->clientSession->subscribe($this->testTopicName, function () {
                     });
-                    $clientConnection->close();
                 });
                 $clientConnection->open();
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
             });
 
-            $subscriptionMonitor->on('subscribe', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $subscriptionMonitor) {
+            $this->subscriptionMonitor->start();
 
-                $sessionId = $sesId;
-                $subscriptionId = $subId;
-
-                $subscriptionMonitor->stop();
-                $this->connection->close();
-            });
-
-            $subscriptionMonitor->on('error', function ($error) use ($subscriptionMonitor) {
-
-                var_dump($error);
-                $subscriptionMonitor->stop();
-                $this->connection->close();
-            });
-
-            $subscriptionMonitor->start();
-
-        });
-
-        $this->connection->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
         });
 
         $this->connection->open();
 
-        $this->assertInternalType('int', $sessionId);
-        $this->assertInternalType('int', $subscriptionId);
+        $this->assertEquals($this->creatorSessionId, $this->subscriberSessionId);
+        $this->assertEquals($this->clientSubscriptionInfo->id, $this->subscriberSubId);
     }
 
     public function test_onunsubscribe()
@@ -196,59 +182,39 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $sessionId = null;
         $subscriptionId = null;
 
-        $this->connection->on('open', function (ClientSession $session) use (&$sessionId, &$subscriptionId) {
-
-            $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
+        $this->connection->on('open', function () use (&$sessionId, &$subscriptionId) {
 
             // create an additional client session
-            $clientConnection = $this->createConnection();
+            $clientConnection = $this->createConnection($this->loop);
             $clientSession = null;
 
-            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor, $clientConnection, $clientConnection) {
+            $this->subscriptionMonitor->on('start', function () use ($clientConnection) {
                 $clientConnection->open();
 
-                $subscriptionMonitor->stop();
+                $this->subscriptionMonitor->stop();
                 $this->connection->close();
             });
 
             $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection, &$subscriptionMonitor) {
-
-                $this->clientSessionId = $clientSession->getSessionId();
-
-                $subscriptionMonitor->on('subscribe', function () use ($clientSession) {
-                    Util::unsubscribe(new Adapter($clientSession), func_get_args()[1]);
+                $this->subscriptionMonitor->on('subscribe', function () use ($clientSession, $clientConnection) {
+                    Util::unsubscribe($this->createSessionAdapter($clientSession), func_get_args()[1]);
+                    $clientConnection->close();
                 });
 
                 $clientSession->subscribe('foo', function () {
                 });
-
-                $clientConnection->close();
-
             });
 
-            $subscriptionMonitor->on('unsubscribe', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $subscriptionMonitor, $clientConnection) {
+            $this->subscriptionMonitor->on('unsubscribe', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $clientConnection) {
 
                 $sessionId = $sesId;
                 $subscriptionId = $subId;
 
-                $clientConnection->close();
-                $subscriptionMonitor->stop();
-                $this->connection->close();
+                $this->subscriptionMonitor->stop();
             });
 
-            $subscriptionMonitor->on('error', function ($error) use ($subscriptionMonitor) {
+            $this->subscriptionMonitor->start();
 
-                var_dump($error);
-                $subscriptionMonitor->stop();
-                $this->connection->close();
-            });
-
-            $subscriptionMonitor->start();
-
-        });
-
-        $this->connection->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
         });
 
         $this->connection->open();
@@ -262,66 +228,84 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $sessionId = null;
         $subscriptionId = null;
 
-        $this->connection->on('open', function (ClientSession $session) use (&$sessionId, &$subscriptionId) {
-
-            $subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
+        $this->connection->on('open', function () use (&$sessionId, &$subscriptionId) {
 
             // create an additional client session
-            $clientConnection = $this->createConnection();
+            $clientConnection = $this->createConnection($this->loop);
             $clientSession = null;
 
-            $subscriptionMonitor->on('start', function () use ($subscriptionMonitor, $clientConnection, $clientConnection) {
-                $clientConnection->open();
-
-                $subscriptionMonitor->stop();
+            $this->subscriptionMonitor->on('stop', function () {
                 $this->connection->close();
             });
 
-            $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection, &$subscriptionMonitor) {
-
-                $topicName = "foo-bar-baz-boo";
-                $this->clientSessionId = $clientSession->getSessionId();
-
-                $subscriptionMonitor->on('subscribe', function () use ($clientSession) {
-                    Util::unsubscribe(new Adapter($clientSession), func_get_args()[1]);
-                });
-
-                $clientSession->subscribe($topicName, function () {
-                });
-
-                $clientConnection->close();
-
-            });
-
-            $subscriptionMonitor->on('delete', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $subscriptionMonitor, $clientConnection) {
-
+            $this->subscriptionMonitor->on('delete', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $clientConnection) {
                 $sessionId = $sesId;
                 $subscriptionId = $subId;
 
                 $clientConnection->close();
-                $subscriptionMonitor->stop();
+                $this->subscriptionMonitor->stop();
                 $this->connection->close();
             });
 
-            $subscriptionMonitor->on('error', function ($error) use ($subscriptionMonitor) {
+            $clientConnection->on('open', function (ClientSession $clientSession) use ($clientConnection, &$subscriptionMonitor) {
+                $adapter = $this->createSessionAdapter($clientSession);
+                $this->clientSessionId = $adapter->getSessionId();
 
-                var_dump($error);
-                $subscriptionMonitor->stop();
-                $this->connection->close();
+                $this->subscriptionMonitor->on('subscribe', function () use (&$sessionId, &$subscriptionId, $subscriptionMonitor, $clientConnection, $adapter) {
+                    Util::unsubscribe($adapter, func_get_args()[1]);
+                });
+
+                $adapter->subscribe($this->testTopicName, function () {
+                });
             });
 
-            $subscriptionMonitor->start();
+            $this->subscriptionMonitor->on('start', function () use ($clientConnection, $clientConnection) {
+                $clientConnection->open();
+            });
 
-        });
+            $this->subscriptionMonitor->start();
 
-        $this->connection->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
         });
 
         $this->connection->open();
 
         $this->assertInternalType('int', $sessionId);
         $this->assertInternalType('int', $subscriptionId);
+    }
+
+    private function setupSubscriptionMonitor(ClientSession $session)
+    {
+        $this->subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
+        $this->subscriptionMonitor->on('stop', function () {
+            $this->connection->close();
+        });
+        $this->subscriptionMonitor->on('error', function ($error) {
+            var_dump($error);
+
+            $this->connection->close();
+
+            die();
+        });
+        $this->subscriptionMonitor->on('start', function ($info) {
+            $this->initialSubscriptionInfo = $info;
+        });
+
+        $this->subscriptionMonitor->on('create', function ($sessionId, \stdClass $subInfo) {
+            $this->creatorSessionId = $sessionId;
+            $this->clientSubscriptionInfo = $subInfo;
+        });
+
+        $this->subscriptionMonitor->on('subscribe', function ($sessionId, $subId) {
+            $this->subscriberSessionId = $sessionId;
+            $this->subscriberSubId = $subId;
+        });
+    }
+
+    private function validateSubscriptionInfo(stdClass $subscriptionInfo)
+    {
+        $this->assertAttributeInternalType('array', 'exact', $subscriptionInfo);
+        $this->assertAttributeInternalType('array', 'prefix', $subscriptionInfo);
+        $this->assertAttributeInternalType('array', 'wildcard', $subscriptionInfo);
     }
 
 }
