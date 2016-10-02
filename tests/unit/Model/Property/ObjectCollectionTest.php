@@ -1,13 +1,13 @@
 <?php
 /**
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *  (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\Unit\Model\Property;
+namespace Tidal\WampWatch\Test\unit\Model\Property;
 
 use Tidal\WampWatch\Model\Property\ObjectCollection;
 use PHPUnit_Framework_TestCase;
@@ -48,12 +48,10 @@ class ObjectCollectionTest extends PHPUnit_Framework_TestCase
             [3.21],
             [true],
             [[]],
-            [new \stdClass()]
+            [new \stdClass()],
         ];
     }
 
-    /**
-     */
     public function test_invalid_class_constrain_throws_exception()
     {
         $this->setExpectedException(
@@ -63,8 +61,6 @@ class ObjectCollectionTest extends PHPUnit_Framework_TestCase
         $this->collection->setObjectConstrain('Foo');
     }
 
-    /**
-     */
     public function test_invalid_class_value_throws_exception()
     {
         $this->setExpectedException(
@@ -76,8 +72,6 @@ class ObjectCollectionTest extends PHPUnit_Framework_TestCase
         $this->collection->append('foo');
     }
 
-    /**
-     */
     public function test_given_class_is_valid()
     {
         $this->collection->setObjectConstrain(\stdClass::class);
@@ -87,5 +81,4 @@ class ObjectCollectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($value, $this->collection[0]);
     }
-
 }

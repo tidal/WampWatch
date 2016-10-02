@@ -10,7 +10,7 @@
 
 namespace Tidal\WampWatch\Test\Unit\Stub;
 
-use \Tidal\WampWatch\MonitorTrait;
+use Tidal\WampWatch\MonitorTrait;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 class MonitorTraitImplementation

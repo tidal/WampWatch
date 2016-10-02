@@ -1,18 +1,16 @@
 <?php
 /**
- *
  * This file is part of the Tidal/WampWatch package.
  * (c) 2016 Timo Michna <timomichna/yahoo.de>
  *  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 namespace integration\crossbar;
 
-require_once realpath(__DIR__ . "/../..") . "/bootstrap.php";
-require_once __DIR__ . "/CrossbarTestingTrait.php";
+require_once realpath(__DIR__ . '/../..') . '/bootstrap.php';
+require_once __DIR__ . '/CrossbarTestingTrait.php';
 
 use Thruway\ClientSession;
 use Thruway\Message\SubscribedMessage;
@@ -23,7 +21,6 @@ use stdClass;
 
 class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 {
-
     use CrossbarTestingTrait;
 
     const REALM_NAME = 'realm1';
@@ -72,7 +69,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_onstart()
     {
         $this->getConnection()->on('open', function () {
-
             $this->subscriptionMonitor->on('start', [$this->subscriptionMonitor, 'stop']);
 
             $this->subscriptionMonitor->start();
@@ -90,7 +86,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         // create an additional client session
         $clientConnection = $this->createClientConnection();
         $clientConnection->on('open', function () use (&$subscriptionId, $clientConnection) {
-
             $this->clientSession->subscribe($this->testTopicName, function () {
             })
                 ->done(function (SubscribedMessage $message) use (&$subscriptionId) {
@@ -98,7 +93,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
                     $this->getConnection()->open();
                 });
-
         });
 
         $this->getConnection()->on('open', function () use ($clientConnection) {
@@ -149,7 +143,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_onsubscribe()
     {
         $this->connection->on('open', function () {
-
             $this->subscriptionMonitor->on('subscribe', function () {
                 $this->subscriptionMonitor->stop();
             });
@@ -167,7 +160,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $this->subscriptionMonitor->start();
-
         });
 
         $this->connection->open();
@@ -178,7 +170,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_onunsubscribe()
     {
-
         $sessionId = null;
         $subscriptionId = null;
 
@@ -206,7 +197,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $this->subscriptionMonitor->on('unsubscribe', function ($sesId, $subId) use (&$sessionId, &$subscriptionId, $clientConnection) {
-
                 $sessionId = $sesId;
                 $subscriptionId = $subId;
 
@@ -214,7 +204,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $this->subscriptionMonitor->start();
-
         });
 
         $this->connection->open();
@@ -264,7 +253,6 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $this->subscriptionMonitor->start();
-
         });
 
         $this->connection->open();
@@ -307,5 +295,4 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeInternalType('array', 'prefix', $subscriptionInfo);
         $this->assertAttributeInternalType('array', 'wildcard', $subscriptionInfo);
     }
-
 }

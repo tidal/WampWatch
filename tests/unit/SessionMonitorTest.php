@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit;
+namespace Tidal\WampWatch\Test\unit;
 
 require_once __DIR__.'/../bootstrap.php';
 
@@ -36,7 +36,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_starts_returns_true()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $res = $monitor->start();
@@ -46,7 +45,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_started()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
 
@@ -55,7 +53,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_onjoin_subscriptions()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -67,7 +64,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_onleave_subscriptions()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -79,7 +75,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_list_response()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -91,7 +86,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_running_after_subscriptions_and_list()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -104,7 +98,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_start_event_after_running()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $stub->setSessionId(321);
@@ -126,7 +119,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_start_subscribes_to_join_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -134,12 +126,10 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SessionMonitor::SESSION_JOIN_TOPIC)
         );
-
     }
 
     public function test_start_subscribes_to_leave_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -147,7 +137,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SessionMonitor::SESSION_LEAVE_TOPIC)
         );
-
     }
 
     public function test_start_calls_session_list()
@@ -159,9 +148,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasCall(SessionMonitor::SESSION_LIST_TOPIC)
         );
-
     }
-
 
     // SESSION IDS RETRIEVAL TESTS
 
@@ -181,9 +168,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
         $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
 
-
         $this->assertTrue($called);
-
     }
 
     public function test_get_sessionids_retrieves_session_list()
@@ -204,10 +189,8 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
         $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
 
-
         $this->assertTrue($listCalled && $calledBack);
     }
-
 
     public function test_list_event_getsessionid_callback_return_same_value()
     {
@@ -228,12 +211,10 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
 
         $this->assertSame($listCalled, $calledBack);
-
     }
 
     public function test_get_sessionids_removes_monitors_sessionid()
     {
-
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
@@ -250,7 +231,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_second_get_sessionids_retrieves_ids_locally()
     {
-
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
@@ -268,12 +248,10 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
         });
 
         $this->assertSame($firstResult, $secondResult);
-
     }
 
     public function test_session_registration_on_start()
     {
-
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
@@ -286,10 +264,8 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     // SESSION JOIN TESTS
 
-
     public function test_session_registration_on_join()
     {
-
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
@@ -320,7 +296,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_unknown_session_unregistration_causes_no_error()
     {
-
         $stub = new ClientSessionStub();
         $stub->setSessionId(321);
         $monitor = new SessionMonitor($stub);
@@ -372,7 +347,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
     }
 
     // SESSION INFO TESTS
-
 
     public function test_get_sessioninfo_calls_promise()
     {
@@ -457,7 +431,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_is_not_running_after_stop()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
 
@@ -473,7 +446,6 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_stop_emits_event()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SessionMonitor($stub);
         $monitor->start();
@@ -491,5 +463,4 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($monitor, $response);
     }
-
 }

@@ -1,19 +1,17 @@
 <?php
 
-namespace Tidal\WampWatch\Test\Unit\Adapter;
+namespace Tidal\WampWatch\Test\unit\Adapter;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-use \Tidal\WampWatch\Adapter\Thruway\ClientSession;
+use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Mockery as M;
 
 class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
 {
+    protected $sessionMock,
 
-    protected
-        $sessionMock,
-
-        /**
+        /*
          * @var ClientSession
          */
         $adapter;
@@ -37,7 +35,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn($promise);
 
         $this->adapter->subscribe('foo', $cb, $options);
-
     }
 
     public function test_publish()
@@ -54,7 +51,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn($promise);
 
         $this->adapter->publish('foo', $args, $argsKW, $options);
-
     }
 
     public function test_register()
@@ -70,7 +66,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn($promise);
 
         $this->adapter->register('foo', $cb, $options);
-
     }
 
     public function test_unregister()
@@ -83,7 +78,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn($promise);
 
         $this->adapter->unregister('foo');
-
     }
 
     public function test_call()
@@ -100,7 +94,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn($promise);
 
         $this->adapter->call('foo', $args, $argsKW, $options);
-
     }
 
     public function test_send_message()
@@ -112,7 +105,6 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->with($msg);
 
         $this->adapter->sendMessage($msg);
-
     }
 
     public function test_set_session_id()
@@ -131,9 +123,7 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
             ->andReturn(321);
 
         $this->assertSame(321, $this->adapter->getSessionId());
-
     }
-
 
     private function getEmptyFunc()
     {

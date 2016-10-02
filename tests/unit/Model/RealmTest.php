@@ -1,13 +1,13 @@
 <?php
 /**
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *  (c) 2016 Timo Michna <timomichna/yahoo.de>.
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\Unit\Model;
+namespace Tidal\WampWatch\Test\unit\Model;
 
 use Tidal\WampWatch\Model\Realm;
 use Tidal\WampWatch\Model\Router;
@@ -83,7 +83,7 @@ class RealmTest extends \PHPUnit_Framework_TestCase
         $procedures = [
             $this->getProcedureMock('foo'),
             $this->getProcedureMock('bar'),
-            $this->getProcedureMock('baz')
+            $this->getProcedureMock('baz'),
         ];
 
         foreach ($procedures as $procedure) {
@@ -94,7 +94,7 @@ class RealmTest extends \PHPUnit_Framework_TestCase
         foreach ($this->realm->listProcedures() as $uri => $procedure) {
             $this->assertEquals($procedures[$x], $procedure);
             $this->assertEquals($procedures[$x], $this->realm->getProcedure($uri));
-            $x++;
+            ++$x;
         }
     }
 
@@ -131,7 +131,7 @@ class RealmTest extends \PHPUnit_Framework_TestCase
         $topics = [
             $this->getTopicMock('foo'),
             $this->getTopicMock('bar'),
-            $this->getTopicMock('baz')
+            $this->getTopicMock('baz'),
         ];
 
         foreach ($topics as $topic) {
@@ -142,8 +142,7 @@ class RealmTest extends \PHPUnit_Framework_TestCase
         foreach ($this->realm->listTopics() as $uri => $topic) {
             $this->assertEquals($topics[$x], $topic);
             $this->assertEquals($topics[$x], $this->realm->getTopic($uri));
-            $x++;
+            ++$x;
         }
     }
-
 }

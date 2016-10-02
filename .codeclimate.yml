@@ -4,11 +4,19 @@ engines:
     enabled: true
     config:
       languages:
-      - php
+        php:
+          mass_threshold: 100
   fixme:
     enabled: true
   phpmd:
     enabled: true
+    checks:
+      Naming/ShortMethodName:
+        enabled: false
+      Naming/ShortVariable:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
 ratings:
   paths:
   - "**.php"

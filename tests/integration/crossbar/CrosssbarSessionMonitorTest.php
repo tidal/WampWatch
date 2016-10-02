@@ -2,8 +2,8 @@
 
 namespace integration\crossbar;
 
-require_once realpath(__DIR__ . "/../..") . "/bootstrap.php";
-require_once __DIR__ . "/CrossbarTestingTrait.php";
+require_once realpath(__DIR__ . '/../..') . '/bootstrap.php';
+require_once __DIR__ . '/CrossbarTestingTrait.php';
 
 use Thruway\ClientSession;
 use Tidal\WampWatch\SessionMonitor;
@@ -17,28 +17,19 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
     const ROUTER_URL = 'ws://127.0.0.1:8080/ws';
 
-    /**
-     *
-     */
     public function setup()
     {
         $this->setupConnection();
     }
 
-    /**
-     *
-     */
     public function test_onstart()
     {
-
         $sessionIds = null;
 
         $this->connection->on('open', function (ClientSession $session) use (&$sessionIds) {
-
             $sessionMonitor = new SessionMonitor(new Adapter($session));
 
             $sessionMonitor->on('start', function ($ids) use (&$sessionIds, $sessionMonitor) {
-
                 $sessionIds = $ids;
 
                 $sessionMonitor->stop();
@@ -46,8 +37,6 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
             });
 
             $sessionMonitor->start();
-
-
         });
 
         $this->connection->on('error', function ($reason) {
@@ -57,24 +46,17 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->connection->open();
 
         $this->assertTrue(is_array($sessionIds));
-
-
     }
-
 
     public function test_onjoin()
     {
-
         $this->connection->on('open', function (ClientSession $session) {
-
             $sessionMonitor = new SessionMonitor(new Adapter($session));
 
             $sessionMonitor->on('join', function (\stdClass $info) use ($sessionMonitor) {
-
                 $this->monitoredSessionId = $info->session;
                 $sessionMonitor->stop();
                 $this->connection->close();
-
             });
 
             $sessionMonitor->on('start', function () use ($sessionMonitor) {
@@ -87,11 +69,9 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
                     $clientConnection->close();
                 });
                 $clientConnection->open();
-
             });
 
             $sessionMonitor->start();
-
         });
 
         $this->connection->on('error', function ($reason) {
@@ -101,23 +81,17 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->connection->open();
 
         $this->assertEquals($this->clientSessionId, $this->monitoredSessionId);
-
     }
 
     public function test_onleave()
     {
-
-
         $this->connection->on('open', function (ClientSession $session) {
-
             $sessionMonitor = new SessionMonitor(new Adapter($session));
 
             $sessionMonitor->on('leave', function ($id) use ($sessionMonitor) {
-
                 $this->monitoredSessionId = $id;
                 $sessionMonitor->stop();
                 $this->connection->close();
-
             });
 
             $sessionMonitor->on('start', function () {
@@ -130,12 +104,9 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
                     $clientConnection->close();
                 });
                 $clientConnection->open();
-
-
             });
 
             $sessionMonitor->start();
-
         });
 
         $this->connection->on('error', function ($reason) {
@@ -145,7 +116,5 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->connection->open();
 
         $this->assertEquals($this->clientSessionId, $this->monitoredSessionId);
-
     }
-
 }

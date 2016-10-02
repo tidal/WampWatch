@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit;
+namespace Tidal\WampWatch\Test\unit;
 
 require_once __DIR__ . '/../bootstrap.php';
 
@@ -17,10 +17,8 @@ use Tidal\WampWatch\Stub\ClientSessionStub;
 use Thruway\CallResult;
 use Thruway\Message\ResultMessage;
 
-
 class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function test_starts_returns_true()
     {
         $stub = new ClientSessionStub();
@@ -33,7 +31,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_started()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
 
@@ -102,7 +99,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_is_not_running_before_list_response()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $monitor->start();
@@ -117,7 +113,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_is_running_after_subscriptions_and_list()
     {
-
         $stub = new ClientSessionStub();
         $subIdMap = $this->getSubscriptionIdMap();
         $monitor = new SubscriptionMonitor($stub);
@@ -134,7 +129,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_start_event_after_running()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $subIdMap = $this->getSubscriptionIdMap();
@@ -160,7 +154,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_start_subscribes_to_create_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $monitor->start();
@@ -168,12 +161,10 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC)
         );
-
     }
 
     public function test_start_subscribes_to_delete_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $monitor->start();
@@ -181,12 +172,10 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SubscriptionMonitor::SUBSCRIPTION_DELETE_TOPIC)
         );
-
     }
 
     public function test_start_subscribes_to_subscribe_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $monitor->start();
@@ -194,12 +183,10 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SubscriptionMonitor::SUBSCRIPTION_SUB_TOPIC)
         );
-
     }
 
     public function test_start_subscribes_to_unsubscribe_topic()
     {
-
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $monitor->start();
@@ -207,7 +194,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasSubscription(SubscriptionMonitor::SUBSCRIPTION_UNSUB_TOPIC)
         );
-
     }
 
     public function test_start_calls_session_list()
@@ -219,7 +205,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $stub->hasCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC)
         );
-
     }
 
     // SUBSCRIPTION INFO TESTS
@@ -241,7 +226,6 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($info, $res);
     }
-
 
     public function test_get_subscription_info_calls_promise()
     {
@@ -400,14 +384,13 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($first, $second);
     }
 
-
     private function getSubscriptionInfo()
     {
         return [
             'id'      => 321,
-            'created' => "1999-09-09T09:09:09.999Z",
-            'uri'     => "com.example.topic",
-            'match'   => "exact"
+            'created' => '1999-09-09T09:09:09.999Z',
+            'uri'     => 'com.example.topic',
+            'match'   => 'exact',
         ];
     }
 
@@ -447,13 +430,10 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             ->method('getArguments')
             ->willReturn(
                 [
-                    json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}')
+                    json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}'),
                 ]
             );
 
         return $mock;
     }
-
-
-
 }

@@ -1,12 +1,10 @@
 <?php
 /**
- *
  *  * This file is part of the Tidal/WampWatch package.
  *  * (c) 2016 Timo Michna <timomichna/yahoo.de>
  *  *
  *  * For the full copyright and license information, please view the LICENSE
  *  * file that was distributed with this source code.
- *
  */
 
 namespace integration\crossbar;
@@ -53,7 +51,6 @@ trait CrossbarTestingTrait
 
     private function setupConnection()
     {
-
         $this->clientSessionId = -1;
         $this->monitoredSessionId = -2;
 
@@ -69,7 +66,6 @@ trait CrossbarTestingTrait
             $this->clientSession = $this->createSessionAdapter($session);
             $this->clientSessionId = $session->getSessionId();
         });
-
     }
 
     /**
@@ -112,12 +108,12 @@ trait CrossbarTestingTrait
 
     private function setupTestTopicName()
     {
-        $this->testTopicName = "";
+        $this->testTopicName = '';
 
-        $chars = str_split("abcdefghijklmnopqrstuvwxyz");
-        for ($i = 0; $i < 10; $i++) {
+        $chars = str_split('abcdefghijklmnopqrstuvwxyz');
+        for ($i = 0; $i < 10; ++$i) {
             $key = array_rand($chars);
-            $this->testTopicName .= "" . $chars[$key];
+            $this->testTopicName .= '' . $chars[$key];
         }
     }
 
@@ -148,5 +144,4 @@ trait CrossbarTestingTrait
         return $this->connection
             ?: $this->connection = $this->createConnection();
     }
-
 }
