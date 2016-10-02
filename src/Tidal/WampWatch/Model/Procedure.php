@@ -9,15 +9,14 @@
 namespace Tidal\WampWatch\Model;
 
 use Tidal\WampWatch\Model\Property\Scalar\HasUriTrait;
+use Tidal\WampWatch\Model\Contract;
 
-class Procedure
+class Procedure implements Contract\ProcedureInterface
 {
-
     use HasUriTrait;
 
     public function __construct($uri)
     {
         $this->setUri($uri);
     }
-
 }
