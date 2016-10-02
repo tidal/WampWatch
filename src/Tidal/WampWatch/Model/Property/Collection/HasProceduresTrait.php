@@ -43,6 +43,13 @@ trait HasProceduresTrait
         return $this->getCollection(static::$proceduresPropertyName);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return ObjectCollectionInterface
+     */
+    abstract protected function getCollection($name);
+
     public function hasProcedure($uri)
     {
         return $this->getProcedures()->has($uri);
