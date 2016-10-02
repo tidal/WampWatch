@@ -1,11 +1,11 @@
 <?php
 /**
  *
- *  * This file is part of the Tidal/WampWatch package.
- *  * (c) 2016 Timo Michna <timomichna/yahoo.de>
- *  *
- *  * For the full copyright and license information, please view the LICENSE
- *  * file that was distributed with this source code.
+ * This file is part of the Tidal/WampWatch package.
+ * (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
  */
 
@@ -13,7 +13,6 @@ namespace Tidal\WampWatch\Model\Contract\Property;
 
 use
     IteratorAggregate,
-    Traversable,
     ArrayAccess,
     Serializable,
     Countable;
@@ -49,8 +48,8 @@ interface CollectionInterface extends IteratorAggregate, ArrayAccess, Serializab
     /**
      * set an item with the given key
      *
-     * @param string $key the name of the key.
-     * @param mixeds $value the item to add.
+     * @param string $key   the name of the key.
+     * @param mixed  $value the item to add.
      *
      * @return mixed
      */

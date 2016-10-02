@@ -1,11 +1,11 @@
 <?php
 /**
  *
- *  * This file is part of the Tidal/WampWatch package.
- *  * (c) 2016 Timo Michna <timomichna/yahoo.de>
- *  *
- *  * For the full copyright and license information, please view the LICENSE
- *  * file that was distributed with this source code.
+ * This file is part of the Tidal/WampWatch package.
+ * (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
  */
 
@@ -15,10 +15,7 @@ namespace Tidal\WampWatch\Model\Property;
 use ArrayObject;
 use InvalidArgumentException;
 use Generator;
-use Tidal\WampWatch\Model\Contract\Property\ObjectCollectionInterface;
-
 use Tidal\WampWatch\Model\Contract\Property\CollectionInterface;
-
 
 class Collection extends ArrayObject implements CollectionInterface
 {
@@ -74,7 +71,7 @@ class Collection extends ArrayObject implements CollectionInterface
 
     public function set($key, $value)
     {
-        return $this->offsetSet($key, $value);
+        $this->offsetSet($key, $value);
     }
 
     public function offsetSet($index, $newValue)
