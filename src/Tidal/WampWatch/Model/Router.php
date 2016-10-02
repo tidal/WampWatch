@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Tidal/WampWatch package.
  *   (c) 2016 Timo Michna <timomichna/yahoo.de>
@@ -29,7 +30,7 @@ class Router implements Contract\RouterInterface
 
     public function __construct($uri)
     {
-        $this->setUri((string)$uri);
+        $this->setUri((string) $uri);
         $this->setRealms(new ObjectCollection());
     }
 
