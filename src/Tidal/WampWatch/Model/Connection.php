@@ -21,7 +21,10 @@ class Connection implements Contract\ConnectionInterface
     use HasRealmTrait;
     use HasSessionTrait;
 
-    public function __construct(Contract\RouterInterface $router, Contract\RealmInterface $realm, Contract\SessionInterface $session = null)
+    public function __construct(Contract\RouterInterface $router,
+                                Contract\RealmInterface $realm,
+                                Contract\SessionInterface $session = null
+    )
     {
         $this->setRouter($router);
         $this->setRealm($realm);

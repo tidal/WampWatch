@@ -56,7 +56,9 @@ class Router implements Contract\RouterInterface
             /** @var Contract\ConnectionInterface $connection */
             $connection = $factory($this, $realm);
             if (!is_a($connection, Contract\ConnectionInterface::class)) {
-                throw new RuntimeException('Callable registered as factory for Connection did not return Connection instance');
+                throw new RuntimeException(
+                    'Callable registered as factory for Connection did not return Connection instance'
+                );
             }
         } catch (Exception $e) {
             throw $e;
