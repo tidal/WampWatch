@@ -12,13 +12,11 @@ namespace Tidal\WampWatch\Model;
 
 
 use Guzzle\Common\Exception\RuntimeException;
-use Psr\Http\Message\UriInterface;
-use Rhumsaa\Uuid\Console\Exception;
 use Tidal\WampWatch\Model\Contract;
 use Tidal\WampWatch\Model\Property\Collection\HasRealmsTrait;
 use Tidal\WampWatch\Model\Property\Scalar\HasUriTrait;
-use Tidal\WampWatch\Model\Connection;
 use Tidal\WampWatch\Model\Behavior\Property\HasCollectionsTrait;
+use Exception;
 
 class Router implements Contract\RouterInterface
 {
@@ -30,24 +28,11 @@ class Router implements Contract\RouterInterface
 
     private static $connectionFactory;
 
-    /**
-     * @var UriInterface
-     */
-    private $uriObject;
-
-    public function __construct(UriInterface $uri)
+    public function __construct($uri)
     {
-        $this->setUriObject($uri);
-    }
-
-    /**
-     * @param UriInterface $uri
-     */
-    private function setUriObject(UriInterface $uri)
-    {
-        $this->uriObject = $uri;
         $this->setUri((string)$uri);
     }
+
 
     /**
      * @param callable $factory
@@ -58,22 +43,15 @@ class Router implements Contract\RouterInterface
     }
 
     /**
-     * @return UriInterface
-     */
-    public function getUriObject()
-    {
-        return $this->uriObject;
-    }
-
-    /**
-     * @param Contract\RealmInterface $realm
-     *
-     * @return Contract\ConnectionInterface
+     * @param \Tidal\WampWatch\Model\Contract\RealmInterface $realm
+     * @return mixed
+     * @throws \Exception
      */
     public function connect(Contract\RealmInterface $realm)
     {
         try {
             $factory = self::$connectionFactory;
+            /** @var Contract\ConnectionInterface $connection */
             $connection = $factory($this, $realm);
             if (!is_a($connection, Contract\ConnectionInterface::class)) {
                 throw new RuntimeException("Callable registered as factory for Connection did not return Connection instance");
