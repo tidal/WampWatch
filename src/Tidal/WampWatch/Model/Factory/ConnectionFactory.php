@@ -28,8 +28,7 @@ class ConnectionFactory
     private function __construct(RouterInterface $router,
                                  RealmInterface $realm = null,
                                  SessionInterface $session = null
-    )
-    {
+    ) {
         $this->router = $router;
         $this->realm = $realm;
         $this->session = $session;

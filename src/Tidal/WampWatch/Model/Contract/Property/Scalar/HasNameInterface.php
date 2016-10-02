@@ -15,7 +15,6 @@
  * Date: 25.07.2016
  * Time: 22:34.
  */
-
 namespace Tidal\WampWatch\Model\Contract\Property\Scalar;
 
 interface HasNameInterface
