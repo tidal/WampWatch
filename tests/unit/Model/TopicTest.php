@@ -9,7 +9,7 @@
  *
  */
 
-namespace tests\unit\Model;
+namespace Tidal\WampWatch\Test\Unit\Model;
 
 use Tidal\WampWatch\Model\Topic;
 
