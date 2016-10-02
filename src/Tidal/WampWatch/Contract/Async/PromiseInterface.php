@@ -10,7 +10,6 @@
 
 namespace Tidal\WampWatch\Contract\Async;
 
-
 interface PromiseInterface
 {
     /**
@@ -18,9 +17,6 @@ interface PromiseInterface
      */
     public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
 
-    /**
-     * @return void
-     */
     public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null);
 
     /**
