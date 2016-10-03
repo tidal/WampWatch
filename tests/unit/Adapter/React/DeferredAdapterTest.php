@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit\Adapter\React;
+namespace Tidal\WampWatch\Test\Unit\Adapter\React;
 
 use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 use Tidal\WampWatch\Async\PromiseInterface;

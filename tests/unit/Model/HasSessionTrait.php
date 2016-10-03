@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\unit\Model;
+namespace Tidal\WampWatch\Test\Unit\Model;
 
 use Tidal\WampWatch\Model\Session;
 use Tidal\WampWatch\Test\Unit\Stub\MockHelper;

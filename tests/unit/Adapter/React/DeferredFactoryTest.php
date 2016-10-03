@@ -7,7 +7,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\unit\Adapter\React;
+namespace Tidal\WampWatch\Test\Unit\Adapter\React;
 
 use Tidal\WampWatch\Adapter\React\DeferredFactory;
 use Tidal\WampWatch\Adapter\React\PromiseFactory;
