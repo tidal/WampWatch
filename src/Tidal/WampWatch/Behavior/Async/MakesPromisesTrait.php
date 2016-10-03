@@ -36,7 +36,7 @@ trait MakesPromisesTrait
     /**
      * @param PromiseFactoryInterface $promiseFactory
      */
-    private function setPromiseFactory($promiseFactory)
+    public function setPromiseFactory($promiseFactory)
     {
         $this->promiseFactory = $promiseFactory;
     }
