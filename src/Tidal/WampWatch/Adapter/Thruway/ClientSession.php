@@ -15,17 +15,36 @@ use Thruway\ClientSession as ThruwaySession;
 use Tidal\WampWatch\ClientSessionInterface;
 use React\Promise\Promise as ReactPromise;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 class ClientSession implements ClientSessionInterface
 {
+    use MakesPromisesTrait;
+
     /**
      * @var ThruwaySession
      */
     protected $thruwaySession;
 
-    public function __construct(ThruwaySession $thruwaySession)
+    /**
+     * ClientSession constructor.
+     *
+     * @param ThruwaySession $session
+     * @param PromiseFactory $factory
+     */
+    public function __construct(ThruwaySession $session, PromiseFactory $factory)
     {
-        $this->thruwaySession = $thruwaySession;
+        $this->setThruwaySession($session);
+        $this->setPromiseFactory($factory);
+    }
+
+    /**
+     * @param ThruwaySession $session
+     */
+    public function setThruwaySession(ThruwaySession $session)
+    {
+        $this->thruwaySession = $session;
     }
 
     /**

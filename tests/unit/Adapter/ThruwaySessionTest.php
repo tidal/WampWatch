@@ -7,6 +7,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Mockery as M;
 use Mockery\MockInterface;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Test\Unit\Stub\PromiseStub;
 
 class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,10 +23,19 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
      */
     protected $adapter;
 
+    /**
+     * @var PromiseFactory
+     */
+    protected $promiseFactoryMock;
+
     public function setUp()
     {
         $this->sessionMock = M::mock('\Thruway\ClientSession');
-        $this->adapter = new ClientSession($this->sessionMock);
+        $this->promiseFactoryMock = $this->getPromiseFactoryMock();
+        $this->adapter = new ClientSession(
+            $this->sessionMock,
+            $this->promiseFactoryMock
+        );
     }
 
     public function test_subscribe()
@@ -133,5 +145,33 @@ class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
     {
         return function () {
         };
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|PromiseFactory
+     */
+    private function getPromiseFactoryMock()
+    {
+        $mock = $this->getMockBuilder(PromiseFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('create')
+            ->willReturn(
+                $this->getPromiseMock()
+            );
+
+        return $mock;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|PromiseStub
+     */
+    private function getPromiseMock()
+    {
+        return $this->getMockBuilder(PromiseAdapter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

@@ -16,6 +16,7 @@ use React\EventLoop\Factory as LoopFactory;
 use React\EventLoop\LoopInterface;
 use Thruway\ClientSession;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 trait CrossbarTestingTrait
 {
@@ -133,7 +134,7 @@ trait CrossbarTestingTrait
      */
     private function createSessionAdapter(ClientSession $session)
     {
-        return new Adapter($session);
+        return new Adapter($session, new PromiseFactory());
     }
 
     /**
