@@ -13,10 +13,8 @@ namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
 use React\Promise\Promise;
-use React\Promise\Deferred;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
-use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
  * Description of SessionMonitor.
@@ -198,21 +196,11 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     protected function retrieveSessionIds()
     {
-        $deferred = new DeferredAdapter(
-            new Deferred()
+        return $this->retrieveCallData(
+            self::SESSION_LIST_TOPIC,
+            $this->getSessionIdRetrievalCallback(),
+            []
         );
-
-        $resolver = $this->getSessionIdRetrievalCallback();
-
-        $this->session->call(self::SESSION_LIST_TOPIC, [])
-            ->then(
-                function ($res) use ($deferred, $resolver) {
-                    $deferred->resolve($resolver($res));
-                },
-                $this->getErrorCallback()
-            );
-
-        return $deferred->promise();
     }
 
     /**
