@@ -76,7 +76,7 @@ class SubscriptionMonitor implements MonitorInterface
             return $this->retrieveSubscriptionIds();
         }
 
-        return new Promise(function (callable $resolve) {
+        return $this->createPromiseAdapter(function (callable $resolve) {
             $resolve($this->subscriptionIds);
         });
     }
