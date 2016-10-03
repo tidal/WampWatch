@@ -98,7 +98,7 @@ class Collection
 
     protected function doSubscribe()
     {
-        \React\Promise\all($this->getSubscriptionPromises())->done(function () {
+        \React\Promise\all($this->getSubscriptionPromises())->done(function() {
             $this->isSubscribed = true;
             $this->isSubscribing = false;
             $this->subscriptionPromise->resolve($this->subscriptions);
@@ -114,7 +114,7 @@ class Collection
 
         foreach (array_keys($this->subscriptions) as $topic) {
             $promises[] = $this->session->subscribe($topic, $this->subscriptionCallbacks[$topic])
-                ->then(function (SubscribedMessage $msg) use ($topic) {
+                ->then(function(SubscribedMessage $msg) use ($topic) {
                     $this->subscriptions[$topic] = $msg->getSubscriptionId();
                     $this->subscriptionPromise->notify($topic);
 
@@ -130,7 +130,7 @@ class Collection
      */
     public function unsubscribe()
     {
-        $resolver = function (callable $resolve) {
+        $resolver = function(callable $resolve) {
             $resolve();
         };
         $promise = new  Promise($resolver);
