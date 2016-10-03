@@ -208,7 +208,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
             $calledBack = $res;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[123, 456, 789]]);
 
         $this->assertSame($listCalled, $calledBack);
     }
@@ -232,7 +232,7 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
     public function test_second_get_sessionids_retrieves_ids_locally()
     {
         $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
+        $stub->setSessionId(123);
         $monitor = new SessionMonitor($stub);
         $firstResult = null;
         $secondResult = null;

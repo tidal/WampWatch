@@ -12,8 +12,8 @@
 namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
-use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
 /**
  * Description of SessionMonitor.
@@ -62,7 +62,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      *
      * @param   $sessionId
      *
-     * @return \React\Promise\Promise;
+     * @return PromiseAdapter
      */
     public function getSessionInfo($sessionId)
     {
@@ -83,7 +83,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * registered on the wamp-router in the monitor's realm
      * and populates the data via given callback,.
      *
-     * @return Promise
+     * @return PromiseAdapter
      */
     public function getSessionIds()
     {
@@ -91,9 +91,11 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             return $this->retrieveSessionIds();
         }
 
-        return new Promise(function (callable $resolve) {
-            $resolve($this->sessionIds);
-        });
+        return $this->createPromiseAdapter(
+            function (callable $resolve) {
+                $resolve($this->getList());
+            }
+        );
     }
 
     /**
@@ -189,34 +191,42 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the list of current sessionIds on the router.
      *
-     * @return \React\Promise\Promise;
+     * @return PromiseAdapter
      */
     protected function retrieveSessionIds()
     {
-        return $this->session->call(self::SESSION_LIST_TOPIC, [])
-            ->then(
-                $this->getSessionIdRetrievalCallback(),
-                $this->getErrorCallback()
-            );
+        return $this->retrieveCallData(
+            self::SESSION_LIST_TOPIC,
+            $this->getSessionIdRetrievalCallback(),
+            []
+        );
     }
 
+    /**
+     * @return \Closure
+     */
     protected function getSessionIdRetrievalCallback()
     {
         return function ($res) {
-            // remove our own sessionID from the tracked sessions
-            $sessionIds = $this->removeOwnSessionId($res[0]);
-            $this->setList($sessionIds);
-            $this->emit('list', [$this->getList()]);
+            $this->setList($res[0]);
+            $sessionIds = $this->getList();
+            $this->emit('list', [$sessionIds]);
 
-            return $this->getList();
+            return $sessionIds;
         };
     }
 
+    /**
+     * @param $list
+     */
     protected function setList($list)
     {
-        $this->sessionIds = $list;
+        $this->sessionIds = $this->removeOwnSessionId($list);
     }
 
+    /**
+     * @return array
+     */
     protected function getList()
     {
         return $this->sessionIds;
@@ -232,7 +242,8 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     protected function removeOwnSessionId(array $sessionsIds)
     {
         $key = array_search($this->session->getSessionId(), $sessionsIds);
-        if ($key >= 0) {
+
+        if ($key !== false && $key >= 0) {
             unset($sessionsIds[$key]);
             $sessionsIds = array_values($sessionsIds);
         }
