@@ -37,33 +37,33 @@ class InternalSessionMonitor extends Client
 
 
         $sessionMonitor->on('list', function ($l) {
-            echo "\nLIST: \n";
+            echo PHP_EOL . "LIST: " . PHP_EOL;
             print_r($l);
         });
 
         $sessionMonitor->on('join', function ($l) {
-            echo "\nJOIN: \n";
+            echo PHP_EOL . "JOIN: " . PHP_EOL;
             print_r($l);
         });
 
         $sessionMonitor->on('leave', function ($l) {
-            echo "\nLEAVE: \n";
+            echo PHP_EOL . "LEAVE: " . PHP_EOL;
             print_r($l);
         });
 
         $sessionMonitor->on('error', function ($l) {
-            echo "\nERROR: \n";
+            echo PHP_EOL . "ERROR: " . PHP_EOL;
             print_r($l);
         });
 
         $sessionMonitor->start();
 
-        echo "\n******** SESSION MONITOR STARTED ********\n";
+        echo PHP_EOL . "******** SESSION MONITOR STARTED ********" . PHP_EOL;
     }
 
     public function onMessage(Thruway\Transport\TransportInterface $transport, Thruway\Message\Message $msg)
     {
-        echo "\n";
+        echo PHP_EOL . "";
         //print_r($msg);
         parent::onMessage($transport, $msg);
     }
