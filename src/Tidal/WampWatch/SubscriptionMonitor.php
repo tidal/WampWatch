@@ -61,7 +61,7 @@ class SubscriptionMonitor implements MonitorInterface
     public function getSubscriptionInfo($topic)
     {
         return $this->session->call(self::SUBSCRIPTION_GET_TOPIC, [$topic])->then(
-            function ($res) {
+            function($res) {
                 $this->emit('info', [$res]);
 
                 return $res;
@@ -76,7 +76,7 @@ class SubscriptionMonitor implements MonitorInterface
             return $this->retrieveSubscriptionIds();
         }
 
-        return new Promise(function (callable $resolve) {
+        return new Promise(function(callable $resolve) {
             $resolve($this->subscriptionIds);
         });
     }
@@ -99,7 +99,7 @@ class SubscriptionMonitor implements MonitorInterface
 
     private function getCreateHandler()
     {
-        return function ($res) {
+        return function($res) {
             $sessionId = $res[0];
             $subscriptionInfo = $res[1];
             $this->emit('create', [$sessionId, $subscriptionInfo]);
@@ -108,7 +108,7 @@ class SubscriptionMonitor implements MonitorInterface
 
     private function getSubscriptionHandler($event)
     {
-        return function ($res) use ($event) {
+        return function($res) use ($event) {
             $sessionId = $res[0];
             $subscriptionId = $res[1];
             $this->emit($event, [$sessionId, $subscriptionId]);
@@ -136,7 +136,7 @@ class SubscriptionMonitor implements MonitorInterface
 
     protected function getSubscriptionIdRetrievalCallback()
     {
-        return function (\Thruway\CallResult $res) {
+        return function(\Thruway\CallResult $res) {
             /** @var \Thruway\Message\ResultMessage $message */
             $message = $res->getResultMessage();
             $list = $message->getArguments()[0];
