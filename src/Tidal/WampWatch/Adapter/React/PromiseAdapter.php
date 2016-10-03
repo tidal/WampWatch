@@ -56,7 +56,19 @@ class PromiseAdapter implements PromiseInterface
      */
     public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
     {
-        $this->adaptee->then($onFulfilled, $onRejected, $onProgress);
+        $this->adaptee->then(function () use ($onFulfilled) {
+            if ($onFulfilled !== null) {
+                return call_user_func_array($onFulfilled, func_get_args());
+            }
+        }, function () use ($onRejected) {
+            if ($onRejected !== null) {
+                return call_user_func_array($onRejected, func_get_args());
+            }
+        }, function () use ($onProgress) {
+            if ($onProgress !== null) {
+                return call_user_func_array($onProgress, func_get_args());
+            }
+        });
 
         return $this;
     }
@@ -70,7 +82,19 @@ class PromiseAdapter implements PromiseInterface
      */
     public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
     {
-        $this->adaptee->done($onFulfilled, $onRejected, $onProgress);
+        $this->adaptee->done(function () use ($onFulfilled) {
+            if ($onFulfilled !== null) {
+                return call_user_func_array($onFulfilled, func_get_args());
+            }
+        }, function () use ($onRejected) {
+            if ($onRejected !== null) {
+                return call_user_func_array($onRejected, func_get_args());
+            }
+        }, function () use ($onProgress) {
+            if ($onProgress !== null) {
+                return call_user_func_array($onProgress, func_get_args());
+            }
+        });
 
         return $this;
     }
@@ -82,7 +106,9 @@ class PromiseAdapter implements PromiseInterface
      */
     public function otherwise(callable $onRejected)
     {
-        $this->adaptee->otherwise($onRejected);
+        $this->adaptee->otherwise(function () use ($onRejected) {
+            return call_user_func_array($onRejected, func_get_args());
+        });
 
         return $this;
     }
@@ -94,7 +120,9 @@ class PromiseAdapter implements PromiseInterface
      */
     public function always(callable $onAlways)
     {
-        $this->adaptee->always($onAlways);
+        $this->adaptee->always(function () use ($onAlways) {
+            return call_user_func_array($onAlways, func_get_args());
+        });
 
         return $this;
     }
@@ -106,7 +134,9 @@ class PromiseAdapter implements PromiseInterface
      */
     public function progress(callable $onProgress)
     {
-        $this->adaptee->progress($onProgress);
+        $this->adaptee->progress(function () use ($onProgress) {
+            return call_user_func_array($onProgress, func_get_args());
+        });
 
         return $this;
     }
