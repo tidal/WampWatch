@@ -12,6 +12,10 @@ require_once realpath(__DIR__.'/..').'/bootstrap.php';
 
 use Thruway\ClientSession;
 use Thruway\Connection;
+use Thruway\Logging\Logger;
+use Psr\Log\NullLogger;
+
+Logger::set(new NullLogger());
 
 $timer = null;
 $loop = React\EventLoop\Factory::create();
