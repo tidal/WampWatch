@@ -12,7 +12,6 @@
 namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
-use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
@@ -93,9 +92,9 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         }
 
         return $this->createPromiseAdapter(
-            new Promise(function (callable $resolve) {
+            function (callable $resolve) {
                 $resolve($this->getList());
-            })
+            }
         );
     }
 

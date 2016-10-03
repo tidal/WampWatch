@@ -214,12 +214,16 @@ trait MonitorTrait
     }
 
     /**
-     * @param Promise $promise
+     * @param callable $callback
      *
      * @return PromiseAdapter
      */
-    private function createPromiseAdapter(Promise $promise)
+    private function createPromiseAdapter(callable $callback)
     {
-        return new PromiseAdapter($promise);
+        return new PromiseAdapter(
+            new Promise(
+                $callback
+            )
+        );
     }
 }
