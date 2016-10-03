@@ -16,6 +16,7 @@ use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Subscription\Collection as SubscriptionCollection;
 use React\Promise\Deferred;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
@@ -210,5 +211,15 @@ trait MonitorTrait
             );
 
         return $deferred->promise();
+    }
+
+    /**
+     * @param Promise $promise
+     *
+     * @return PromiseAdapter
+     */
+    private function createPromiseAdapter(Promise $promise)
+    {
+        return new PromiseAdapter($promise);
     }
 }
