@@ -1,20 +1,24 @@
 <?php
 
-namespace Tidal\WampWatch\Test\unit\Adapter;
+namespace Tidal\WampWatch\Test\Unit\Adapter;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 use Tidal\WampWatch\Adapter\Thruway\ClientSession;
 use Mockery as M;
+use Mockery\MockInterface;
 
 class ThruwaySessionTest extends \PHPUnit_Framework_TestCase
 {
-    protected $sessionMock,
+    /**
+     * @var MockInterface
+     */
+    protected $sessionMock;
 
-        /*
-         * @var ClientSession
-         */
-        $adapter;
+    /**
+     * @var ClientSession
+     */
+    protected $adapter;
 
     public function setUp()
     {
