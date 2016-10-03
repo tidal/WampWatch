@@ -68,6 +68,6 @@ class Router implements Contract\RouterInterface
     }
 }
 
-Router::setConnectionFactory(function (Contract\RouterInterface $router, Contract\RealmInterface $realm) {
+Router::setConnectionFactory(function(Contract\RouterInterface $router, Contract\RealmInterface $realm) {
     return new Connection($router, $realm);
 });
