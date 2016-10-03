@@ -44,6 +44,9 @@ trait HasCollectionsTrait
         return $this->{$name};
     }
 
+    /**
+     * @param string $name
+     */
     private function hasCollection($name)
     {
         return property_exists($this, $name) && is_a($this->{$name}, CollectionInterface::class);

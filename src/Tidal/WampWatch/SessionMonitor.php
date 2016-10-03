@@ -67,12 +67,12 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     public function getSessionInfo($sessionId)
     {
         return $this->session->call(self::SESSION_INFO_TOPIC, [$sessionId])->then(
-            function ($res) {
+            function($res) {
                 $this->emit('info', [$res]);
 
                 return $res;
             },
-            function ($error) {
+            function($error) {
                 $this->emit('error', [$error]);
             }
         );
@@ -91,7 +91,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             return $this->retrieveSessionIds();
         }
 
-        return new Promise(function (callable $resolve) {
+        return new Promise(function(callable $resolve) {
             $resolve($this->sessionIds);
         });
     }
@@ -167,7 +167,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         // @var \Tidal\WampWatch\Subscription\Collection
         $collection = $this->getMetaSubscriptionCollection();
 
-        $collection->addSubscription(self::SESSION_JOIN_TOPIC, function (array $res) {
+        $collection->addSubscription(self::SESSION_JOIN_TOPIC, function(array $res) {
             $sessionInfo = $res[0];
             if (!$this->validateSessionInfo($sessionInfo) || $this->hasSession($sessionInfo)) {
                 return;
@@ -175,7 +175,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             $this->addSession($sessionInfo);
         });
 
-        $collection->addSubscription(self::SESSION_LEAVE_TOPIC, function (array $res) {
+        $collection->addSubscription(self::SESSION_LEAVE_TOPIC, function(array $res) {
             // @bug : wamp.session.on_leave is bugged as of crossbar.io 0.11.0
             // will provide sessionID when Browser closes/reloads,
             // but not when calling connection.close();
@@ -202,7 +202,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
     protected function getSessionIdRetrievalCallback()
     {
-        return function ($res) {
+        return function($res) {
             // remove our own sessionID from the tracked sessions
             $sessionIds = $this->removeOwnSessionId($res[0]);
             $this->setList($sessionIds);

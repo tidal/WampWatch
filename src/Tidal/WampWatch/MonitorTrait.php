@@ -79,7 +79,7 @@ trait MonitorTrait
             $this->callInitialProcedure(),
         ];
 
-        \React\Promise\all($promises)->done(function () {
+        \React\Promise\all($promises)->done(function() {
             $this->isRunning = true;
             $this->emit('start', [$this->getList()]);
         });
@@ -164,12 +164,12 @@ trait MonitorTrait
         if (!isset($this->initialCallProcedure) || !isset($this->initialCallCallback)) {
             $this->initialCallDone = true;
 
-            return new  Promise(function (callable $resolve) {
+            return new  Promise(function(callable $resolve) {
                 $resolve();
             });
         }
 
-        return $this->session->call($this->initialCallProcedure, [])->then(function ($res) {
+        return $this->session->call($this->initialCallProcedure, [])->then(function($res) {
             $this->initialCallDone = true;
             $cb = $this->initialCallCallback;
             $cb($res);
@@ -182,7 +182,7 @@ trait MonitorTrait
 
     private function getErrorCallback()
     {
-        return function ($error) {
+        return function($error) {
             $this->emit('error', [$error]);
 
             return $error;
