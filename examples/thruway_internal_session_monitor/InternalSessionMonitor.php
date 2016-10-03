@@ -35,8 +35,8 @@ class InternalSessionMonitor extends Client
     {
         $sessionMonitor = new SessionMonitor(new Adapter($session, new PromiseFactory()));
 
-
         $sessionMonitor->on('list', function ($l) {
+            echo PHP_EOL . "******** SESSION MONITOR STARTED ********" . PHP_EOL;
             echo PHP_EOL . "LIST: " . PHP_EOL;
             print_r($l);
         });
@@ -58,7 +58,7 @@ class InternalSessionMonitor extends Client
 
         $sessionMonitor->start();
 
-        echo PHP_EOL . "******** SESSION MONITOR STARTED ********" . PHP_EOL;
+
     }
 
     public function onMessage(Thruway\Transport\TransportInterface $transport, Thruway\Message\Message $msg)

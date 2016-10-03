@@ -14,6 +14,10 @@ require_once 'InternalSessionMonitor.php';
 
 use Thruway\Peer\Router;
 use Thruway\Transport\RatchetTransportProvider;
+use Thruway\Logging\Logger;
+use Psr\Log\NullLogger;
+
+Logger::set(new NullLogger());
 
 $router = new Router();
 $router->registerModule(new RatchetTransportProvider('127.0.0.1', 9999));

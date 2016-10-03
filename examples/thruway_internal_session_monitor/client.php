@@ -14,6 +14,10 @@ require_once realpath(__DIR__.'/..').'/bootstrap.php';
 use Thruway\ClientSession;
 use Thruway\Peer\Client;
 use Thruway\Transport\PawlTransportProvider;
+use Thruway\Logging\Logger;
+use Psr\Log\NullLogger;
+
+Logger::set(new NullLogger());
 
 $client = new Client('realm1');
 $client->addTransportProvider(new PawlTransportProvider('ws://127.0.0.1:9999/'));
