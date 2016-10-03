@@ -26,6 +26,8 @@ use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
+use React\Promise\Promise;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
 /**
  * !!! WARNING !!!!
@@ -104,7 +106,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param callable $callback
      * @param          $options   array
      *
-     * @return \React\Promise\Promise
+     * @return PromiseAdapter
      */
     public function subscribe($topicName, callable $callback, $options = null)
     {
@@ -119,7 +121,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $topicName
         );
 
-        return $futureResult->promise();
+        return $this->createPromiseAdapter(
+            $futureResult->promise()
+        );
     }
 
     /**
@@ -157,7 +161,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
      *
-     * @return \React\Promise\Promise
+     * @return PromiseAdapter
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
     {
@@ -172,7 +176,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $argumentsKw
         );
 
-        return $futureResult->promise();
+        return $this->createPromiseAdapter(
+            $futureResult->promise()
+        );
     }
 
     /**
@@ -196,6 +202,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    /**
+     * @param string $topicName
+     * @param mixed  $error
+     * @param int    $requestId
+     */
     public function failPublication($topicName, $error, $requestId = 1)
     {
         if (!isset($this->publications[$topicName])) {
@@ -215,7 +226,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param callable    $callback
      * @param array|mixed $options
      *
-     * @return \React\Promise\Promise
+     * @return PromiseAdapter
      */
     public function register($procedureName, callable $callback, $options = null)
     {
@@ -230,7 +241,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $procedureName
         );
 
-        return $futureResult->promise();
+        return $this->createPromiseAdapter(
+            $futureResult->promise()
+        );
     }
 
     /**
@@ -280,7 +293,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      *
      * @param string $procedureName
      *
-     * @return \React\Promise\PromiseInterface
+     * @return PromiseAdapter
      */
     public function unregister($procedureName)
     {
@@ -288,7 +301,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         $this->unregistrations[$procedureName] = $futureResult;
 
-        return $futureResult->promise();
+        return $this->createPromiseAdapter(
+            $futureResult->promise()
+        );
     }
 
     /**
@@ -319,7 +334,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      * @param array|mixed $argumentsKw
      * @param array|mixed $options
      *
-     * @return \React\Promise\Promise
+     * @return PromiseAdapter
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
@@ -334,7 +349,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $argumentsKw
         );
 
-        return $futureResult->promise();
+        return $this->createPromiseAdapter(
+            $futureResult->promise()
+        );
     }
 
     /**
@@ -355,6 +372,10 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->resolve($result);
     }
 
+    /**
+     * @param string $procedureName
+     * @param mixed  $error
+     */
     public function failCall($procedureName, $error)
     {
         if (!isset($this->calls[$procedureName])) {
@@ -367,6 +388,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
         $futureResult->reject($error);
     }
 
+    /**
+     * @param string $procedureName
+     *
+     * @return bool
+     */
     public function hasCall($procedureName)
     {
         return isset($this->calls[$procedureName]);
@@ -410,5 +436,15 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     public function sendMessage($msg)
     {
         return $msg;
+    }
+
+    /**
+     * @param Promise $promise
+     *
+     * @return PromiseAdapter
+     */
+    private function createPromiseAdapter(Promise $promise)
+    {
+        return new PromiseAdapter($promise);
     }
 }

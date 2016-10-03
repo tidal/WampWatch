@@ -16,7 +16,7 @@ use Tidal\WampWatch\Model\Contract;
 interface RouterInterface
 {
     /**
-     * @return string;
+     * @return string
      */
     public function getUri();
 

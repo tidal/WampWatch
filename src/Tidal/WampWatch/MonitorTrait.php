@@ -15,6 +15,9 @@ use Evenement\EventEmitterTrait;
 use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Subscription\Collection as SubscriptionCollection;
+use React\Promise\Deferred;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
  * Description of MonitorTrait.
@@ -187,5 +190,40 @@ trait MonitorTrait
 
             return $error;
         };
+    }
+
+    private function retrieveCallData($procedure, callable $filter = null, $arguments = [])
+    {
+        $deferred = new DeferredAdapter(
+            new Deferred()
+        );
+
+        $filter = $filter ?: function ($res) {
+            return $res;
+        };
+
+        $this->session->call($procedure, $arguments)
+            ->then(
+                function ($res) use ($deferred, $filter) {
+                    $deferred->resolve($filter($res));
+                },
+                $this->getErrorCallback()
+            );
+
+        return $deferred->promise();
+    }
+
+    /**
+     * @param callable $callback
+     *
+     * @return PromiseAdapter
+     */
+    private function createPromiseAdapter(callable $callback)
+    {
+        return new PromiseAdapter(
+            new Promise(
+                $callback
+            )
+        );
     }
 }

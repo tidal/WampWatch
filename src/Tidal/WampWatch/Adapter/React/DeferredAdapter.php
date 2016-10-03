@@ -12,7 +12,6 @@
 namespace Tidal\WampWatch\Adapter\React;
 
 use Tidal\WampWatch\Async\DeferredInterface;
-use Tidal\WampWatch\Async\PromiseInterface;
 use React\Promise\Deferred;
 
 class DeferredAdapter implements DeferredInterface
@@ -70,7 +69,7 @@ class DeferredAdapter implements DeferredInterface
     }
 
     /**
-     * @return PromiseInterface
+     * @return PromiseAdapter
      */
     public function promise()
     {
@@ -102,7 +101,7 @@ class DeferredAdapter implements DeferredInterface
     }
 
     /**
-     * @return PromiseInterface
+     * @return PromiseAdapter
      */
     private function createPromise()
     {

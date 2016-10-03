@@ -76,7 +76,7 @@ class SubscriptionMonitor implements MonitorInterface
             return $this->retrieveSubscriptionIds();
         }
 
-        return new Promise(function (callable $resolve) {
+        return $this->createPromiseAdapter(function (callable $resolve) {
             $resolve($this->subscriptionIds);
         });
     }
@@ -117,11 +117,11 @@ class SubscriptionMonitor implements MonitorInterface
 
     protected function retrieveSubscriptionIds()
     {
-        return $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])
-            ->then(
-                $this->getSubscriptionIdRetrievalCallback(),
-                $this->getErrorCallback()
-            );
+        return $this->retrieveCallData(
+            self::SUBSCRIPTION_LIST_TOPIC,
+            $this->getSubscriptionIdRetrievalCallback(),
+            []
+        );
     }
 
     protected function setList($list)
