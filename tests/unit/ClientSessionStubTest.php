@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit;
+namespace Tidal\WampWatch\Test\unit;
 
 require_once __DIR__ . '/../bootstrap.php';
 

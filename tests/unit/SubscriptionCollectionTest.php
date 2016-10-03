@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\Unit;
+namespace Tidal\WampWatch\Test\unit;
 
 use React\Promise\Promise;
 use Tidal\WampWatch\Stub\ClientSessionStub;
