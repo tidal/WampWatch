@@ -92,6 +92,4 @@ class DeferredAdapter implements DeferredInterface
             $this->adaptee->promise()
         );
     }
-
-
 }
