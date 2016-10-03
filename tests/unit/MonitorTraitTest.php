@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit;
+namespace Tidal\WampWatch\Test\Unit;
 
 require_once __DIR__.'/../bootstrap.php';
 require_once __DIR__ . '/Stub/MonitorTraitImplementation.php';
