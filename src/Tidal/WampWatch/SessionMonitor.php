@@ -14,6 +14,7 @@ namespace Tidal\WampWatch;
 use Evenement\EventEmitterInterface;
 use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
+use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
 /**
  * Description of SessionMonitor.
@@ -62,19 +63,21 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      *
      * @param   $sessionId
      *
-     * @return \React\Promise\Promise;
+     * @return PromiseAdapter
      */
     public function getSessionInfo($sessionId)
     {
-        return $this->session->call(self::SESSION_INFO_TOPIC, [$sessionId])->then(
-            function ($res) {
-                $this->emit('info', [$res]);
+        return $this->createPromiseAdapter(
+            $this->session->call(self::SESSION_INFO_TOPIC, [$sessionId])->then(
+                function ($res) {
+                    $this->emit('info', [$res]);
 
-                return $res;
-            },
-            function ($error) {
-                $this->emit('error', [$error]);
-            }
+                    return $res;
+                },
+                function ($error) {
+                    $this->emit('error', [$error]);
+                }
+            )
         );
     }
 
@@ -83,7 +86,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * registered on the wamp-router in the monitor's realm
      * and populates the data via given callback,.
      *
-     * @return Promise
+     * @return PromiseAdapter
      */
     public function getSessionIds()
     {
@@ -91,9 +94,11 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             return $this->retrieveSessionIds();
         }
 
-        return new Promise(function (callable $resolve) {
-            $resolve($this->sessionIds);
-        });
+        return $this->createPromiseAdapter(
+            new Promise(function (callable $resolve) {
+                $resolve($this->sessionIds);
+            })
+        );
     }
 
     /**
@@ -189,17 +194,22 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     /**
      * Retrieves the list of current sessionIds on the router.
      *
-     * @return \React\Promise\Promise;
+     * @return PromiseAdapter
      */
     protected function retrieveSessionIds()
     {
-        return $this->session->call(self::SESSION_LIST_TOPIC, [])
-            ->then(
-                $this->getSessionIdRetrievalCallback(),
-                $this->getErrorCallback()
-            );
+        return $this->createPromiseAdapter(
+            $this->session->call(self::SESSION_LIST_TOPIC, [])
+                ->then(
+                    $this->getSessionIdRetrievalCallback(),
+                    $this->getErrorCallback()
+                )
+        );
     }
 
+    /**
+     * @return \Closure
+     */
     protected function getSessionIdRetrievalCallback()
     {
         return function ($res) {
@@ -212,11 +222,17 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         };
     }
 
+    /**
+     * @param $list
+     */
     protected function setList($list)
     {
         $this->sessionIds = $list;
     }
 
+    /**
+     * @return array
+     */
     protected function getList()
     {
         return $this->sessionIds;
@@ -238,5 +254,15 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         }
 
         return $sessionsIds;
+    }
+
+    /**
+     * @param Promise $promise
+     *
+     * @return PromiseAdapter
+     */
+    private function createPromiseAdapter(Promise $promise)
+    {
+        return new PromiseAdapter($promise);
     }
 }
