@@ -20,10 +20,10 @@ use stdClass;
 
 class ClientSessionStubTest extends \PHPUnit_Framework_TestCase
 {
-    const PROMISE_CLS = 'React\Promise\Promise';
+    const PROMISE_CLS = 'Tidal\WampWatch\Adapter\React\PromiseAdapter';
 
     /**
-     * @var Tidal\WampWatch\Stub\ClientSessionStub
+     * @var ClientSessionStub
      */
     protected $session;
 
