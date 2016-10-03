@@ -251,14 +251,4 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
         return $sessionsIds;
     }
-
-    /**
-     * @param Promise $promise
-     *
-     * @return PromiseAdapter
-     */
-    private function createPromiseAdapter(Promise $promise)
-    {
-        return new PromiseAdapter($promise);
-    }
 }
