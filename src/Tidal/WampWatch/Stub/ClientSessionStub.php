@@ -26,7 +26,7 @@ use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
-use React\Promise\Promise;
+use React\Promise\PromiseInterface;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
 /**
@@ -439,11 +439,11 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
-     * @param Promise $promise
+     * @param PromiseInterface $promise
      *
      * @return PromiseAdapter
      */
-    private function createPromiseAdapter(Promise $promise)
+    private function createPromiseAdapter(PromiseInterface $promise)
     {
         return new PromiseAdapter($promise);
     }
