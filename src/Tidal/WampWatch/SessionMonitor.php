@@ -221,7 +221,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     protected function setList($list)
     {
-        $this->sessionIds = $this->removeOwnSessionId($list);;
+        $this->sessionIds = $this->removeOwnSessionId($list);
     }
 
     /**

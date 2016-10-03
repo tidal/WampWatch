@@ -16,7 +16,6 @@ use Tidal\WampWatch\ClientSessionInterface;
 use React\Promise\Promise as ReactPromise;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 
-
 class ClientSession implements ClientSessionInterface
 {
     /**
