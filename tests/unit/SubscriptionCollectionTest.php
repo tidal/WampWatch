@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit;
+namespace Tidal\WampWatch\Test\Unit;
 
 use React\Promise\Promise;
 use Tidal\WampWatch\Stub\ClientSessionStub;
@@ -178,14 +178,14 @@ class SubscriptionCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_has_subscription_without_subscriptions()
     {
-        $this->assertFalse($this->collection->hasSubscription('foo'));
+        $this->assertFalse($this->collection->hasSubscription());
     }
 
     public function test_has_subscription_with_subscriptions()
     {
         $this->collection->addSubscription('foo', $this->getEmptyFunc());
 
-        $this->assertTrue($this->collection->hasSubscription('foo'));
+        $this->assertTrue($this->collection->hasSubscription());
     }
 
     private function getEmptyFunc()
