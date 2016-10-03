@@ -12,9 +12,7 @@
 namespace Tidal\WampWatch;
 
 use React\Promise\Promise;
-use React\Promise\Deferred;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
-use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
  * Class SubscriptionMonitor.
@@ -119,21 +117,11 @@ class SubscriptionMonitor implements MonitorInterface
 
     protected function retrieveSubscriptionIds()
     {
-        $deferred = new DeferredAdapter(
-            new Deferred()
+        return $this->retrieveCallData(
+            self::SUBSCRIPTION_LIST_TOPIC,
+            $this->getSubscriptionIdRetrievalCallback(),
+            []
         );
-
-        $resolver = $this->getSubscriptionIdRetrievalCallback();
-
-        $this->session->call(self::SUBSCRIPTION_LIST_TOPIC, [])
-            ->then(
-                function ($res) use ($deferred, $resolver) {
-                    $deferred->resolve($resolver($res));
-                },
-                $this->getErrorCallback()
-            );
-
-        return $deferred->promise();
     }
 
     protected function setList($list)
