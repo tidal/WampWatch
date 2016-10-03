@@ -26,8 +26,8 @@ use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
-use React\Promise\Promise;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
  * !!! WARNING !!!!
@@ -112,18 +112,14 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     {
         $this->on($topicName, $callback);
 
-        $futureResult = new Deferred();
-
-        $this->subscriptions[$topicName] = $futureResult;
+        $this->subscriptions[$topicName] = static::createDeferredAdapter();
         $this->subscribing[$topicName] = new SubscribeMessage(
             count($this->subscriptions),
             (object) $options,
             $topicName
         );
 
-        return $this->createPromiseAdapter(
-            $futureResult->promise()
-        );
+        return $this->subscriptions[$topicName]->promise();
     }
 
     /**
@@ -165,9 +161,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
     {
-        $futureResult = new Deferred();
-
-        $this->publications[$topicName] = $futureResult;
+        $this->publications[$topicName] = static::createDeferredAdapter();
         $this->publishing[$topicName] = new PublishMessage(
             count($this->publishing),
             $options,
@@ -176,9 +170,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $argumentsKw
         );
 
-        return $this->createPromiseAdapter(
-            $futureResult->promise()
-        );
+        return $this->publications[$topicName]->promise();
     }
 
     /**
@@ -232,18 +224,14 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     {
         $this->procedures[$procedureName] = $callback;
 
-        $futureResult = new Deferred();
-
-        $this->registrations[$procedureName] = $futureResult;
+        $this->registrations[$procedureName] = static::createDeferredAdapter();
         $this->registering[$procedureName] = new RegisterMessage(
             count($this->registering),
             $options,
             $procedureName
         );
 
-        return $this->createPromiseAdapter(
-            $futureResult->promise()
-        );
+        return $this->registrations[$procedureName]->promise();
     }
 
     /**
@@ -297,13 +285,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function unregister($procedureName)
     {
-        $futureResult = new Deferred();
+        $this->unregistrations[$procedureName] = static::createDeferredAdapter();
 
-        $this->unregistrations[$procedureName] = $futureResult;
-
-        return $this->createPromiseAdapter(
-            $futureResult->promise()
-        );
+        return $this->unregistrations[$procedureName]->promise();
     }
 
     /**
@@ -338,9 +322,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
-        $futureResult = new Deferred();
-
-        $this->calls[$procedureName] = $futureResult;
+        $this->calls[$procedureName] = static::createDeferredAdapter();
         $this->calling[$procedureName] = new CallMessage(
             count($this->calling),
             $options,
@@ -349,9 +331,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
             $argumentsKw
         );
 
-        return $this->createPromiseAdapter(
-            $futureResult->promise()
-        );
+        return $this->calls[$procedureName]->promise();
     }
 
     /**
@@ -439,12 +419,12 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     }
 
     /**
-     * @param Promise $promise
+     * @param callable $canceller
      *
-     * @return PromiseAdapter
+     * @return DeferredAdapter
      */
-    private function createPromiseAdapter(Promise $promise)
+    private static function createDeferredAdapter(callable $canceller = null)
     {
-        return new PromiseAdapter($promise);
+        return new DeferredAdapter(new Deferred($canceller));
     }
 }
