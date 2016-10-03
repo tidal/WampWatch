@@ -145,7 +145,7 @@ class ClientSession implements ClientSessionInterface
         return $this->promiseFactory->createFromAdaptee(
             call_user_func_array([
                 $this->thruwaySession,
-                $command
+                $command,
             ], $arguments)
         );
     }
