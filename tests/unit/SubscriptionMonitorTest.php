@@ -131,7 +131,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
     {
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
-        $subIdMap = $this->getSubscriptionIdMap();
+        $subIdMap = $this->getCallResultMock();
         $stub->setSessionId(321);
         $response = null;
 
@@ -347,23 +347,24 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     // SUBSCRIPTION DETAIL TESTS
 
-    public function test_get_seesion_ids_returns_subscription_map()
+    public function test_get_subscription_ids_returns_subscription_map()
     {
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
         $subIdMap = $this->getSubscriptionIdMap();
+        $callResult = $this->getCallResultMock();
         $res = null;
 
         $monitor->getSubscriptionIds()->done(function ($r) use (&$res) {
             $res = $r;
         });
 
-        $stub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
+        $stub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $callResult);
 
-        $this->assertEquals($subIdMap->getResultMessage()->getArguments()[0], $res);
+        $this->assertEquals($subIdMap, $res);
     }
 
-    public function test_2nd_get_seesion_ids_returns_subscription_map_locally()
+    public function test_2nd_get_subscription_ids_returns_subscription_map_locally()
     {
         $stub = new ClientSessionStub();
         $monitor = new SubscriptionMonitor($stub);
@@ -396,7 +397,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     private function getSubscriptionIdMap()
     {
-        return $this->getCallResultMock();
+        return json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}');
     }
 
     /**
@@ -430,7 +431,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             ->method('getArguments')
             ->willReturn(
                 [
-                    json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}'),
+                    $this->getSubscriptionIdMap(),
                 ]
             );
 
