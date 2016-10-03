@@ -17,6 +17,7 @@ use Thruway\Connection;
 use Thruway\Logging\Logger;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 use Tidal\WampWatch\SessionMonitor;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 Logger::set(new NullLogger());
 
@@ -28,30 +29,29 @@ $connection = new Connection(
 );
 
 $connection->on('open', function (ClientSession $session) use ($connection, &$timer) {
-    $sessionMonitor = new SessionMonitor(new Adapter($session));
+    $sessionMonitor = new SessionMonitor(new Adapter($session, new PromiseFactory()));
 
-
+    echo PHP_EOL . "******** SESSION MONITOR STARTED ********" . PHP_EOL;
     $sessionMonitor->on('start', function ($l) {
-        echo "\n******** SESSION MONITOR STARTED ********\n";
-        echo "\nSTART: \n";
+        echo PHP_EOL . "START: " . PHP_EOL;
         print_r($l);
     });
 
     $sessionMonitor->on('list', function ($l) {
-        echo "\nLIST: \n";
+        echo PHP_EOL . "LIST: " . PHP_EOL;
         print_r($l);
     });
 
     $sessionMonitor->on('join', function ($sessionData) {
-        echo "\nJOIN: {$sessionData->session}\n";
+        echo PHP_EOL . "JOIN: {$sessionData->session}" . PHP_EOL;
     });
 
     $sessionMonitor->on('leave', function ($sessionId) {
-        echo "\nLEAVE: $sessionId\n";
+        echo PHP_EOL . "LEAVE: $sessionId" . PHP_EOL;
     });
 
     $sessionMonitor->on('error', function ($l) {
-        echo "\nERROR: \n";
+        echo PHP_EOL . "ERROR: " . PHP_EOL;
         print_r($l);
     });
 
@@ -60,11 +60,11 @@ $connection->on('open', function (ClientSession $session) use ($connection, &$ti
 );
 
 $connection->on('close', function ($reason) use (&$timer) {
-    echo "The connected has closed with reason: {$reason}\n";
+    echo "The connected has closed with reason: {$reason}" . PHP_EOL;
 });
 
 $connection->on('error', function ($reason) {
-    echo "The connected has closed with error: {$reason}\n";
+    echo "The connected has closed with error: {$reason}" . PHP_EOL;
 });
 
 $connection->open();

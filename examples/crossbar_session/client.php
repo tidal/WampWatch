@@ -24,7 +24,7 @@ $connection = new Connection(
 );
 
 $connection->on('open', function (ClientSession $session) use ($connection, $loop, &$timer) {
-    echo "\nSession established: {$session->getSessionId()}\n";
+    echo PHP_EOL . "Session established: {$session->getSessionId()}" . PHP_EOL;
 }
 );
 
@@ -32,11 +32,11 @@ $connection->on('close', function ($reason) use ($loop, &$timer) {
     if ($timer) {
         $loop->cancelTimer($timer);
     }
-    echo "The connected has closed with reason: {$reason}\n";
+    echo "The connected has closed with reason: {$reason}" . PHP_EOL;
 });
 
 $connection->on('error', function ($reason) {
-    echo "The connected has closed with error: {$reason}\n";
+    echo "The connected has closed with error: {$reason}" . PHP_EOL;
 });
 
 $connection->open();

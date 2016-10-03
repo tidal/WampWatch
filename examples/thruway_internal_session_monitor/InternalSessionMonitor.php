@@ -12,6 +12,7 @@
 use Thruway\Peer\Client;
 use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 use Tidal\WampWatch\SessionMonitor;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 /**
  * Class InternalClient.
@@ -32,7 +33,7 @@ class InternalSessionMonitor extends Client
      */
     public function onSessionStart($session, $transport)
     {
-        $sessionMonitor = new SessionMonitor(new Adapter($session));
+        $sessionMonitor = new SessionMonitor(new Adapter($session, new PromiseFactory()));
 
 
         $sessionMonitor->on('list', function ($l) {
