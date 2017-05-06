@@ -15,9 +15,6 @@ use Tidal\WampWatch\Model\Contract\Property\Scalar\HasIdInterface;
 use Tidal\WampWatch\Model\Contract\Property\Object\HasSessionInterface;
 use Tidal\WampWatch\Model\Contract\Property\Object\HasProcedureInterface;
 
-interface RegistrationInterface extends
-    HasIdInterface,
-    HasSessionInterface,
-    HasProcedureInterface
+interface RegistrationInterface extends HasIdInterface, HasSessionInterface, HasProcedureInterface
 {
 }
