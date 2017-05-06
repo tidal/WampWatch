@@ -1,6 +1,4 @@
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/0bb772f6-d78c-459b-8e12-7d6e953ab16b/small.png)](https://insight.sensiolabs.com/projects/0bb772f6-d78c-459b-8e12-7d6e953ab16b)
-
-
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/4660e82a-4580-44c1-a965-3e47a9b7f865/small.png)](https://insight.sensiolabs.com/projects/4660e82a-4580-44c1-a965-3e47a9b7f865)
 
  [![Travis](https://api.travis-ci.org/tidal/WampWatch.svg?branch=master)](https://travis-ci.org/tidal/WampWatch)
 [![Code Climate](https://img.shields.io/codeclimate/github/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://codeclimate.com/github/tidal/WampWatch)
