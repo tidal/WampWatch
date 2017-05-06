@@ -7,7 +7,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\unit\Model\Property;
+namespace Tidal\WampWatch\Test\Unit\Model\Property;
 
 use Tidal\WampWatch\Model\Property\ObjectCollection;
 use PHPUnit_Framework_TestCase;

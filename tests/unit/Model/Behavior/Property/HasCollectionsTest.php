@@ -7,7 +7,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\unit\Model\Behavior\Property;
+namespace Tidal\WampWatch\Test\Unit\Model\Behavior\Property;
 
 use Tidal\WampWatch\Model\Property\ObjectCollection;
 use Tidal\WampWatch\Test\Unit\Stub\HasCollectionsImplementation;

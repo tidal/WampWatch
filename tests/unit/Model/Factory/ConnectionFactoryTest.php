@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tidal\WampWatch\Test\unit\Model\Factory;
+namespace Tidal\WampWatch\Test\Unit\Model\Factory;
 
 use Tidal\WampWatch\Model\Factory\ConnectionFactory;
 use Tidal\WampWatch\Test\Unit\Model\HasSessionTrait;

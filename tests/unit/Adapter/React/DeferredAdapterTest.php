@@ -8,12 +8,10 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit\Adapter\React;
-
-require_once __DIR__ . '/../../Stub/PromiseStub.php';
+namespace Tidal\WampWatch\Test\Unit\Adapter\React;
 
 use Tidal\WampWatch\Adapter\React\DeferredAdapter;
-use Tidal\WampWatch\Test\Unit\Stub\PromiseStub;
+use Tidal\WampWatch\Async\PromiseInterface;
 use React\Promise\Deferred;
 use React\Promise\Promise;
 use PHPUnit_Framework_TestCase;
@@ -35,7 +33,6 @@ class DeferredAdapterTest extends PHPUnit_Framework_TestCase
         $this->adapter = new DeferredAdapter(
             $this->getDeferredMock()
         );
-        $this->adapter->setPromiseClass(PromiseStub::class);
     }
 
     public function test_constructor_sets_adaptee()
@@ -43,17 +40,6 @@ class DeferredAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             $this->getDeferredMock(),
             $this->adapter->getAdaptee()
-        );
-    }
-
-    public function test_can_access_promise_class()
-    {
-        $promiseClass = 'Foo';
-        $this->adapter->setPromiseClass($promiseClass);
-
-        $this->assertEquals(
-            $promiseClass,
-            $this->adapter->getPromiseClass()
         );
     }
 
@@ -66,7 +52,7 @@ class DeferredAdapterTest extends PHPUnit_Framework_TestCase
                 $this->getPromiseMock()
             );
 
-        $this->assertInstanceOf(PromiseStub::class, $this->adapter->promise());
+        $this->assertInstanceOf(PromiseInterface::class, $this->adapter->promise());
     }
 
     public function test_resolve_calls_adaptee()

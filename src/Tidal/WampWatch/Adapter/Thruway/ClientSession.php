@@ -13,19 +13,37 @@ namespace Tidal\WampWatch\Adapter\Thruway;
 
 use Thruway\ClientSession as ThruwaySession;
 use Tidal\WampWatch\ClientSessionInterface;
-use React\Promise\Promise as ReactPromise;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 class ClientSession implements ClientSessionInterface
 {
+    use MakesPromisesTrait;
+
     /**
      * @var ThruwaySession
      */
     protected $thruwaySession;
 
-    public function __construct(ThruwaySession $thruwaySession)
+    /**
+     * ClientSession constructor.
+     *
+     * @param ThruwaySession $session
+     * @param PromiseFactory $factory
+     */
+    public function __construct(ThruwaySession $session, PromiseFactory $factory)
     {
-        $this->thruwaySession = $thruwaySession;
+        $this->setThruwaySession($session);
+        $this->setPromiseFactory($factory);
+    }
+
+    /**
+     * @param ThruwaySession $session
+     */
+    public function setThruwaySession(ThruwaySession $session)
+    {
+        $this->thruwaySession = $session;
     }
 
     /**
@@ -39,9 +57,7 @@ class ClientSession implements ClientSessionInterface
      */
     public function subscribe($topicName, callable $callback, $options = null)
     {
-        return $this->createPromiseAdapter(
-            $this->thruwaySession->subscribe($topicName, $callback, $options)
-        );
+        return $this->callAdaptee('subscribe', [$topicName, $callback, $options]);
     }
 
     /**
@@ -56,9 +72,7 @@ class ClientSession implements ClientSessionInterface
      */
     public function publish($topicName, $arguments = null, $argumentsKw = null, $options = null)
     {
-        return $this->createPromiseAdapter(
-            $this->thruwaySession->publish($topicName, $arguments, $argumentsKw, $options)
-        );
+        return $this->callAdaptee('publish', [$topicName, $arguments, $argumentsKw, $options]);
     }
 
     /**
@@ -72,9 +86,7 @@ class ClientSession implements ClientSessionInterface
      */
     public function register($procedureName, callable $callback, $options = null)
     {
-        return $this->createPromiseAdapter(
-            $this->thruwaySession->register($procedureName, $callback, $options)
-        );
+        return $this->callAdaptee('register', [$procedureName, $callback, $options]);
     }
 
     /**
@@ -86,9 +98,7 @@ class ClientSession implements ClientSessionInterface
      */
     public function unregister($procedureName)
     {
-        return $this->createPromiseAdapter(
-            $this->thruwaySession->unregister($procedureName)
-        );
+        return $this->callAdaptee('unregister', [$procedureName]);
     }
 
     /**
@@ -103,9 +113,7 @@ class ClientSession implements ClientSessionInterface
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
-        return $this->createPromiseAdapter(
-            $this->thruwaySession->call($procedureName, $arguments, $argumentsKw, $options)
-        );
+        return $this->callAdaptee('call', [$procedureName, $arguments, $argumentsKw, $options]);
     }
 
     /**
@@ -132,13 +140,13 @@ class ClientSession implements ClientSessionInterface
         $this->thruwaySession->sendMessage($msg);
     }
 
-    /**
-     * @param ReactPromise $promise
-     *
-     * @return PromiseAdapter
-     */
-    private function createPromiseAdapter(ReactPromise $promise)
+    private function callAdaptee($command, array $arguments = [])
     {
-        return new PromiseAdapter($promise);
+        return $this->promiseFactory->createFromAdaptee(
+            call_user_func_array([
+                $this->thruwaySession,
+                $command,
+            ], $arguments)
+        );
     }
 }

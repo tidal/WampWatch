@@ -12,19 +12,17 @@
 namespace Tidal\WampWatch\Adapter\React;
 
 use Tidal\WampWatch\Async\DeferredInterface;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
 use React\Promise\Deferred;
 
 class DeferredAdapter implements DeferredInterface
 {
+    use MakesPromisesTrait;
+
     /**
      * @var Deferred
      */
     private $adaptee;
-
-    /**
-     * @var string fully qualified class name of the promise to create
-     */
-    private $promiseClass = PromiseAdapter::class;
 
     /**
      * DeferredAdapter constructor.
@@ -53,27 +51,11 @@ class DeferredAdapter implements DeferredInterface
     }
 
     /**
-     * @param string $promiseClass
-     */
-    public function setPromiseClass($promiseClass)
-    {
-        $this->promiseClass = $promiseClass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPromiseClass()
-    {
-        return $this->promiseClass;
-    }
-
-    /**
      * @return PromiseAdapter
      */
     public function promise()
     {
-        return $this->createPromise();
+        return $this->makePromise();
     }
 
     /**
@@ -100,12 +82,13 @@ class DeferredAdapter implements DeferredInterface
         $this->adaptee->notify($update);
     }
 
-    /**
-     * @return PromiseAdapter
-     */
-    private function createPromise()
+    private function makePromise()
     {
-        return new $this->promiseClass(
+        if (!isset($this->promiseFactory)) {
+            $this->promiseFactory = new PromiseFactory();
+        }
+
+        return $this->getPromiseFactory()->createFromAdaptee(
             $this->adaptee->promise()
         );
     }

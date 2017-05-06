@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit\Exception;
+namespace Tidal\WampWatch\Test\Unit\Exception;
 
 use Tidal\WampWatch\Exception\NotAuthorizedException;
 use PHPUnit_Framework_TestCase;

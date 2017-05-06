@@ -8,7 +8,7 @@
  *
  */
 
-namespace Tidal\WampWatch\Test\unit\Exception;
+namespace Tidal\WampWatch\Test\Unit\Exception;
 
 require_once __DIR__ . '/../../bootstrap.php';
 

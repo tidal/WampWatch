@@ -7,7 +7,6 @@ require_once __DIR__ . '/CrossbarTestingTrait.php';
 
 use Thruway\ClientSession;
 use Tidal\WampWatch\SessionMonitor;
-use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 
 class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +26,7 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
         $sessionIds = null;
 
         $this->connection->on('open', function (ClientSession $session) use (&$sessionIds) {
-            $sessionMonitor = new SessionMonitor(new Adapter($session));
+            $sessionMonitor = new SessionMonitor($this->createSessionAdapter($session));
 
             $sessionMonitor->on('start', function ($ids) use (&$sessionIds, $sessionMonitor) {
                 $sessionIds = $ids;
@@ -51,7 +50,7 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_onjoin()
     {
         $this->connection->on('open', function (ClientSession $session) {
-            $sessionMonitor = new SessionMonitor(new Adapter($session));
+            $sessionMonitor = new SessionMonitor($this->createSessionAdapter($session));
 
             $sessionMonitor->on('join', function (\stdClass $info) use ($sessionMonitor) {
                 $this->monitoredSessionId = $info->session;
@@ -86,7 +85,7 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_onleave()
     {
         $this->connection->on('open', function (ClientSession $session) {
-            $sessionMonitor = new SessionMonitor(new Adapter($session));
+            $sessionMonitor = new SessionMonitor($this->createSessionAdapter($session));
 
             $sessionMonitor->on('leave', function ($id) use ($sessionMonitor) {
                 $this->monitoredSessionId = $id;

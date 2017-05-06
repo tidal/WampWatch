@@ -15,7 +15,6 @@ require_once __DIR__ . '/CrossbarTestingTrait.php';
 use Thruway\ClientSession;
 use Thruway\Message\SubscribedMessage;
 use Tidal\WampWatch\SubscriptionMonitor;
-use Tidal\WampWatch\Adapter\Thruway\ClientSession as Adapter;
 use Tidal\WampWatch\Util;
 use stdClass;
 
@@ -263,7 +262,7 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     private function setupSubscriptionMonitor(ClientSession $session)
     {
-        $this->subscriptionMonitor = new SubscriptionMonitor(new Adapter($session));
+        $this->subscriptionMonitor = new SubscriptionMonitor($this->createSessionAdapter($session));
         $this->subscriptionMonitor->on('stop', function () {
             $this->connection->close();
         });

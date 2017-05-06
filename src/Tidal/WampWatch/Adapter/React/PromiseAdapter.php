@@ -12,35 +12,35 @@
 namespace Tidal\WampWatch\Adapter\React;
 
 use Tidal\WampWatch\Async\PromiseInterface;
-use React\Promise\Promise;
+use React\Promise\ExtendedPromiseInterface as ReactPromise;
 
 class PromiseAdapter implements PromiseInterface
 {
     /**
-     * @var Promise
+     * @var ReactPromise
      */
     private $adaptee;
 
     /**
      * PromiseAdapter constructor.
      *
-     * @param \React\Promise\Promise $adaptee
+     * @param ReactPromise $adaptee
      */
-    public function __construct(Promise $adaptee)
+    public function __construct(ReactPromise $adaptee)
     {
         $this->setAdaptee($adaptee);
     }
 
     /**
-     * @param \React\Promise\Promise $adaptee
+     * @param ReactPromise $adaptee
      */
-    private function setAdaptee(Promise $adaptee)
+    private function setAdaptee(ReactPromise $adaptee)
     {
         $this->adaptee = $adaptee;
     }
 
     /**
-     * @return \React\Promise\Promise
+     * @return ReactPromise
      */
     public function getAdaptee()
     {
