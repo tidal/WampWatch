@@ -1,7 +1,9 @@
-
-[![Travis](https://api.travis-ci.org/tidal/WampWatch.svg?branch=master)](https://travis-ci.org/tidal/WampWatch)
-[![Code Climate](https://img.shields.io/codeclimate/github/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://codeclimate.com/github/tidal/WampWatch)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0bb772f6-d78c-459b-8e12-7d6e953ab16b/small.png)](https://insight.sensiolabs.com/projects/0bb772f6-d78c-459b-8e12-7d6e953ab16b)
+
+
+
+ [![Travis](https://api.travis-ci.org/tidal/WampWatch.svg?branch=master)](https://travis-ci.org/tidal/WampWatch)
+[![Code Climate](https://img.shields.io/codeclimate/github/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://codeclimate.com/github/tidal/WampWatch)
 [![StyleCI](https://styleci.io/repos/89928705/shield?branch=develop)](https://styleci.io/repos/61987759)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/tidal/WampWatch.svg?maxAge=2592000&style=flat-square)](https://scrutinizer-ci.com/g/tidal/WampWatch/?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/5770981a671894004e1a923a/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5770981a671894004e1a923a)
