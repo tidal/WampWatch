@@ -247,7 +247,7 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
                 });
             });
 
-            $this->subscriptionMonitor->on('start', function () use ($clientConnection, $clientConnection) {
+            $this->subscriptionMonitor->on('start', function () use ($clientConnection) {
                 $clientConnection->open();
             });
 
