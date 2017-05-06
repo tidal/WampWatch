@@ -15,9 +15,6 @@ use Tidal\WampWatch\Model\Contract\Property\Scalar\HasIdInterface;
 use Tidal\WampWatch\Model\Contract\Property\Object\HasSessionInterface;
 use Tidal\WampWatch\Model\Contract\Property\Object\HasTopicInterface;
 
-interface SubscriptionInterface extends
-    HasIdInterface,
-    HasSessionInterface,
-    HasTopicInterface
+interface SubscriptionInterface extends HasIdInterface, HasSessionInterface, HasTopicInterface
 {
 }
