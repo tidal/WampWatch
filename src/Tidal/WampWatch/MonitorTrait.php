@@ -235,4 +235,13 @@ trait MonitorTrait
             $this->emit($event, [$sessionId, $subscriptionId]);
         };
     }
+
+    private function getCreateHandler()
+    {
+        return function ($res) {
+            $sessionId = $res[0];
+            $subscriptionInfo = $res[1];
+            $this->emit('create', [$sessionId, $subscriptionInfo]);
+        };
+    }
 }

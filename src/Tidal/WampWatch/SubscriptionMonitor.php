@@ -94,15 +94,6 @@ class SubscriptionMonitor implements MonitorInterface
         $this->setInitialCall(self::SUBSCRIPTION_LIST_TOPIC, $this->getSubscriptionIdRetrievalCallback());
     }
 
-    private function getCreateHandler()
-    {
-        return function ($res) {
-            $sessionId = $res[0];
-            $subscriptionInfo = $res[1];
-            $this->emit('create', [$sessionId, $subscriptionInfo]);
-        };
-    }
-
     protected function retrieveSubscriptionIds()
     {
         return $this->retrieveCallData(
