@@ -103,15 +103,6 @@ class SubscriptionMonitor implements MonitorInterface
         };
     }
 
-    private function getSubscriptionHandler($event)
-    {
-        return function ($res) use ($event) {
-            $sessionId = $res[0];
-            $subscriptionId = $res[1];
-            $this->emit($event, [$sessionId, $subscriptionId]);
-        };
-    }
-
     protected function retrieveSubscriptionIds()
     {
         return $this->retrieveCallData(
