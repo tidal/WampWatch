@@ -29,7 +29,7 @@ $connection = new Connection(
 );
 
 $connection->on('open', function (ClientSession $session) use ($connection, &$timer) {
-    $sessionMonitor = new SessionMonitor(new Adapter($session, new PromiseFactory()));
+    $sessionMonitor = SessionMonitor::create(new Adapter($session, new PromiseFactory()));
 
     echo PHP_EOL . "******** SESSION MONITOR STARTED ********" . PHP_EOL;
     $sessionMonitor->on('start', function ($l) {
@@ -42,12 +42,23 @@ $connection->on('open', function (ClientSession $session) use ($connection, &$ti
         print_r($l);
     });
 
-    $sessionMonitor->on('join', function ($sessionData) {
+    $sessionMonitor->on('join', function ($sessionData) use ($sessionMonitor) {
         echo PHP_EOL . "JOIN: {$sessionData->session}" . PHP_EOL;
+
+        $sessionMonitor->getSessionIds()->then(function (array $sessions) {
+
+            echo "SESSIONS : " . count($sessions) . PHP_EOL;
+
+        });
     });
 
-    $sessionMonitor->on('leave', function ($sessionId) {
+    $sessionMonitor->on('leave', function ($sessionId) use ($sessionMonitor) {
         echo PHP_EOL . "LEAVE: $sessionId" . PHP_EOL;
+        $sessionMonitor->getSessionIds()->then(function (array $sessions) {
+
+            echo "SESSIONS : " . count($sessions) . PHP_EOL;
+
+        });
     });
 
     $sessionMonitor->on('error', function ($l) {
