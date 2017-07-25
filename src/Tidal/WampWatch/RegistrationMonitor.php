@@ -9,6 +9,8 @@
 
 namespace Tidal\WampWatch;
 
+use Tidal\WampWatch\ClientSessionInterface as ClientSession;
+
 /**
  * Class Tidal\WampWatch\RegistrationMonitor *
  */
@@ -29,4 +31,15 @@ class RegistrationMonitor
 
     const LOOKUP_MATCH_WILDCARD = MonitorInterface::LOOKUP_MATCH_WILDCARD;
     const LOOKUP_MATCH_PREFIX = MonitorInterface::LOOKUP_MATCH_PREFIX;
+
+
+    /**
+     * Constructor.
+     *
+     * @param ClientSession $session
+     */
+    public function __construct(ClientSession $session)
+    {
+        $this->setClientSession($session);
+    }
 }
