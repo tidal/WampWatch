@@ -11,7 +11,7 @@
 
 namespace Tidal\WampWatch;
 
-use React\Promise\Promise;
+use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
@@ -56,7 +56,7 @@ class SubscriptionMonitor implements MonitorInterface
     /**
      * @param string $topic
      *
-     * @return Promise
+     * @return PromiseInterface
      */
     public function getSubscriptionInfo($topic)
     {
