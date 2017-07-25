@@ -49,4 +49,9 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $res);
     }
+
+    public function test_is_not_running_before_started()
+    {
+        $this->assertFalse($this->monitor->isRunning());
+    }
 }
