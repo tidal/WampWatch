@@ -51,9 +51,9 @@ class InternalSessionMonitor extends Client
             print_r($l);
         });
 
-        $sessionMonitor->on('error', function ($l) {
-            echo PHP_EOL . "ERROR: " . PHP_EOL;
-            print_r($l);
+        $sessionMonitor->on('error', function ($l, $i = 'default') {
+            echo PHP_EOL . "ERROR REQUEST $i : " . PHP_EOL;
+            print_r(func_get_args());
         });
 
         $sessionMonitor->start();
