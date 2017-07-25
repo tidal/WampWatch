@@ -26,4 +26,7 @@ class RegistrationMonitor
     const REGISTRATION_GET_TOPIC = 'wamp.registration.get';
     const REGISTRATION_REGLIST_TOPIC = 'wamp.registration.list_callees';
     const REGISTRATION_REGCOUNT_TOPIC = 'wamp.registration.count_callees';
+
+    const LOOKUP_MATCH_WILDCARD = MonitorInterface::LOOKUP_MATCH_WILDCARD;
+    const LOOKUP_MATCH_PREFIX = MonitorInterface::LOOKUP_MATCH_PREFIX;
 }

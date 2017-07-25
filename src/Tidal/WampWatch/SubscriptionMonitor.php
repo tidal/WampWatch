@@ -32,8 +32,8 @@ class SubscriptionMonitor implements MonitorInterface
     const SUBSCRIPTION_SUBLIST_TOPIC = 'wamp.subscription.list_subscribers';
     const SUBSCRIPTION_SUBCOUNT_TOPIC = 'wamp.subscription.count_subscribers';
 
-    const LOOKUP_MATCH_WILDCARD = 'wildcard';
-    const LOOKUP_MATCH_PREFIX = 'prefix';
+    const LOOKUP_MATCH_WILDCARD = MonitorInterface::LOOKUP_MATCH_WILDCARD;
+    const LOOKUP_MATCH_PREFIX = MonitorInterface::LOOKUP_MATCH_PREFIX;
 
     protected $sessionIds = [];
 

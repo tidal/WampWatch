@@ -16,6 +16,9 @@ namespace Tidal\WampWatch;
  */
 interface MonitorInterface
 {
+    const LOOKUP_MATCH_WILDCARD = 'wildcard';
+    const LOOKUP_MATCH_PREFIX = 'prefix';
+
     public function start();
 
     public function stop();
