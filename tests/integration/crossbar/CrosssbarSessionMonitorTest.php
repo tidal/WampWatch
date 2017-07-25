@@ -44,6 +44,9 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->connection->open();
 
+        // wait for connection to be established
+        sleep(1);
+
         $this->assertTrue(is_array($sessionIds));
     }
 
@@ -79,6 +82,9 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->connection->open();
 
+        // wait for connection to be established
+        sleep(1);
+
         $this->assertEquals($this->clientSessionId, $this->monitoredSessionId);
     }
 
@@ -113,6 +119,9 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->connection->open();
+
+        // wait for connection to be established
+        sleep(1);
 
         $this->assertEquals($this->clientSessionId, $this->monitoredSessionId);
     }

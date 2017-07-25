@@ -75,6 +75,9 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->connection->open();
 
+        // wait for connection to be established
+        sleep(1);
+
         $this->validateSubscriptionInfo($this->initialSubscriptionInfo);
     }
 
@@ -100,6 +103,9 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         });
 
         $clientConnection->open();
+
+        // wait for connection to be established
+        sleep(1);
 
         $this->validateSubscriptionInfo($this->initialSubscriptionInfo);
         $this->assertArraySubset([$subscriptionId], $this->initialSubscriptionInfo->exact);
@@ -130,6 +136,9 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->getConnection()->open();
+
+        // wait for connection to be established
+        sleep(1);
 
         $this->assertInternalType('int', $this->creatorSessionId);
         $this->assertInstanceOf(\stdClass::class, $this->clientSubscriptionInfo);
@@ -207,6 +216,9 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->connection->open();
 
+        // wait for connection to be established
+        sleep(1);
+
         $this->assertInternalType('int', $sessionId);
         $this->assertInternalType('int', $subscriptionId);
     }
@@ -255,6 +267,9 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->connection->open();
+
+        // wait for connection to be established
+        sleep(1);
 
         $this->assertInternalType('int', $sessionId);
         $this->assertInternalType('int', $subscriptionId);
