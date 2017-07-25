@@ -12,8 +12,10 @@
 namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterInterface;
+use Thruway\Message\ErrorMessage;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
+use Tidal\WampWatch\Async\PromiseInterface;
 
 /**
  * Description of SessionMonitor.
@@ -62,7 +64,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      *
      * @param   $sessionId
      *
-     * @return PromiseAdapter
+     * @return PromiseInterface
      */
     public function getSessionInfo($sessionId)
     {
@@ -72,8 +74,8 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
 
                 return $res;
             },
-            function ($error) {
-                $this->emit('error', [$error]);
+            function (ErrorMessage $error) use ($sessionId) {
+                $this->emit('error', [$error, $sessionId]);
             }
         );
     }
@@ -249,5 +251,10 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
         }
 
         return $sessionsIds;
+    }
+
+    public static function create(ClientSession $session)
+    {
+        return new self($session);
     }
 }
