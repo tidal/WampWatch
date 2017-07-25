@@ -17,6 +17,7 @@ use Tidal\WampWatch\SessionMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use PHPUnit_Framework_TestCase;
 use stdClass;
+use Thruway\Message;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
@@ -401,12 +402,13 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
         $monitor->getSessionInfo(654);
 
-        $sessionInfo = new stdClass();
-        $sessionInfo->session = 654;
+        $errorMessage = $this->getMockBuilder(Message\ErrorMessage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $stub->failCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
+        $stub->failCall(SessionMonitor::SESSION_INFO_TOPIC, $errorMessage);
 
-        $this->assertSame($sessionInfo, $response);
+        $this->assertSame($errorMessage, $response);
     }
 
     public function test_invalid_sessioninfo_does_not_get_added()
