@@ -261,4 +261,6 @@ trait MonitorTrait
             return $list;
         };
     }
+
+    abstract protected function setList($list);
 }
