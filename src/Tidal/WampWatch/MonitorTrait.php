@@ -244,4 +244,21 @@ trait MonitorTrait
             $this->emit('create', [$sessionId, $subscriptionInfo]);
         };
     }
+
+    protected function getSubscriptionIdRetrievalCallback()
+    {
+        return function (\Thruway\CallResult $res) {
+            /** @var \Thruway\Message\ResultMessage $message */
+            $message = $res->getResultMessage();
+            $list = $message->getArguments()[0];
+            $this->setList($list);
+            $this->emit('list', [
+                $this->subscriptionIds->exact,
+                $this->subscriptionIds->prefix,
+                $this->subscriptionIds->wildcard,
+            ]);
+
+            return $list;
+        };
+    }
 }
