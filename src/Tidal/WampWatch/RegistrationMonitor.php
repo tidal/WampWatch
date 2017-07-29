@@ -29,6 +29,12 @@ class RegistrationMonitor
     const REGISTRATION_REGLIST_TOPIC = 'wamp.registration.list_callees';
     const REGISTRATION_REGCOUNT_TOPIC = 'wamp.registration.count_callees';
 
+
+    /**
+     * @var \stdClass Objects withs lists of subscriptions (exact, prefix, wildcard)
+     */
+    protected $registrationIds = null;
+
     /**
      * Constructor.
      *
@@ -37,5 +43,26 @@ class RegistrationMonitor
     public function __construct(ClientSession $session)
     {
         $this->setClientSession($session);
+    }
+
+    /**
+     * Initializes the subscription to the meta-events.
+     */
+    protected function initSetupCalls()
+    {
+        // @var \Tidal\WampWatch\Subscription\Collection
+        $collection = $this->getMetaSubscriptionCollection();
+
+        $collection->addSubscription(self::REGISTRATION_CREATE_TOPIC, $this->getCreateHandler());
+        $collection->addSubscription(self::REGISTRATION_DELETE_TOPIC, $this->getSubscriptionHandler('delete'));
+        $collection->addSubscription(self::REGISTRATION_REG_TOPIC, $this->getSubscriptionHandler('register'));
+        $collection->addSubscription(self::REGISTRATION_UNREG_TOPIC, $this->getSubscriptionHandler('unregister'));
+
+        $this->setInitialCall(self::REGISTRATION_LIST_TOPIC, $this->getSubscriptionIdRetrievalCallback());
+    }
+
+    protected function setList($list)
+    {
+        $this->registrationIds = $list;
     }
 }
