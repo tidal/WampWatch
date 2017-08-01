@@ -18,7 +18,7 @@ use Tidal\WampWatch\Stub\ClientSessionStub;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use Thruway\Message;
-use tests\unit\Behavior\MonitorTestTrait;
+use Tidal\WampWatch\Test\Unit\Behavior\MonitorTestTrait;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
@@ -28,18 +28,13 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
     use MonitorTestTrait;
 
     /**
-     * @var ClientSessionStub
-     */
-    private $sessionStub;
-
-    /**
      * @var SessionMonitor
      */
     private $monitor;
 
     public function setUp()
     {
-        $this->sessionStub = new ClientSessionStub();
+        $this->setUpSessionStub();
         $this->monitor = new SessionMonitor($this->sessionStub);
     }
 

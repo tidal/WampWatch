@@ -12,10 +12,9 @@ namespace tests\unit;
 require_once __DIR__ . '/../bootstrap.php';
 
 use Tidal\WampWatch\RegistrationMonitor;
-use Tidal\WampWatch\Stub\ClientSessionStub;
 use Thruway\CallResult;
 use Thruway\Message\ResultMessage;
-use tests\unit\Behavior\MonitorTestTrait;
+use Tidal\WampWatch\Test\Unit\Behavior\MonitorTestTrait;
 
 /**
  * Class tests\unit\RegistrationMonitorTest *
@@ -25,18 +24,13 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
     use MonitorTestTrait;
 
     /**
-     * @var ClientSessionStub
-     */
-    private $sessionStub;
-
-    /**
      * @var RegistrationMonitor
      */
     private $monitor;
 
     public function setup()
     {
-        $this->sessionStub = new ClientSessionStub();
+        $this->setUpSessionStub();
         $this->monitor = new RegistrationMonitor($this->sessionStub);
     }
 
@@ -196,32 +190,6 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
             $this->sessionStub->hasCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC)
         );
     }
-
-    // REGISTRATION EVENT TESTS
-
-    public function test_create_event()
-    {
-        $info = [321, $this->getSubscriptionInfo()];
-        $subIdMap = $this->getSubscriptionIdMap();
-        $res = null;
-
-        $this->monitor->start();
-
-        $this->sessionStub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
-        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_DELETE_TOPIC);
-        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC);
-        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_SUB_TOPIC);
-        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_UNSUB_TOPIC);
-
-        $this->monitor->on('create', function ($sessionId, $subscriptionInfo) use (&$res) {
-            $res = [$sessionId, $subscriptionInfo];
-        });
-
-        $this->sessionStub->emit(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC, [$info]);
-
-        $this->assertSame($info, $res);
-    }
-
 
     private function getSubscriptionIdMap()
     {

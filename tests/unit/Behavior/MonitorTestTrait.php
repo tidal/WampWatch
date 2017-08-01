@@ -7,12 +7,23 @@
  *  file that was distributed with this source code.
  */
 
-namespace tests\unit\Behavior;
+namespace Tidal\WampWatch\Test\Unit\Behavior;
+
+use Tidal\WampWatch\Stub\ClientSessionStub;
 
 /**
  * Trait tests\unit\Behavior\MonitorTestTrait *
  */
 trait MonitorTestTrait
 {
+    /**
+     * @var ClientSessionStub
+     */
+    private $sessionStub;
+
+    private function setUpSessionStub()
+    {
+        $this->sessionStub = new ClientSessionStub();
+    }
 
 }
