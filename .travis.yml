@@ -34,7 +34,6 @@ jobs:
     - stage: Test
       php: hhvm
       before_script:
-        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -43,7 +42,6 @@ jobs:
     - stage: Test
       php: nightly
       before_script:
-        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -52,7 +50,6 @@ jobs:
     - stage: Integration
       php: 7.1
       before_script:
-        - phpenv config-rm xdebug.ini
         - docker run -it -d -p 8080:8080 crossbario/crossbar
         - composer selfupdate
         - composer install --no-interaction
@@ -62,6 +59,10 @@ jobs:
     - # publish
     - stage: Coverage
       php: 7.1
+      branches:
+        only:
+        - master
+        - develop
       before_script:
         - composer selfupdate
         - composer install --no-interaction
