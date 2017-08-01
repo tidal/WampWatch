@@ -26,4 +26,9 @@ trait MonitorTestTrait
         $this->sessionStub = new ClientSessionStub();
     }
 
+    private function getSubscriptionIdMap()
+    {
+        return json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}');
+    }
+
 }

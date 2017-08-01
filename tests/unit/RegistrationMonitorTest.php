@@ -191,11 +191,6 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function getSubscriptionIdMap()
-    {
-        return json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}');
-    }
-
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject|CallResult
      */
