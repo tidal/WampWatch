@@ -16,6 +16,7 @@ jobs:
     - stage: Test
       php: 7.1
       before_script:
+        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer install --no-interaction
       script:
@@ -24,6 +25,7 @@ jobs:
     - stage: Test
       php: 7.2
       before_script:
+        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -32,6 +34,7 @@ jobs:
     - stage: Test
       php: hhvm
       before_script:
+        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -40,6 +43,7 @@ jobs:
     - stage: Test
       php: nightly
       before_script:
+        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -48,15 +52,12 @@ jobs:
     - stage: Integration
       php: 7.1
       before_script:
+        - phpenv config-rm xdebug.ini
         - docker run -it -d -p 8080:8080 crossbario/crossbar
         - composer selfupdate
         - composer install --no-interaction
       script:
         - ./vendor/bin/phpunit --configuration ./phpunit.integration.xml.dist
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
-        - php vendor/bin/codacycoverage clover coverage.clover
-
 
     - # publish
     - stage: Coverage
@@ -66,7 +67,7 @@ jobs:
         - composer install --no-interaction
         - docker run -it -d -p 8080:8080 crossbario/crossbar
       script:
-        - ./vendor/bin/phpunit --coverage-clover=coverage.clover
+        - phpdbg -qrr phpunit --coverage-clover=coverage.clover
       after_script:
         - bash <(curl -s https://codecov.io/bash)
         - php vendor/bin/codacycoverage clover coverage.clover
