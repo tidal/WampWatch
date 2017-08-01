@@ -191,41 +191,28 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|CallResult
-     */
-    private function getCallResultMock()
+    // REGISTRATION EVENT TESTS
+
+    public function test_create_event()
     {
-        $mock = $this->getMockBuilder(CallResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $info = [321, $this->getSubscriptionInfo()];
+        $subIdMap = $this->getSubscriptionIdMap();
+        $res = null;
 
-        $mock->expects($this->any())
-            ->method('getResultMessage')
-            ->willReturn(
-                $this->getResultMessageMock()
-            );
+        $this->monitor->start();
 
-        return $mock;
-    }
+        $this->sessionStub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_DELETE_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_SUB_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_UNSUB_TOPIC);
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|
-     */
-    private function getResultMessageMock()
-    {
-        $mock = $this->getMockBuilder(ResultMessage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->monitor->on('create', function ($sessionId, $subscriptionInfo) use (&$res) {
+            $res = [$sessionId, $subscriptionInfo];
+        });
 
-        $mock->expects($this->any())
-            ->method('getArguments')
-            ->willReturn(
-                [
-                    $this->getSubscriptionIdMap(),
-                ]
-            );
+        $this->sessionStub->emit(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC, [$info]);
 
-        return $mock;
+        $this->assertSame($info, $res);
     }
 }

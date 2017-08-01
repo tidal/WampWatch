@@ -370,42 +370,4 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
             'match'   => 'exact',
         ];
     }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|CallResult
-     */
-    private function getCallResultMock()
-    {
-        $mock = $this->getMockBuilder(CallResult::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mock->expects($this->any())
-            ->method('getResultMessage')
-            ->willReturn(
-                $this->getResultMessageMock()
-            );
-
-        return $mock;
-    }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|
-     */
-    private function getResultMessageMock()
-    {
-        $mock = $this->getMockBuilder(ResultMessage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mock->expects($this->any())
-            ->method('getArguments')
-            ->willReturn(
-                [
-                    $this->getSubscriptionIdMap(),
-                ]
-            );
-
-        return $mock;
-    }
 }

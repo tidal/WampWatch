@@ -31,4 +31,50 @@ trait MonitorTestTrait
         return json_decode('{"exact": [321], "prefix": [654], "wildcard": [987]}');
     }
 
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|CallResult
+     */
+    private function getCallResultMock()
+    {
+        $mock = $this->getMockBuilder(CallResult::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getResultMessage')
+            ->willReturn(
+                $this->getResultMessageMock()
+            );
+
+        return $mock;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|
+     */
+    private function getResultMessageMock()
+    {
+        $mock = $this->getMockBuilder(ResultMessage::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getArguments')
+            ->willReturn(
+                [
+                    $this->getSubscriptionIdMap(),
+                ]
+            );
+
+        return $mock;
+    }
+
+    /**
+     * Returns a builder object to create mock objects using a fluent interface.
+     *
+     * @param string $className
+     *
+     * @return \PHPUnit_Framework_MockObject_MockBuilder
+     */
+    abstract public function getMockBuilder($className);
 }
