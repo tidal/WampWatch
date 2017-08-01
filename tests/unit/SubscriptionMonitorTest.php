@@ -201,7 +201,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_get_subscription_info_emits_event()
     {
-        $info = $this->getSubscriptionInfo();
+        $info = $this->getResultInfo();
         $res = null;
 
         $this->monitor->on('info', function ($r) use (&$res) {
@@ -217,7 +217,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_get_subscription_info_calls_promise()
     {
-        $info = $this->getSubscriptionInfo();
+        $info = $this->getResultInfo();
         $res = null;
 
         $this->monitor->getSubscriptionInfo(321)->done(function ($r) use (&$res) {
@@ -233,7 +233,7 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_create_event()
     {
-        $info = [321, $this->getSubscriptionInfo()];
+        $info = [321, $this->getResultInfo()];
         $subIdMap = $this->getSubscriptionIdMap();
         $res = null;
 
@@ -357,15 +357,5 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertEquals($first, $second);
-    }
-
-    private function getSubscriptionInfo()
-    {
-        return [
-            'id'      => 321,
-            'created' => '1999-09-09T09:09:09.999Z',
-            'uri'     => 'com.example.topic',
-            'match'   => 'exact',
-        ];
     }
 }

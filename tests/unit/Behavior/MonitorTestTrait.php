@@ -71,6 +71,16 @@ trait MonitorTestTrait
         return $mock;
     }
 
+    private function getResultInfo()
+    {
+        return [
+            'id' => 321,
+            'created' => '1999-09-09T09:09:09.999Z',
+            'uri' => 'com.example.topic',
+            'match' => 'exact',
+        ];
+    }
+
     /**
      * Returns a builder object to create mock objects using a fluent interface.
      *
