@@ -86,7 +86,7 @@ class SubscriptionMonitor implements MonitorInterface
         // @var \Tidal\WampWatch\Subscription\Collection
         $collection = $this->getMetaSubscriptionCollection();
 
-        $collection->addSubscription(self::SUBSCRIPTION_CREATE_TOPIC, $this->getCreateHandler());
+        $collection->addSubscription(self::SUBSCRIPTION_CREATE_TOPIC, $this->getSubscriptionHandler('create'));
         $collection->addSubscription(self::SUBSCRIPTION_DELETE_TOPIC, $this->getSubscriptionHandler('delete'));
         $collection->addSubscription(self::SUBSCRIPTION_SUB_TOPIC, $this->getSubscriptionHandler('subscribe'));
         $collection->addSubscription(self::SUBSCRIPTION_UNSUB_TOPIC, $this->getSubscriptionHandler('unsubscribe'));

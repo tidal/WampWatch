@@ -238,15 +238,6 @@ trait MonitorTrait
         };
     }
 
-    private function getCreateHandler()
-    {
-        return function ($res) {
-            $sessionId = $res[0];
-            $subscriptionInfo = $res[1];
-            $this->emit('create', [$sessionId, $subscriptionInfo]);
-        };
-    }
-
     protected function getSubscriptionIdRetrievalCallback()
     {
         return function (\Thruway\CallResult $res) {

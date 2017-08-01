@@ -53,7 +53,7 @@ class RegistrationMonitor
         // @var \Tidal\WampWatch\Subscription\Collection
         $collection = $this->getMetaSubscriptionCollection();
 
-        $collection->addSubscription(self::REGISTRATION_CREATE_TOPIC, $this->getCreateHandler());
+        $collection->addSubscription(self::REGISTRATION_CREATE_TOPIC, $this->getSubscriptionHandler('create'));
         $collection->addSubscription(self::REGISTRATION_DELETE_TOPIC, $this->getSubscriptionHandler('delete'));
         $collection->addSubscription(self::REGISTRATION_REG_TOPIC, $this->getSubscriptionHandler('register'));
         $collection->addSubscription(self::REGISTRATION_UNREG_TOPIC, $this->getSubscriptionHandler('unregister'));
