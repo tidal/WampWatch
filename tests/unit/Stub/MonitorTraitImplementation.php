@@ -20,6 +20,11 @@ class MonitorTraitImplementation
     }
 
     /**
+     * @var \stdClass
+     */
+    private $list;
+
+    /**
      * Constructor.
      *
      * @param ClientSession $session
@@ -32,5 +37,10 @@ class MonitorTraitImplementation
     public function setInitialCall($procedure, callable $callback)
     {
         $this->doSetInitialCall($procedure, $callback);
+    }
+
+    protected function setList($list)
+    {
+        $this->list = $list;
     }
 }
