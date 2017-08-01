@@ -25,7 +25,6 @@ jobs:
     - stage: Test
       php: 7.2
       before_script:
-        - phpenv config-rm xdebug.ini
         - composer selfupdate
         - composer update --no-interaction
       script:
@@ -68,7 +67,7 @@ jobs:
         - composer install --no-interaction
         - docker run -it -d -p 8080:8080 crossbario/crossbar
       script:
-        - phpdbg -qrr phpunit --coverage-clover=coverage.clover
+        - phpdbg -qrr ./vendor/bin/phpunit --coverage-clover=coverage.clover
       after_script:
         - bash <(curl -s https://codecov.io/bash)
         - php vendor/bin/codacycoverage clover coverage.clover
