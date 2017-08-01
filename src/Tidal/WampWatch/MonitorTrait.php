@@ -227,6 +227,10 @@ trait MonitorTrait
         );
     }
 
+    /**
+     * @param $event
+     * @return \Closure
+     */
     private function getSubscriptionHandler($event)
     {
         return function ($res) use ($event) {
