@@ -5,8 +5,6 @@ php:
   - hhvm
   - nightly
 
-sudo: required
-
 services:
   - docker
 
