@@ -14,8 +14,6 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use Tidal\WampWatch\SubscriptionMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
-use Thruway\CallResult;
-use Thruway\Message\ResultMessage;
 use Tidal\WampWatch\Test\Unit\Behavior\MonitorTestTrait;
 
 class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase

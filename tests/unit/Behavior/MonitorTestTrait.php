@@ -10,6 +10,8 @@
 namespace Tidal\WampWatch\Test\Unit\Behavior;
 
 use Tidal\WampWatch\Stub\ClientSessionStub;
+use Thruway\CallResult;
+use Thruway\Message\ResultMessage;
 
 /**
  * Trait tests\unit\Behavior\MonitorTestTrait *
