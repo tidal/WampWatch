@@ -193,7 +193,7 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_create_event()
     {
-        $info = [321, $this->getSubscriptionInfo()];
+        $info = [321, $this->getResultInfo()];
         $subIdMap = $this->getSubscriptionIdMap();
         $res = null;
 
