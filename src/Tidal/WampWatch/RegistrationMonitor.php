@@ -43,6 +43,7 @@ class RegistrationMonitor
     public function __construct(ClientSession $session)
     {
         $this->setClientSession($session);
+        $this->initSetupCalls();
     }
 
     /**
@@ -64,5 +65,10 @@ class RegistrationMonitor
     protected function setList($list)
     {
         $this->registrationIds = $list;
+    }
+
+    protected function getList()
+    {
+        return $this->registrationIds;
     }
 }
