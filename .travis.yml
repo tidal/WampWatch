@@ -9,23 +9,62 @@ services:
   - docker
 
 matrix:
-    fast_finish: true
-    allow_failures:
-        - php: 7.2
-        - php: hhvm
-        - php: nightly
 
 jobs:
+  fast_finish: true
+  allow_failures:
+      - php: 7.2
+      - php: hhvm
+      - php: nightly
   include:
     - # test
-    - stage: test
+    - stage: Test
+      php: 7.1
+      before_script:
+        - composer selfupdate
+        - composer install --no-interaction
+      script:
+        - ./vendor/bin/phpunit
+    - # test
+    - stage: Test
+      php: 7.2
       before_script:
         - composer selfupdate
         - composer update --no-interaction
       script:
         - ./vendor/bin/phpunit
+    - # test
+    - stage: Test
+      php: hhvm
+      before_script:
+        - composer selfupdate
+        - composer update --no-interaction
+      script:
+        - ./vendor/bin/phpunit
+    - # test
+    - stage: Test
+      php: nightly
+      before_script:
+        - composer selfupdate
+        - composer update --no-interaction
+      script:
+        - ./vendor/bin/phpunit
+
+    - stage: Integration
+      php: 7.1
+      before_script:
+        - docker run -it -d -p 8080:8080 crossbario/crossbar
+        - composer selfupdate
+        - composer install --no-interaction
+      script:
+        - ./vendor/bin/phpunit --configuration ./phpunit.integration.xml.dist
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+        - php vendor/bin/codacycoverage clover coverage.clover
+
+
     - # publish
-    - stage: publish
+    - stage: Coverage
       php: 7.1
       before_script:
         - composer selfupdate
@@ -33,10 +72,7 @@ jobs:
         - docker run -it -d -p 8080:8080 crossbario/crossbar
       script:
         - ./vendor/bin/phpunit --coverage-clover=coverage.clover
-      after_success:
+      after_script:
         - bash <(curl -s https://codecov.io/bash)
         - php vendor/bin/codacycoverage clover coverage.clover
 
-before_script:
-  - composer selfupdate
-  - composer update --no-interaction
