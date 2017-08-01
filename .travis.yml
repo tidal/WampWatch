@@ -15,16 +15,24 @@ matrix:
         - php: hhvm
         - php: nightly
 
-before_install:
-  - docker run -it -d -p 8080:8080 crossbario/crossbar
-
-before_script:
-  - composer selfupdate
-  - composer install --no-interaction
-
-script:
-  - ./vendor/bin/phpunit --coverage-clover=coverage.clover
-  - ./vendor/bin/phpunit --configuration ./phpunit.integration.xml.dist
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - php vendor/bin/codacycoverage clover coverage.clover
+jobs:
+  include:
+    - # test
+    - stage: test
+      before_script:
+        - composer selfupdate
+        - composer update --no-interaction
+      script:
+        - ./vendor/bin/phpunit
+    - # publish
+    - stage: publish
+      php: 7.1
+      before_script:
+        - composer selfupdate
+        - composer install --no-interaction
+        - docker run -it -d -p 8080:8080 crossbario/crossbar
+      script:
+        - ./vendor/bin/phpunit --coverage-clover=coverage.clover
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+        - php vendor/bin/codacycoverage clover coverage.clover
