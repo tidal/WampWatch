@@ -16,9 +16,12 @@ use Tidal\WampWatch\SubscriptionMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Thruway\CallResult;
 use Thruway\Message\ResultMessage;
+use tests\unit\Behavior\MonitorTestTrait;
 
 class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
 {
+    use MonitorTestTrait;
+
     /**
      * @var ClientSessionStub
      */

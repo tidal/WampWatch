@@ -15,12 +15,15 @@ use Tidal\WampWatch\RegistrationMonitor;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Thruway\CallResult;
 use Thruway\Message\ResultMessage;
+use tests\unit\Behavior\MonitorTestTrait;
 
 /**
  * Class tests\unit\RegistrationMonitorTest *
  */
 class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
 {
+    use MonitorTestTrait;
+
     /**
      * @var ClientSessionStub
      */
@@ -145,6 +148,78 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
         $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_UNREG_TOPIC);
 
         $this->assertEquals($subIdMap->getResultMessage()->getArguments()[0], $response);
+    }
+
+    // META SUBSCRIPTION AND CALL TESTS
+
+    public function test_start_subscribes_to_create_topic()
+    {
+        $this->monitor->start();
+
+        $this->assertTrue(
+            $this->sessionStub->hasSubscription(RegistrationMonitor::REGISTRATION_CREATE_TOPIC)
+        );
+    }
+
+    public function test_start_subscribes_to_delete_topic()
+    {
+        $this->monitor->start();
+
+        $this->assertTrue(
+            $this->sessionStub->hasSubscription(RegistrationMonitor::REGISTRATION_DELETE_TOPIC)
+        );
+    }
+
+    public function test_start_subscribes_to_subscribe_topic()
+    {
+        $this->monitor->start();
+
+        $this->assertTrue(
+            $this->sessionStub->hasSubscription(RegistrationMonitor::REGISTRATION_REG_TOPIC)
+        );
+    }
+
+    public function test_start_subscribes_to_unsubscribe_topic()
+    {
+        $this->monitor->start();
+
+        $this->assertTrue(
+            $this->sessionStub->hasSubscription(RegistrationMonitor::REGISTRATION_UNREG_TOPIC)
+        );
+    }
+
+    public function test_start_calls_session_list()
+    {
+        $this->monitor->start();
+
+        $this->assertTrue(
+            $this->sessionStub->hasCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC)
+        );
+    }
+
+    // REGISTRATION EVENT TESTS
+
+    public function test_create_event()
+    {
+        $info = [321, $this->getSubscriptionInfo()];
+        $subIdMap = $this->getSubscriptionIdMap();
+        $res = null;
+
+        $this->monitor->start();
+
+        $this->sessionStub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_DELETE_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_SUB_TOPIC);
+        $this->sessionStub->completeSubscription(SubscriptionMonitor::SUBSCRIPTION_UNSUB_TOPIC);
+
+        $this->monitor->on('create', function ($sessionId, $subscriptionInfo) use (&$res) {
+            $res = [$sessionId, $subscriptionInfo];
+        });
+
+        $this->sessionStub->emit(SubscriptionMonitor::SUBSCRIPTION_CREATE_TOPIC, [$info]);
+
+        $this->assertSame($info, $res);
     }
 
 

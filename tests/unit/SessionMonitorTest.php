@@ -18,12 +18,15 @@ use Tidal\WampWatch\Stub\ClientSessionStub;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use Thruway\Message;
+use tests\unit\Behavior\MonitorTestTrait;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
  */
 class SessionMonitorTest extends PHPUnit_Framework_TestCase
 {
+    use MonitorTestTrait;
+
     /**
      * @var ClientSessionStub
      */
