@@ -17,7 +17,7 @@ matrix:
         - php: nightly
 
 before_install:
-  - sudo docker run -it -d -p 8080:8080 crossbario/crossbar
+  - docker run -it -d -p 8080:8080 crossbario/crossbar
 
 before_script:
   - composer selfupdate
