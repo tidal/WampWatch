@@ -57,10 +57,10 @@ trait MakesDeferredPromisesTrait
         return $this->deferredFactory;
     }
 
-    abstract
-
-        /**
-         * @return PromiseFactoryInterface
-         */
-    public function getPromiseFactory();
+    /**
+     * Dependency on MakesPromisesTrait
+     *
+     * @return PromiseFactoryInterface
+     */
+    abstract public function getPromiseFactory();
 }
