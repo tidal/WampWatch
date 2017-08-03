@@ -13,7 +13,7 @@ namespace Tidal\WampWatch\Behavior\Async;
 
 use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\Async\Adapter\PromiseFactoryInterface;
-use RuntimeException;
+use Tidal\WampWatch\Async\DefaultPromiseFactory;
 
 trait MakesPromisesTrait
 {
@@ -47,7 +47,7 @@ trait MakesPromisesTrait
     public function getPromiseFactory()
     {
         if (!isset($this->promiseFactory)) {
-            throw new RuntimeException('Promise Factory not set.');
+            $this->promiseFactory = new DefaultPromiseFactory();
         }
 
         return $this->promiseFactory;
