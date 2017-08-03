@@ -12,6 +12,9 @@ namespace Tidal\WampWatch\Test\Unit\Behavior;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Thruway\CallResult;
 use Thruway\Message\ResultMessage;
+use Tidal\WampWatch\Async\PromiseInterface;
+use Tidal\WampWatch\Async\Adapter\PromiseFactoryInterface;
+use Tidal\WampWatch\Async\DeferredInterface;
 
 /**
  * Trait tests\unit\Behavior\MonitorTestTrait *
@@ -79,6 +82,52 @@ trait MonitorTestTrait
             'uri' => 'com.example.topic',
             'match' => 'exact',
         ];
+    }
+
+    private function createPromiseFactoryMock()
+    {
+        $mock = $this->getMockBuilder(PromiseFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('create')
+            ->willReturn(
+                $this->createPromiseMock()
+            );
+
+        return $mock;
+    }
+
+    private function createPromiseMock()
+    {
+        return $this->getMockBuilder(PromiseInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+    }
+
+    private function createDeferredFactoryMock()
+    {
+        $mock = $this->getMockBuilder(PromiseFactoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('create')
+            ->willReturn(
+                $this->createDeferrdMock()
+            );
+
+        return $mock;
+    }
+
+    private function createDeferrdMock()
+    {
+        return $this->getMockBuilder(DeferredInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
     }
 
     /**
