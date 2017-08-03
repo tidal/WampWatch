@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the Tidal/WampWatch package.
  *   (c) 2016 Timo Michna <timomichna/yahoo.de>
  *

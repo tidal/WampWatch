@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of the Tidal/WampWatch package.
  *  (c) 2016 Timo Michna <timomichna/yahoo.de>
  *
@@ -15,7 +15,7 @@ use Tidal\WampWatch\Async\DefaultDeferredFactory;
 use Tidal\WampWatch\Async\Adapter\PromiseFactoryInterface;
 
 /**
- * Trait Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait *
+ * Trait Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait.
  */
 trait MakesDeferredPromisesTrait
 {
@@ -58,7 +58,7 @@ trait MakesDeferredPromisesTrait
     }
 
     /**
-     * Dependency on MakesPromisesTrait
+     * Dependency on MakesPromisesTrait.
      *
      * @return PromiseFactoryInterface
      */

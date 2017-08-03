@@ -14,7 +14,7 @@ namespace Tidal\WampWatch;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
- * Class Tidal\WampWatch\RegistrationMonitor *
+ * Class Tidal\WampWatch\RegistrationMonitor.
  */
 class RegistrationMonitor
 {
