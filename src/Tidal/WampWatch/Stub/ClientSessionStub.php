@@ -326,7 +326,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     public function call($procedureName, $arguments = null, $argumentsKw = null, $options = null)
     {
-        $this->calls[$procedureName] = static::createDeferredAdapter();
+        $this->calls[$procedureName] = $this->createDeferredAdapter();
         $this->calling[$procedureName] = new CallMessage(
             count($this->calling),
             $options,
@@ -431,6 +431,9 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
      */
     private function createDeferredAdapter(callable $canceller = null)
     {
+        $canceller = $canceller ?: function () {
+        };
+
         return $this->getDeferredFactory()->create($canceller);
     }
 }
