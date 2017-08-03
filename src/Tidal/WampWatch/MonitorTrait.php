@@ -12,19 +12,20 @@
 namespace Tidal\WampWatch;
 
 use Evenement\EventEmitterTrait;
-use React\Promise\Promise;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Subscription\Collection as SubscriptionCollection;
 use React\Promise\Deferred;
-use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use Tidal\WampWatch\Adapter\React\DeferredAdapter;
+use Tidal\WampWatch\Async\PromiseInterface;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
 
 /**
  * Trait MonitorTrait.
  */
 trait MonitorTrait
 {
-    use EventEmitterTrait;
+    use EventEmitterTrait,
+        MakesPromisesTrait;
 
     /**
      * The monitor's WAMP client session.
@@ -158,14 +159,14 @@ trait MonitorTrait
     }
 
     /**
-     * @return \React\Promise\Promise
+     * @return PromiseInterface
      */
     protected function callInitialProcedure()
     {
         if (!isset($this->initialCallProcedure) || !isset($this->initialCallCallback)) {
             $this->initialCallDone = true;
 
-            return new  Promise(function (callable $resolve) {
+            return $this->createPromise(function (callable $resolve) {
                 $resolve();
             });
         }
@@ -209,20 +210,6 @@ trait MonitorTrait
             );
 
         return $deferred->promise();
-    }
-
-    /**
-     * @param callable $callback
-     *
-     * @return PromiseAdapter
-     */
-    private function createPromiseAdapter(callable $callback)
-    {
-        return new PromiseAdapter(
-            new Promise(
-                $callback
-            )
-        );
     }
 
     /**

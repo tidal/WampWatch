@@ -83,7 +83,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * registered on the wamp-router in the monitor's realm
      * and populates the data via given callback,.
      *
-     * @return PromiseAdapter
+     * @return PromiseInterface
      */
     public function getSessionIds()
     {
@@ -91,7 +91,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             return $this->retrieveSessionIds();
         }
 
-        return $this->createPromiseAdapter(
+        return $this->createPromise(
             function (callable $resolve) {
                 $resolve($this->getList());
             }
