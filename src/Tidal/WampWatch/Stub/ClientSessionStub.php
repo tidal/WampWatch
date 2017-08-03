@@ -27,7 +27,9 @@ use Tidal\WampWatch\ClientSessionInterface;
 use Tidal\WampWatch\Exception\UnknownProcedureException;
 use Tidal\WampWatch\Exception\UnknownTopicException;
 use Tidal\WampWatch\Adapter\React\PromiseAdapter;
-use Tidal\WampWatch\Adapter\React\DeferredAdapter;
+use Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
+use Tidal\WampWatch\Async\DeferredInterface;
 
 /**
  * !!! WARNING !!!!
@@ -42,7 +44,9 @@ use Tidal\WampWatch\Adapter\React\DeferredAdapter;
  */
 class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 {
-    use EventEmitterTrait;
+    use EventEmitterTrait,
+        MakesPromisesTrait,
+        MakesDeferredPromisesTrait;
 
     /**
      * @var int
@@ -423,10 +427,10 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
     /**
      * @param callable $canceller
      *
-     * @return DeferredAdapter
+     * @return DeferredInterface
      */
-    private static function createDeferredAdapter(callable $canceller = null)
+    private function createDeferredAdapter(callable $canceller = null)
     {
-        return new DeferredAdapter(new Deferred($canceller));
+        return $this->getDeferredFactory()->create($canceller);
     }
 }
