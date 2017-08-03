@@ -14,6 +14,7 @@ require_once __DIR__ . '/CrossbarTestingTrait.php';
 
 use Thruway\ClientSession;
 use Thruway\Message\SubscribedMessage;
+use Thruway\Transport\TransportInterface;
 use Tidal\WampWatch\SubscriptionMonitor;
 use Tidal\WampWatch\Util;
 use stdClass;
@@ -63,6 +64,40 @@ class CrosssbarSubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
         $this->getConnection()->on('open', function (ClientSession $session) {
             $this->setupSubscriptionMonitor($session);
         });
+    }
+
+    /**
+     * test if the WAMP router supports subscription meta api
+     */
+    public function test_meta_api()
+    {
+        /** @var stdClass $connectionDetails */
+        $connectionDetails = null;
+
+        $onOpen = function (ClientSession $session, TransportInterface $transport, stdClass $details) use (&$connectionDetails) {
+
+            $connectionDetails = $details;
+
+            $this->connection->close();
+        };
+
+        $this->connection->on('open', $onOpen);
+
+        $this->connection->on('error', function ($reason) {
+            echo "The connected has closed with error: {$reason}\n";
+        });
+
+        $this->connection->open();
+
+        // wait for connection to be established
+        sleep(1);
+
+        $this->assertInstanceOf(stdClass::class, $connectionDetails);
+        $this->assertObjectHasAttribute('roles', $connectionDetails);
+        $this->assertObjectHasAttribute('broker', $connectionDetails->roles);
+        $this->assertObjectHasAttribute('features', $connectionDetails->roles->broker);
+        $this->assertObjectHasAttribute('subscription_meta_api', $connectionDetails->roles->broker->features);
+        $this->assertTrue($connectionDetails->roles->broker->features->subscription_meta_api);
     }
 
     public function test_onstart()
