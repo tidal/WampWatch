@@ -85,6 +85,7 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
     {
 
         $subIdMap = $this->getSubscriptionIdMap();
+
         $this->monitor->start();
 
         $this->sessionStub->respondToCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC, $subIdMap);
@@ -109,14 +110,7 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
 
     public function test_is_running_after_subscriptions_and_list()
     {
-        $subIdMap = $this->getSubscriptionIdMap();
-        $this->monitor->start();
-
-        $this->sessionStub->respondToCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC, $subIdMap);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_DELETE_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_CREATE_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_REG_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_UNREG_TOPIC);
+        $this->startMonitor();
 
         $this->assertTrue($this->monitor->isRunning());
     }
@@ -133,7 +127,10 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->monitor->start();
 
-        $this->sessionStub->respondToCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC, $subIdMap);
+        $this->sessionStub->respondToCall(
+            RegistrationMonitor::REGISTRATION_LIST_TOPIC,
+            $subIdMap
+        );
         $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_DELETE_TOPIC);
         $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_CREATE_TOPIC);
         $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_REG_TOPIC);
@@ -194,16 +191,9 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_create_event()
     {
         $info = [321, $this->getResultInfo()];
-        $subIdMap = $this->getSubscriptionIdMap();
         $res = null;
 
-        $this->monitor->start();
-
-        $this->sessionStub->respondToCall(RegistrationMonitor::REGISTRATION_LIST_TOPIC, $subIdMap);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_DELETE_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_CREATE_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_REG_TOPIC);
-        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_UNREG_TOPIC);
+        $this->startMonitor();
 
         $this->monitor->on('create', function ($sessionId, $subscriptionInfo) use (&$res) {
             $res = [$sessionId, $subscriptionInfo];
@@ -212,5 +202,39 @@ class RegistrationMonitorTest extends \PHPUnit_Framework_TestCase
         $this->sessionStub->emit(RegistrationMonitor::REGISTRATION_CREATE_TOPIC, [$info]);
 
         $this->assertSame($info, $res);
+    }
+
+    public function test_delete_event()
+    {
+        $info = [321, 654];
+        $res = null;
+
+        $this->startMonitor();
+
+        $this->monitor->on('delete', function ($sessionId, $subscriptionId) use (&$res) {
+            $res = [$sessionId, $subscriptionId];
+        });
+
+        $this->sessionStub->emit(RegistrationMonitor::REGISTRATION_DELETE_TOPIC, [$info]);
+
+        $this->assertSame($info, $res);
+    }
+
+    private function startMonitor()
+    {
+        $this->monitor->start();
+        $this->respondToStartupCalls();
+    }
+
+    private function respondToStartupCalls()
+    {
+        $this->sessionStub->respondToCall(
+            RegistrationMonitor::REGISTRATION_LIST_TOPIC,
+            $this->getSubscriptionIdMap()
+        );
+        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_DELETE_TOPIC);
+        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_CREATE_TOPIC);
+        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_REG_TOPIC);
+        $this->sessionStub->completeSubscription(RegistrationMonitor::REGISTRATION_UNREG_TOPIC);
     }
 }
