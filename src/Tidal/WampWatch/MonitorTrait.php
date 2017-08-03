@@ -229,6 +229,7 @@ trait MonitorTrait
 
     /**
      * @param $event
+     *
      * @return \Closure
      */
     private function getSubscriptionHandler($event)
