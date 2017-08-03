@@ -31,7 +31,6 @@ class RegistrationMonitor
     const REGISTRATION_REGLIST_TOPIC = 'wamp.registration.list_callees';
     const REGISTRATION_REGCOUNT_TOPIC = 'wamp.registration.count_callees';
 
-
     /**
      * @var \stdClass Objects withs lists of subscriptions (exact, prefix, wildcard)
      */
