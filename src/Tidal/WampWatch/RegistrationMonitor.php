@@ -14,7 +14,7 @@ namespace Tidal\WampWatch;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
- * Class Tidal\WampWatch\RegistrationMonitor *
+ * Class Tidal\WampWatch\RegistrationMonitor *.
  */
 class RegistrationMonitor
 {
@@ -30,7 +30,6 @@ class RegistrationMonitor
     const REGISTRATION_GET_TOPIC = 'wamp.registration.get';
     const REGISTRATION_REGLIST_TOPIC = 'wamp.registration.list_callees';
     const REGISTRATION_REGCOUNT_TOPIC = 'wamp.registration.count_callees';
-
 
     /**
      * @var \stdClass Objects withs lists of subscriptions (exact, prefix, wildcard)
