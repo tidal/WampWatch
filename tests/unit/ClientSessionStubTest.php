@@ -352,6 +352,15 @@ class ClientSessionStubTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function test_respond_to_call_resets_call()
+    {
+        $this->session->call('foo');
+
+        $this->session->respondToCall('foo', 'bar');
+
+        $this->assertFalse($this->session->hasCall('foo'));
+    }
+
     public function test_call_can_be_failed()
     {
         $error = $this->getErrorMessage();
@@ -372,6 +381,18 @@ class ClientSessionStubTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException(UnknownProcedureException::class);
 
         $this->session->failCall('foo', $this->getErrorMessage());
+    }
+
+    public function test_fail_call_resets_call()
+    {
+        $error = $this->getErrorMessage();
+
+        $this->session->call('foo')->otherwise(function () {
+        });
+
+        $this->session->failCall('foo', $error);
+
+        $this->assertFalse($this->session->hasCall('foo'));
     }
 
     // ACCESSOR TESTS

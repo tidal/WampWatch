@@ -348,6 +348,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         /* @var $futureResult Deferred */
         $futureResult = $this->calls[$procedureName];
+        unset($this->calls[$procedureName]);
 
         $futureResult->resolve($result);
     }
@@ -364,6 +365,7 @@ class ClientSessionStub implements ClientSessionInterface, EventEmitterInterface
 
         /* @var $futureResult Deferred */
         $futureResult = $this->calls[$procedureName];
+        unset($this->calls[$procedureName]);
 
         $futureResult->reject($error);
     }

@@ -343,19 +343,18 @@ class SubscriptionMonitorTest extends \PHPUnit_Framework_TestCase
     public function test_2nd_get_subscription_ids_returns_subscription_map_locally()
     {
         $subIdMap = $this->getSubscriptionIdMap();
-        $first = null;
+        $callResult = $this->getCallResultMock();
         $second = null;
 
-        $this->monitor->getSubscriptionIds()->done(function ($r) use (&$first) {
-            $first = $r;
+        $this->monitor->getSubscriptionIds()->done(function () {
         });
 
-        $this->sessionStub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $subIdMap);
+        $this->sessionStub->respondToCall(SubscriptionMonitor::SUBSCRIPTION_LIST_TOPIC, $callResult);
 
         $this->monitor->getSubscriptionIds()->done(function ($r) use (&$second) {
             $second = $r;
         });
 
-        $this->assertEquals($first, $second);
+        $this->assertEquals($subIdMap, $second);
     }
 }
