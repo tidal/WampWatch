@@ -1,10 +1,12 @@
 <?php
-/**
+
+/*
  * This file is part of the Tidal/WampWatch package.
- *  (c) 2016 Timo Michna <timomichna/yahoo.de>
+ *   (c) 2016 Timo Michna <timomichna/yahoo.de>
  *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
+ *
  */
 
 namespace Tidal\WampWatch\Behavior\Async;
@@ -15,11 +17,10 @@ use Tidal\WampWatch\Async\DefaultDeferredFactory;
 use Tidal\WampWatch\Async\Adapter\PromiseFactoryInterface;
 
 /**
- * Trait Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait *
+ * Trait Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait *.
  */
 trait MakesDeferredPromisesTrait
 {
-
     /**
      * @var DeferredFactoryInterface
      */
@@ -58,7 +59,7 @@ trait MakesDeferredPromisesTrait
     }
 
     /**
-     * Dependency on MakesPromisesTrait
+     * Dependency on MakesPromisesTrait.
      *
      * @return PromiseFactoryInterface
      */
