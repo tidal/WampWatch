@@ -31,6 +31,11 @@ trait CrossbarTestingTrait
     private $clientSession;
 
     /**
+     * @var Adapter
+     */
+    private $monitorSession;
+
+    /**
      * @var LoopInterface
      */
     private $loop;
@@ -56,17 +61,8 @@ trait CrossbarTestingTrait
         $this->monitoredSessionId = -2;
 
         $this->setupTestTopicName();
-
-        Logger::set(new NullLogger());
-
-        $this->getConnection()->on('error', function ($reason) {
-            echo "The connected has closed with error: {$reason}\n";
-        });
-
-        $this->getConnection()->on('open', function (ClientSession $session) {
-            $this->clientSession = $this->createSessionAdapter($session);
-            $this->clientSessionId = $session->getSessionId();
-        });
+        $this->setupLogger();
+        $this->createMonitorConnection();
     }
 
     /**
@@ -80,29 +76,52 @@ trait CrossbarTestingTrait
             $loop = $this->getLoop();
         }
 
-        return new Connection(
+        $connection = new Connection(
             [
                 'realm' => self::REALM_NAME,
                 'url'   => self::ROUTER_URL,
             ],
             $loop
         );
+
+        $connection->on('error', function ($reason) {
+            echo "The client connection has closed with error: {$reason}\n";
+        });
+
+        return $connection;
     }
 
     /**
+     * Creates additional connections to mimick client behavior
+     *
+     * @return \Thruway\Connection
+     */
+    private function createMonitorConnection()
+    {
+        $connection = $this->getConnection();
+
+        $connection->on('open', function (ClientSession $session) {
+            $this->monitorSession = $this->createSessionAdapter($session);
+            $this->monitoredSessionId = $session->getSessionId();
+        });
+
+        return $connection;
+    }
+
+    /**
+     * Creates additional connections to mimick client behavior
+     *
      * @return \Thruway\Connection
      */
     private function createClientConnection()
     {
         $connection = $this->createConnection();
-
-        $connection->on('error', function ($reason) {
-            echo "The client connection has closed with error: {$reason}\n";
-        });
-        $this->getConnection()->on('close', [$connection, 'close']);
-        $connection->on('open', function ($session) {
+        $connection->on('open', function (ClientSession $session) {
             $this->clientSession = $this->createSessionAdapter($session);
+            $this->clientSessionId = $session->getSessionId();
         });
+        // close the client connection when the monitor connection closes
+        $this->getConnection()->on('close', [$connection, 'close']);
 
         return $connection;
     }
@@ -144,5 +163,10 @@ trait CrossbarTestingTrait
     {
         return $this->connection
             ?: $this->connection = $this->createConnection();
+    }
+
+    private function setupLogger()
+    {
+        Logger::set(new NullLogger());
     }
 }
