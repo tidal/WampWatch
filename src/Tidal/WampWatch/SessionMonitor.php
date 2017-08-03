@@ -18,9 +18,7 @@ use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use Tidal\WampWatch\Async\PromiseInterface;
 
 /**
- * Description of SessionMonitor.
- *
- * @author Timo
+ * Class SessionMonitor.
  */
 class SessionMonitor implements MonitorInterface, EventEmitterInterface
 {

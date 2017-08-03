@@ -20,9 +20,7 @@ use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 
 /**
- * Description of MonitorTrait.
- *
- * @author Timo
+ * Trait MonitorTrait.
  */
 trait MonitorTrait
 {
@@ -229,6 +227,7 @@ trait MonitorTrait
 
     /**
      * @param $event
+     *
      * @return \Closure
      */
     private function getSubscriptionHandler($event)
