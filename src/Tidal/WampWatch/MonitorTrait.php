@@ -14,10 +14,9 @@ namespace Tidal\WampWatch;
 use Evenement\EventEmitterTrait;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Subscription\Collection as SubscriptionCollection;
-use React\Promise\Deferred;
-use Tidal\WampWatch\Adapter\React\DeferredAdapter;
 use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
+use Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait;
 
 /**
  * Trait MonitorTrait.
@@ -25,7 +24,8 @@ use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
 trait MonitorTrait
 {
     use EventEmitterTrait,
-        MakesPromisesTrait;
+        MakesPromisesTrait,
+        MakesDeferredPromisesTrait;
 
     /**
      * The monitor's WAMP client session.
@@ -193,9 +193,7 @@ trait MonitorTrait
 
     private function retrieveCallData($procedure, callable $filter = null, $arguments = [])
     {
-        $deferred = new DeferredAdapter(
-            new Deferred()
-        );
+        $deferred = $this->createDeferred();
 
         $filter = $filter ?: function ($res) {
             return $res;
