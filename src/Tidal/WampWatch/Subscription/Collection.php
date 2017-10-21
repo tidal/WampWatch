@@ -19,6 +19,10 @@ use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
 use Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait;
 use Tidal\WampWatch\Async\DeferredInterface;
 
+/**
+ * Class Tidal\WampWatch\Subscription\Collection.
+ *
+ */
 class Collection
 {
     use MakesPromisesTrait,
@@ -70,7 +74,7 @@ class Collection
      * @param string   $topic    the topic the subscription is for
      * @param callable $callback the callback for the topic
      */
-    public function addSubscription($topic, callable $callback)
+    public function addSubscription($topic, callable $callback): void
     {
         $this->subscriptions[$topic] = 0;
         $this->subscriptionCallbacks[$topic] = $callback;
@@ -79,7 +83,7 @@ class Collection
     /**
      * @return bool
      */
-    public function hasSubscription()
+    public function hasSubscription(): bool
     {
         return count($this->subscriptions) > 0;
     }
@@ -90,7 +94,7 @@ class Collection
      *
      * @return PromiseInterface
      */
-    public function subscribe()
+    public function subscribe(): PromiseInterface
     {
         if (!$this->isSubscribed() && !$this->isSubscribing()) {
             $this->subscriptionPromise = $this->createDeferred();
@@ -101,7 +105,7 @@ class Collection
         return $this->subscriptionPromise->promise();
     }
 
-    protected function doSubscribe()
+    protected function doSubscribe(): void
     {
         $this->getPromiseFactory()->all($this->getSubscriptionPromises())->done(function () {
             $this->isSubscribed = true;
@@ -113,7 +117,7 @@ class Collection
     /**
      * @return PromiseInterface[]
      */
-    private function getSubscriptionPromises()
+    private function getSubscriptionPromises(): array
     {
         $promises = [];
 
@@ -133,7 +137,7 @@ class Collection
     /**
      * @return PromiseInterface
      */
-    public function unsubscribe()
+    public function unsubscribe(): PromiseInterface
     {
         $resolver = function (callable $resolve) {
             $resolve();
@@ -154,7 +158,7 @@ class Collection
     /**
      * @return bool
      */
-    public function isSubscribed()
+    public function isSubscribed(): bool
     {
         return $this->isSubscribed;
     }
@@ -162,7 +166,7 @@ class Collection
     /**
      * @return bool
      */
-    public function isSubscribing()
+    public function isSubscribing(): bool
     {
         return $this->isSubscribing;
     }
