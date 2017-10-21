@@ -103,7 +103,7 @@ class Collection
 
     protected function doSubscribe()
     {
-        \React\Promise\all($this->getSubscriptionPromises())->done(function () {
+        $this->getPromiseFactory()->all($this->getSubscriptionPromises())->done(function () {
             $this->isSubscribed = true;
             $this->isSubscribing = false;
             $this->subscriptionPromise->resolve($this->subscriptions);
