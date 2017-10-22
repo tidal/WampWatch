@@ -152,6 +152,36 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($done);
     }
 
+    public function test_all_returns_array_of_all_results()
+    {
+        $promiseCount = 4;
+
+        $results = null;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock(true);
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->all($promises)
+            ->done(
+                function ($res) use (&$results) {
+                    $results = $res;
+                }
+            );
+
+        foreach ($deferredPromises as $key => $deferred) {
+            $deferred->resolve($key);
+        }
+
+        $this->assertEquals([0, 1, 2, 3], $results);
+    }
+
     /**
      * @param bool $expectResolve whether the mock should expect DeferredAdapter::resolve() to be called
      *
