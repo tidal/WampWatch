@@ -20,4 +20,33 @@ interface PromiseFactoryInterface
      * @return PromiseInterface
      */
     public function create(callable $resolver, callable $canceller = null);
+
+    /**
+     * @param PromiseInterface[] $promises
+     *
+     * @return PromiseInterface
+     */
+    public function all(array $promises);
+
+    /**
+     * @param PromiseInterface[] $promises
+     *
+     * @return PromiseInterface
+     */
+    public function any(array $promises);
+
+    /**
+     * @param PromiseInterface[] $promises
+     * @param int                $count
+     *
+     * @return PromiseInterface
+     */
+    public function some(array $promises, int $count);
+
+    /**
+     * @param PromiseInterface[] $promises
+     *
+     * @return PromiseInterface
+     */
+    public function first(array $promises);
 }

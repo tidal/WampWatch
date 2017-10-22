@@ -12,9 +12,13 @@
 namespace Tidal\WampWatch\Adapter\React;
 
 use Tidal\WampWatch\Async\PromiseInterface;
+use Tidal\WampWatch\Adapter\AdapterInterface;
 use React\Promise\ExtendedPromiseInterface as ReactPromise;
 
-class PromiseAdapter implements PromiseInterface
+/**
+ * Class Tidal\WampWatch\Adapter\React\PromiseAdapter.
+ */
+class PromiseAdapter implements PromiseInterface, AdapterInterface
 {
     /**
      * @var ReactPromise
@@ -42,7 +46,7 @@ class PromiseAdapter implements PromiseInterface
     /**
      * @return ReactPromise
      */
-    public function getAdaptee()
+    public function getAdaptee(): ReactPromise
     {
         return $this->adaptee;
     }
@@ -54,9 +58,9 @@ class PromiseAdapter implements PromiseInterface
      *
      * @return self
      */
-    public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
+    public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null): self
     {
-        $this->adaptee->then(function () use ($onFulfilled) {
+        $this->adaptee->then(function () use ($onFulfilled): mixed {
             if ($onFulfilled !== null) {
                 return call_user_func_array($onFulfilled, func_get_args());
             }
@@ -80,7 +84,7 @@ class PromiseAdapter implements PromiseInterface
      *
      * @return self
      */
-    public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
+    public function done(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null): self
     {
         $this->adaptee->done(function () use ($onFulfilled) {
             if ($onFulfilled !== null) {
@@ -104,7 +108,7 @@ class PromiseAdapter implements PromiseInterface
      *
      * @return self
      */
-    public function otherwise(callable $onRejected)
+    public function otherwise(callable $onRejected): self
     {
         $this->adaptee->otherwise(function () use ($onRejected) {
             return call_user_func_array($onRejected, func_get_args());
@@ -118,7 +122,7 @@ class PromiseAdapter implements PromiseInterface
      *
      * @return self
      */
-    public function always(callable $onAlways)
+    public function always(callable $onAlways): self
     {
         $this->adaptee->always(function () use ($onAlways) {
             return call_user_func_array($onAlways, func_get_args());
@@ -132,7 +136,7 @@ class PromiseAdapter implements PromiseInterface
      *
      * @return self
      */
-    public function progress(callable $onProgress)
+    public function progress(callable $onProgress): self
     {
         $this->adaptee->progress(function () use ($onProgress) {
             return call_user_func_array($onProgress, func_get_args());
