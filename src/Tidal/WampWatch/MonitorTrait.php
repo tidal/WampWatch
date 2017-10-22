@@ -81,7 +81,7 @@ trait MonitorTrait
             $this->callInitialProcedure(),
         ];
 
-        \React\Promise\all($promises)->done(function () {
+        $this->getPromiseFactory()->all($promises)->done(function () {
             $this->isRunning = true;
             $this->emit('start', [$this->getList()]);
         });
