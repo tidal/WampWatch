@@ -79,7 +79,7 @@ class PromiseFactory implements PromiseFactoryInterface
 
     /**
      * @param PromiseInterface[]|ReactPromise[] $promises
-     * @param int $count
+     * @param int                               $count
      *
      * @return PromiseAdapter
      */

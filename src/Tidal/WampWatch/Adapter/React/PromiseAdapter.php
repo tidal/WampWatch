@@ -17,7 +17,6 @@ use React\Promise\ExtendedPromiseInterface as ReactPromise;
 
 /**
  * Class Tidal\WampWatch\Adapter\React\PromiseAdapter.
- *
  */
 class PromiseAdapter implements PromiseInterface, AdapterInterface
 {
@@ -61,7 +60,7 @@ class PromiseAdapter implements PromiseInterface, AdapterInterface
      */
     public function then(?callable $onFulfilled = null, ?callable $onRejected = null, ?callable $onProgress = null): self
     {
-        $this->adaptee->then(function () use ($onFulfilled) : mixed {
+        $this->adaptee->then(function () use ($onFulfilled): mixed {
             if ($onFulfilled !== null) {
                 return call_user_func_array($onFulfilled, func_get_args());
             }

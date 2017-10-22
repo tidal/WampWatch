@@ -37,7 +37,7 @@ interface PromiseFactoryInterface
 
     /**
      * @param PromiseInterface[] $promises
-     * @param int $count
+     * @param int                $count
      *
      * @return PromiseInterface
      */
