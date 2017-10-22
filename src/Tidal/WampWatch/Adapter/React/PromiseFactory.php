@@ -25,7 +25,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @return PromiseAdapter
      */
-    public function create(callable $resolver, callable $canceller = null)
+    public function create(callable $resolver, callable $canceller = null): PromiseAdapter
     {
         return $this->createFromAdaptee(
             new ReactPromise(
@@ -40,7 +40,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @return PromiseAdapter
      */
-    public function createFromAdaptee($adaptee)
+    public function createFromAdaptee($adaptee): PromiseAdapter
     {
         return new PromiseAdapter($adaptee);
     }
@@ -66,7 +66,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @return PromiseAdapter
      */
-    public function any(array $promises)
+    public function any(array $promises): PromiseAdapter
     {
         return $this->createFromAdaptee(
             ReactCombinators\all(
@@ -83,7 +83,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @return PromiseAdapter
      */
-    public function some(array $promises, int $count)
+    public function some(array $promises, int $count): PromiseAdapter
     {
         return $this->createFromAdaptee(
             ReactCombinators\some(
@@ -100,7 +100,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @return PromiseAdapter
      */
-    public function first(array $promises)
+    public function first(array $promises): PromiseAdapter
     {
         return $this->createFromAdaptee(
             ReactCombinators\race(
@@ -118,7 +118,7 @@ class PromiseFactory implements PromiseFactoryInterface
      *
      * @throws InvalidArgumentException
      */
-    protected static function extractReactPromises(array $promises)
+    protected static function extractReactPromises(array $promises): array
     {
         $results = [];
         foreach ($promises as $promise) {
