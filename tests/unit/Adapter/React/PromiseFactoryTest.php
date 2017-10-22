@@ -152,6 +152,36 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($done);
     }
 
+    public function test_all_is_rejected_when_one_promise_is_rejected()
+    {
+        $promiseCount = 4;
+
+        $rejected = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->all($promises)
+            ->done(
+                $this->f,
+                function () use (&$rejected) {
+                    echo 'REJECTED';
+                    $rejected = true;
+                }
+            );
+
+        $deferredPromises[0]->reject('foo');
+
+        $this->assertTrue($rejected);
+    }
+
     public function test_all_returns_array_of_all_results()
     {
         $promiseCount = 4;
@@ -200,8 +230,7 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $this->factory
             ->any($promises)
             ->done(
-                function ($res) use (&$done) {
-                    var_dump($res);
+                function () use (&$done) {
                     $done = true;
                 }
             );
@@ -209,6 +238,38 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $deferredPromises[0]->resolve('foo');
 
         $this->assertTrue($done);
+    }
+
+    public function test_any_is_rejected_when_all_promises_are_rejected()
+    {
+        $promiseCount = 4;
+
+        $rejected = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->all($promises)
+            ->done(
+                $this->f,
+                function () use (&$rejected) {
+                    echo 'REJECTED';
+                    $rejected = true;
+                }
+            );
+
+        foreach ($deferredPromises as $deferred) {
+            $deferred->reject('foo');
+        }
+
+        $this->assertTrue($rejected);
     }
 
     public function test_any_returns_result_of_first_result()
@@ -268,6 +329,38 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertTrue($done);
+    }
+
+    public function test_some_is_rejected_when_not_enough_promises_are_left_to_resolve()
+    {
+        $promiseCount = 5;
+        $someCount = 3;
+
+        $rejected = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->some($promises, $someCount)
+            ->done(
+                $this->f,
+                function () use (&$rejected) {
+                    $rejected = true;
+                }
+            );
+
+        for ($x = 0; $x < ($promiseCount - $someCount + 1); $x++) {
+            $deferredPromises[$x]->reject('foo');
+        }
+
+        $this->assertTrue($rejected);
     }
 
     public function test_some_returns_results_of_some_results()
@@ -338,6 +431,16 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
             );
 
         $mock->expects($this->any())
+            ->method('reject')
+            ->with(
+                $this->anything()
+            )->willReturnCallback(
+                function ($value = null) use ($adaptee) {
+                    $adaptee->reject($value);
+                }
+            );
+
+        $mock->expects($this->any())
             ->method('promise')
             ->willReturn(
                 $promise
@@ -394,6 +497,18 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
                 }
             );
 
+        $promise->expects($this->any())
+            ->method('otherwise')
+            ->with(
+                $this->anything()
+            )->willReturnCallback(
+                function (callable $rej) use ($promise, &$reject) {
+                    $reject = $rej;
+
+                    return $promise;
+                }
+            );
+
         $mock->expects($expectResolve ? $this->once() : $this->any())
             ->method('resolve')
             ->with(
@@ -402,6 +517,19 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
                 function ($value = null) use (&$resolve) {
                     if (is_callable($resolve)) {
                         $resolve($value);
+                    }
+                }
+            );
+
+        $mock->expects($this->any())
+            ->method('reject')
+            ->with(
+                $this->anything()
+            )->willReturnCallback(
+                function ($value = null) use (&$reject) {
+                    echo 5555;
+                    if (is_callable($reject)) {
+                        $reject($value);
                     }
                 }
             );
