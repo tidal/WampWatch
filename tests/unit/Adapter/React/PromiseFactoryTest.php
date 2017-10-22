@@ -172,7 +172,6 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
             ->done(
                 $this->f,
                 function () use (&$rejected) {
-                    echo 'REJECTED';
                     $rejected = true;
                 }
             );
@@ -256,11 +255,10 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->factory
-            ->all($promises)
+            ->any($promises)
             ->done(
                 $this->f,
                 function () use (&$rejected) {
-                    echo 'REJECTED';
                     $rejected = true;
                 }
             );
@@ -270,6 +268,37 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertTrue($rejected);
+    }
+
+    public function test_any_is_not_rejected_when_not_all_promises_are_rejected()
+    {
+        $promiseCount = 4;
+
+        $rejected = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->any($promises)
+            ->done(
+                $this->f,
+                function () use (&$rejected) {
+                    $rejected = true;
+                }
+            );
+
+        for ($x = 0; $x < $promiseCount - 1; $x++) {
+            $deferredPromises[$x]->reject('foo');
+        }
+
+        $this->assertFalse($rejected);
     }
 
     public function test_any_returns_result_of_first_result()
@@ -527,7 +556,6 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
                 $this->anything()
             )->willReturnCallback(
                 function ($value = null) use (&$reject) {
-                    echo 5555;
                     if (is_callable($reject)) {
                         $reject($value);
                     }
