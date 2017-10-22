@@ -6,7 +6,9 @@ require_once realpath(__DIR__ . '/../..') . '/bootstrap.php';
 require_once __DIR__ . '/CrossbarTestingTrait.php';
 
 use Thruway\ClientSession;
+use Thruway\Transport\TransportInterface;
 use Tidal\WampWatch\SessionMonitor;
+use stdClass;
 
 class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,6 +21,46 @@ class CrosssbarSessionMonitorTest extends \PHPUnit_Framework_TestCase
     public function setup()
     {
         $this->setupConnection();
+    }
+
+    /**
+     * test if the WAMP router supports session meta api
+     */
+    public function test_meta_api()
+    {
+        /** @var stdClass $connectionDetails */
+        $connectionDetails = null;
+
+        $onOpen = function (ClientSession $session, TransportInterface $transport, stdClass $details) use (&$connectionDetails) {
+
+            $connectionDetails = $details;
+
+            $this->connection->close();
+        };
+
+        $this->connection->on('open', $onOpen);
+
+        $this->connection->on('error', function ($reason) {
+            echo "The connected has closed with error: {$reason}\n";
+        });
+
+        $this->connection->open();
+
+        // wait for connection to be established
+        sleep(1);
+
+        $this->assertInstanceOf(stdClass::class, $connectionDetails);
+        $this->assertObjectHasAttribute('roles', $connectionDetails);
+
+        $this->assertObjectHasAttribute('broker', $connectionDetails->roles);
+        $this->assertObjectHasAttribute('features', $connectionDetails->roles->broker);
+        $this->assertObjectHasAttribute('session_meta_api', $connectionDetails->roles->broker->features);
+        $this->assertTrue($connectionDetails->roles->broker->features->session_meta_api);
+
+        $this->assertObjectHasAttribute('dealer', $connectionDetails->roles);
+        $this->assertObjectHasAttribute('features', $connectionDetails->roles->dealer);
+        $this->assertObjectHasAttribute('session_meta_api', $connectionDetails->roles->dealer->features);
+        $this->assertTrue($connectionDetails->roles->dealer->features->session_meta_api);
     }
 
     public function test_onstart()

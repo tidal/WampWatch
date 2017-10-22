@@ -9,17 +9,13 @@
  *
  */
 
-namespace Tidal\WampWatch;
+namespace Tidal\WampWatch\Async;
+
+use Tidal\WampWatch\Adapter\React\PromiseFactory;
 
 /**
- * @author Timo Michna
+ * Class Tidal\WampWatch\Async\DefaultPromiseFactory.
  */
-interface MonitorInterface
+class DefaultPromiseFactory extends PromiseFactory
 {
-    const LOOKUP_MATCH_WILDCARD = 'wildcard';
-    const LOOKUP_MATCH_PREFIX = 'prefix';
-
-    public function start();
-
-    public function stop();
 }

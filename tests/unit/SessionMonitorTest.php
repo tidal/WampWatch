@@ -18,14 +18,24 @@ use Tidal\WampWatch\Stub\ClientSessionStub;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use Thruway\Message;
+use Tidal\WampWatch\Test\Unit\Behavior\MonitorTestTrait;
 
 /**
  * @author Timo Michna <timomichna@yahoo.de>
  */
 class SessionMonitorTest extends PHPUnit_Framework_TestCase
 {
+    use MonitorTestTrait;
+
+    /**
+     * @var SessionMonitor
+     */
+    private $monitor;
+
     public function setUp()
     {
+        $this->setUpSessionStub();
+        $this->monitor = new SessionMonitor($this->sessionStub);
     }
 
     public function tearDown()
@@ -37,81 +47,66 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_starts_returns_true()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $res = $monitor->start();
+        $res = $this->monitor->start();
 
         $this->assertEquals(true, $res);
     }
 
     public function test_is_not_running_before_started()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-
-        $this->assertFalse($monitor->isRunning());
+        $this->assertFalse($this->monitor->isRunning());
     }
 
     public function test_is_not_running_before_onjoin_subscriptions()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
-        $this->assertFalse($monitor->isRunning());
+        $this->assertFalse($this->monitor->isRunning());
     }
 
     public function test_is_not_running_before_onleave_subscriptions()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
 
-        $this->assertFalse($monitor->isRunning());
+        $this->assertFalse($this->monitor->isRunning());
     }
 
     public function test_is_not_running_before_list_response()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->monitor->start();
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
-        $this->assertFalse($monitor->isRunning());
+        $this->assertFalse($this->monitor->isRunning());
     }
 
     public function test_is_running_after_subscriptions_and_list()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
-        $this->assertTrue($monitor->isRunning());
+        $this->assertTrue($this->monitor->isRunning());
     }
 
     public function test_start_event_after_running()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $stub->setSessionId(321);
+        $this->sessionStub->setSessionId(321);
         $response = null;
 
-        $monitor->on('list', function ($res) use (&$response) {
+        $this->monitor->on('list', function ($res) use (&$response) {
             $response = $res;
         });
 
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
         $this->assertEquals([654], $response);
     }
@@ -120,34 +115,28 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_start_subscribes_to_join_topic()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->monitor->start();
 
         $this->assertTrue(
-            $stub->hasSubscription(SessionMonitor::SESSION_JOIN_TOPIC)
+            $this->sessionStub->hasSubscription(SessionMonitor::SESSION_JOIN_TOPIC)
         );
     }
 
     public function test_start_subscribes_to_leave_topic()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->monitor->start();
 
         $this->assertTrue(
-            $stub->hasSubscription(SessionMonitor::SESSION_LEAVE_TOPIC)
+            $this->sessionStub->hasSubscription(SessionMonitor::SESSION_LEAVE_TOPIC)
         );
     }
 
     public function test_start_calls_session_list()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->monitor->start();
 
         $this->assertTrue(
-            $stub->hasCall(SessionMonitor::SESSION_LIST_TOPIC)
+            $this->sessionStub->hasCall(SessionMonitor::SESSION_LIST_TOPIC)
         );
     }
 
@@ -155,96 +144,90 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_start_retrieves_sessionid_list()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
         $called = false;
 
-        $stub->setSessionId(321);
+        $this->sessionStub->setSessionId(321);
 
-        $monitor->on('list', function () use (&$called) {
+        $this->monitor->on('list', function () use (&$called) {
             $called = true;
         });
 
-        $monitor->start();
+        $this->monitor->start();
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
 
         $this->assertTrue($called);
     }
 
     public function test_get_sessionids_retrieves_session_list()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+
+        $this->sessionStub->setSessionId(321);
         $listCalled = false;
         $calledBack = false;
 
-        $monitor->on('list', function () use (&$listCalled) {
+        $this->monitor->on('list', function () use (&$listCalled) {
             $listCalled = true;
         });
 
-        $monitor->getSessionIds()->done(function () use (&$calledBack) {
+        $this->monitor->getSessionIds()->done(function () use (&$calledBack) {
             $calledBack = true;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321]]);
 
         $this->assertTrue($listCalled && $calledBack);
     }
 
     public function test_list_event_getsessionid_callback_return_same_value()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+
+        $this->sessionStub->setSessionId(321);
         $listCalled = null;
         $calledBack = null;
 
-        $monitor->on('list', function ($res) use (&$listCalled) {
+        $this->monitor->on('list', function ($res) use (&$listCalled) {
             $listCalled = $res;
         });
 
-        $monitor->getSessionIds()->done(function ($res) use (&$calledBack) {
+        $this->monitor->getSessionIds()->done(function ($res) use (&$calledBack) {
             $calledBack = $res;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[123, 456, 789]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[123, 456, 789]]);
 
         $this->assertSame($listCalled, $calledBack);
     }
 
     public function test_get_sessionids_removes_monitors_sessionid()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+
+        $this->sessionStub->setSessionId(321);
         $sessionIds = null;
 
-        $monitor->getSessionIds()->done(function (array $ids) use (&$sessionIds) {
+        $this->monitor->getSessionIds()->done(function (array $ids) use (&$sessionIds) {
             $sessionIds = $ids;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
 
         $this->assertNotContains(321, $sessionIds);
     }
 
     public function test_second_get_sessionids_retrieves_ids_locally()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(123);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(123);
+        
         $firstResult = null;
         $secondResult = null;
 
-        $monitor->getSessionIds()->done(function (array $ids) use (&$firstResult) {
+        $this->monitor->getSessionIds()->done(function (array $ids) use (&$firstResult) {
             $firstResult = $ids;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654, 987]]);
 
-        $monitor->getSessionIds()->done(function (array $ids) use (&$secondResult) {
+        $this->monitor->getSessionIds()->done(function (array $ids) use (&$secondResult) {
             $secondResult = $ids;
         });
 
@@ -253,96 +236,84 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_session_registration_on_start()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
 
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
 
-        $this->assertTrue($monitor->hasSessionId(654));
+        $this->assertTrue($this->monitor->hasSessionId(654));
     }
 
     // SESSION JOIN TESTS
 
     public function test_session_registration_on_join()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
 
-        $monitor->start();
+        $this->monitor->start();
 
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
 
-        $this->assertTrue($monitor->hasSessionId(654));
+        $this->assertTrue($this->monitor->hasSessionId(654));
     }
 
     public function test_session_unregistration_on_leave()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
 
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
 
-        $stub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
 
-        $this->assertFalse($monitor->hasSessionId(654));
+        $this->assertFalse($this->monitor->hasSessionId(654));
     }
 
     public function test_unknown_session_unregistration_causes_no_error()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
 
-        $monitor->start();
+        $this->monitor->start();
 
-        $stub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
 
-        $this->assertFalse($monitor->hasSessionId(654));
+        $this->assertFalse($this->monitor->hasSessionId(654));
     }
 
     public function test_session_join_emits_event()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->sessionStub->setSessionId(321);
+        $this->monitor->start();
         $response = null;
 
-        $monitor->on('join', function ($res) use (&$response) {
+        $this->monitor->on('join', function ($res) use (&$response) {
             $response = $res;
         });
 
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
 
         $this->assertSame($sessionInfo, $response);
     }
 
     public function test_session_leave_emits_event()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->sessionStub->setSessionId(321);
+        $this->monitor->start();
         $response = null;
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
 
-        $monitor->on('leave', function ($res) use (&$response) {
+        $this->monitor->on('leave', function ($res) use (&$response) {
             $response = $res;
         });
 
-        $stub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_LEAVE_TOPIC, [[654]]);
 
         $this->assertSame(654, $response);
     }
@@ -351,118 +322,105 @@ class SessionMonitorTest extends PHPUnit_Framework_TestCase
 
     public function test_get_sessioninfo_calls_promise()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
         $response = null;
 
-        $monitor->getSessionInfo(654)->done(function ($res) use (&$response) {
+        $this->monitor->getSessionInfo(654)->done(function ($res) use (&$response) {
             $response = $res;
         });
 
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
 
         $this->assertSame($sessionInfo, $response);
     }
 
     public function test_get_sessioninfo_calls_event()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
         $response = null;
 
-        $monitor->on('info', function ($res) use (&$response) {
+        $this->monitor->on('info', function ($res) use (&$response) {
             $response = $res;
         });
 
-        $monitor->getSessionInfo(654);
+        $this->monitor->getSessionInfo(654);
 
         $sessionInfo = new stdClass();
         $sessionInfo->session = 654;
 
-        $stub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_INFO_TOPIC, $sessionInfo);
 
         $this->assertSame($sessionInfo, $response);
     }
 
     public function test_get_sessioninfo_fail_emits_event()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
         $response = null;
 
-        $monitor->on('error', function ($res) use (&$response) {
+        $this->monitor->on('error', function ($res) use (&$response) {
             $response = $res;
         });
 
-        $monitor->getSessionInfo(654);
+        $this->monitor->getSessionInfo(654);
 
         $errorMessage = $this->getMockBuilder(Message\ErrorMessage::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $stub->failCall(SessionMonitor::SESSION_INFO_TOPIC, $errorMessage);
+        $this->sessionStub->failCall(SessionMonitor::SESSION_INFO_TOPIC, $errorMessage);
 
         $this->assertSame($errorMessage, $response);
     }
 
     public function test_invalid_sessioninfo_does_not_get_added()
     {
-        $stub = new ClientSessionStub();
-        $stub->setSessionId(321);
-        $monitor = new SessionMonitor($stub);
+        $this->sessionStub->setSessionId(321);
 
         $sessionInfo = new stdClass();
         $sessionInfo->id = 654;
 
-        $monitor->start();
+        $this->monitor->start();
 
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
 
-        $stub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
+        $this->sessionStub->emit(SessionMonitor::SESSION_JOIN_TOPIC, [[$sessionInfo]]);
 
-        $this->assertFalse($monitor->hasSessionId(654));
+        $this->assertFalse($this->monitor->hasSessionId(654));
     }
 
     // STOP MONITOR TESTS
 
     public function test_is_not_running_after_stop()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
+        $this->monitor->start();
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
-        $monitor->start();
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->monitor->stop();
 
-        $monitor->stop();
-
-        $this->assertFalse($monitor->isRunning());
+        $this->assertFalse($this->monitor->isRunning());
     }
 
     public function test_stop_emits_event()
     {
-        $stub = new ClientSessionStub();
-        $monitor = new SessionMonitor($stub);
-        $monitor->start();
+        $this->monitor->start();
         $response = null;
 
-        $monitor->on('stop', function ($res) use (&$response) {
+        $this->monitor->on('stop', function ($res) use (&$response) {
             $response = $res;
         });
 
-        $stub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
-        $stub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
-        $stub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
+        $this->sessionStub->respondToCall(SessionMonitor::SESSION_LIST_TOPIC, [[321, 654]]);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_JOIN_TOPIC);
+        $this->sessionStub->completeSubscription(SessionMonitor::SESSION_LEAVE_TOPIC);
 
-        $monitor->stop();
+        $this->monitor->stop();
 
-        $this->assertSame($monitor, $response);
+        $this->assertSame($this->monitor, $response);
     }
 }

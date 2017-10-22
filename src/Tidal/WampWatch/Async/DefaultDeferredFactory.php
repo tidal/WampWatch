@@ -9,17 +9,13 @@
  *
  */
 
-namespace Tidal\WampWatch;
+namespace Tidal\WampWatch\Async;
+
+use Tidal\WampWatch\Adapter\React\DeferredFactory;
 
 /**
- * @author Timo Michna
+ * Class Tidal\WampWatch\Async\DefaultDeferredFactory.
  */
-interface MonitorInterface
+class DefaultDeferredFactory extends DeferredFactory
 {
-    const LOOKUP_MATCH_WILDCARD = 'wildcard';
-    const LOOKUP_MATCH_PREFIX = 'prefix';
-
-    public function start();
-
-    public function stop();
 }

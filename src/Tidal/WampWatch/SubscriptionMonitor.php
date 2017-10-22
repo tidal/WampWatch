@@ -11,7 +11,7 @@
 
 namespace Tidal\WampWatch;
 
-use React\Promise\Promise;
+use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 
 /**
@@ -31,9 +31,6 @@ class SubscriptionMonitor implements MonitorInterface
     const SUBSCRIPTION_GET_TOPIC = 'wamp.subscription.get';
     const SUBSCRIPTION_SUBLIST_TOPIC = 'wamp.subscription.list_subscribers';
     const SUBSCRIPTION_SUBCOUNT_TOPIC = 'wamp.subscription.count_subscribers';
-
-    const LOOKUP_MATCH_WILDCARD = 'wildcard';
-    const LOOKUP_MATCH_PREFIX = 'prefix';
 
     protected $sessionIds = [];
 
@@ -56,7 +53,7 @@ class SubscriptionMonitor implements MonitorInterface
     /**
      * @param string $topic
      *
-     * @return Promise
+     * @return PromiseInterface
      */
     public function getSubscriptionInfo($topic)
     {
@@ -76,7 +73,7 @@ class SubscriptionMonitor implements MonitorInterface
             return $this->retrieveSubscriptionIds();
         }
 
-        return $this->createPromiseAdapter(function (callable $resolve) {
+        return $this->createPromise(function (callable $resolve) {
             $resolve($this->subscriptionIds);
         });
     }
@@ -89,30 +86,12 @@ class SubscriptionMonitor implements MonitorInterface
         // @var \Tidal\WampWatch\Subscription\Collection
         $collection = $this->getMetaSubscriptionCollection();
 
-        $collection->addSubscription(self::SUBSCRIPTION_CREATE_TOPIC, $this->getCreateHandler());
+        $collection->addSubscription(self::SUBSCRIPTION_CREATE_TOPIC, $this->getSubscriptionHandler('create'));
         $collection->addSubscription(self::SUBSCRIPTION_DELETE_TOPIC, $this->getSubscriptionHandler('delete'));
         $collection->addSubscription(self::SUBSCRIPTION_SUB_TOPIC, $this->getSubscriptionHandler('subscribe'));
         $collection->addSubscription(self::SUBSCRIPTION_UNSUB_TOPIC, $this->getSubscriptionHandler('unsubscribe'));
 
         $this->setInitialCall(self::SUBSCRIPTION_LIST_TOPIC, $this->getSubscriptionIdRetrievalCallback());
-    }
-
-    private function getCreateHandler()
-    {
-        return function ($res) {
-            $sessionId = $res[0];
-            $subscriptionInfo = $res[1];
-            $this->emit('create', [$sessionId, $subscriptionInfo]);
-        };
-    }
-
-    private function getSubscriptionHandler($event)
-    {
-        return function ($res) use ($event) {
-            $sessionId = $res[0];
-            $subscriptionId = $res[1];
-            $this->emit($event, [$sessionId, $subscriptionId]);
-        };
     }
 
     protected function retrieveSubscriptionIds()
@@ -132,22 +111,5 @@ class SubscriptionMonitor implements MonitorInterface
     protected function getList()
     {
         return $this->subscriptionIds;
-    }
-
-    protected function getSubscriptionIdRetrievalCallback()
-    {
-        return function (\Thruway\CallResult $res) {
-            /** @var \Thruway\Message\ResultMessage $message */
-            $message = $res->getResultMessage();
-            $list = $message->getArguments()[0];
-            $this->setList($list);
-            $this->emit('list', [
-                $this->subscriptionIds->exact,
-                $this->subscriptionIds->prefix,
-                $this->subscriptionIds->wildcard,
-            ]);
-
-            return $list;
-        };
     }
 }

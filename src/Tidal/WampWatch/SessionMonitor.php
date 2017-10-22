@@ -18,9 +18,7 @@ use Tidal\WampWatch\Adapter\React\PromiseAdapter;
 use Tidal\WampWatch\Async\PromiseInterface;
 
 /**
- * Description of SessionMonitor.
- *
- * @author Timo
+ * Class SessionMonitor.
  */
 class SessionMonitor implements MonitorInterface, EventEmitterInterface
 {
@@ -85,7 +83,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      * registered on the wamp-router in the monitor's realm
      * and populates the data via given callback,.
      *
-     * @return PromiseAdapter
+     * @return PromiseInterface
      */
     public function getSessionIds()
     {
@@ -93,7 +91,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
             return $this->retrieveSessionIds();
         }
 
-        return $this->createPromiseAdapter(
+        return $this->createPromise(
             function (callable $resolve) {
                 $resolve($this->getList());
             }

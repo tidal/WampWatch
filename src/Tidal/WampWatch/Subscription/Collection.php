@@ -12,13 +12,18 @@
 namespace Tidal\WampWatch\Subscription;
 
 use Thruway\Message\SubscribedMessage;
-use React\Promise\Deferred;
-use React\Promise\Promise;
+use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\ClientSessionInterface as ClientSession;
 use Tidal\WampWatch\Util;
+use Tidal\WampWatch\Behavior\Async\MakesPromisesTrait;
+use Tidal\WampWatch\Behavior\Async\MakesDeferredPromisesTrait;
+use Tidal\WampWatch\Async\DeferredInterface;
 
 class Collection
 {
+    use MakesPromisesTrait,
+        MakesDeferredPromisesTrait;
+
     /**
      * The collection's WAMP client session.
      *
@@ -47,7 +52,7 @@ class Collection
     private $isSubscribing = false;
 
     /**
-     * @var Deferred
+     * @var DeferredInterface
      */
     private $subscriptionPromise;
 
@@ -83,12 +88,12 @@ class Collection
      * Subscribe to all topics added with 'addSubscription'.
      * Returns false if already subscribed or curretly subscribing.
      *
-     * @return \React\Promise\Promise
+     * @return PromiseInterface
      */
     public function subscribe()
     {
         if (!$this->isSubscribed() && !$this->isSubscribing()) {
-            $this->subscriptionPromise = new Deferred();
+            $this->subscriptionPromise = $this->createDeferred();
             $this->isSubscribing = true;
             $this->doSubscribe();
         }
@@ -106,7 +111,7 @@ class Collection
     }
 
     /**
-     * @return Promise[]
+     * @return PromiseInterface[]
      */
     private function getSubscriptionPromises()
     {
@@ -126,14 +131,14 @@ class Collection
     }
 
     /**
-     * @return \React\Promise\Promise|\React\Promise\PromiseInterface
+     * @return PromiseInterface
      */
     public function unsubscribe()
     {
         $resolver = function (callable $resolve) {
             $resolve();
         };
-        $promise = new  Promise($resolver);
+        $promise = $this->createPromise($resolver);
 
         if ($this->isSubscribed()) {
             foreach ($this->subscriptions as $subId) {

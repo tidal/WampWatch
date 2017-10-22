@@ -10,7 +10,7 @@
 
 namespace Tidal\WampWatch\Test\Unit;
 
-use React\Promise\Promise;
+use Tidal\WampWatch\Async\PromiseInterface;
 use Tidal\WampWatch\Stub\ClientSessionStub;
 use Tidal\WampWatch\Subscription\Collection;
 
@@ -48,7 +48,7 @@ class SubscriptionCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_subscribe_returns_promise()
     {
-        $this->assertInstanceOf(Promise::class, $this->collection->subscribe());
+        $this->assertInstanceOf(PromiseInterface::class, $this->collection->subscribe());
     }
 
     public function test_is_not_subscribed_if_not_all_subscriptions_returned()
