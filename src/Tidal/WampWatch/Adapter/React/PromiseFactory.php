@@ -69,7 +69,7 @@ class PromiseFactory implements PromiseFactoryInterface
     public function any(array $promises): PromiseAdapter
     {
         return $this->createFromAdaptee(
-            ReactCombinators\all(
+            ReactCombinators\any(
                 self::extractReactPromises(
                     $promises
                 )
