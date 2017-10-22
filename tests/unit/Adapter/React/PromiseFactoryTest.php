@@ -423,6 +423,63 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([0, 1], $result);
     }
 
+    public function test_first_is_done_with_first_result()
+    {
+        $promiseCount = 2;
+
+        $done = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->first($promises)
+            ->done(
+                function () use (&$done) {
+                    $done = true;
+                }
+            );
+
+        $deferredPromises[0]->resolve('foo');
+
+        $this->assertTrue($done);
+    }
+
+    public function test_first_is_rejected_with_first_rejection()
+    {
+        $promiseCount = 2;
+
+        $rejected = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->first($promises)
+            ->done(
+                $this->f,
+                function () use (&$rejected) {
+                    $rejected = true;
+                }
+            );
+
+        $deferredPromises[0]->reject('foo');
+
+        $this->assertTrue($rejected);
+    }
+
     /**
      * @param bool $expectResolve whether the mock should expect DeferredAdapter::resolve() to be called
      *
