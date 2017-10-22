@@ -21,7 +21,6 @@ use Tidal\WampWatch\Async\DeferredInterface;
 
 /**
  * Class Tidal\WampWatch\Subscription\Collection.
- *
  */
 class Collection
 {
