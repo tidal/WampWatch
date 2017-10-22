@@ -182,6 +182,63 @@ class PromiseFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([0, 1, 2, 3], $results);
     }
 
+    public function test_any_is_done_with_any_result()
+    {
+        $promiseCount = 2;
+
+        $done = false;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->any($promises)
+            ->done(
+                function ($res) use (&$done) {
+                    var_dump($res);
+                    $done = true;
+                }
+            );
+
+        $deferredPromises[0]->resolve('foo');
+
+        $this->assertTrue($done);
+    }
+
+    public function test_any_returns_result_of_first_result()
+    {
+        $promiseCount = 2;
+
+        $result = null;
+        /** @var DeferredAdapter[] $deferredPromises */
+        $deferredPromises = [];
+        /** @var PromiseAdapter[] $promises */
+        $promises = [];
+
+        for ($x = 0; $x < $promiseCount; $x++) {
+            $deferredPromises[] = $deferred = $this->createDeferredMock();
+            $promises[] = $deferred->promise();
+        }
+
+        $this->factory
+            ->any($promises)
+            ->done(
+                function ($res) use (&$result) {
+                    $result = $res;
+                }
+            );
+
+        $deferredPromises[0]->resolve('foo');
+
+        $this->assertEquals('foo', $result);
+    }
+
     /**
      * @param bool $expectResolve whether the mock should expect DeferredAdapter::resolve() to be called
      *
