@@ -107,7 +107,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
      */
     public function hasSessionId($sessionId)
     {
-        return array_search($sessionId, $this->sessionIds) !== false;
+        return false !== array_search($sessionId, $this->sessionIds);
     }
 
     /**
@@ -243,7 +243,7 @@ class SessionMonitor implements MonitorInterface, EventEmitterInterface
     {
         $key = array_search($this->session->getSessionId(), $sessionsIds);
 
-        if ($key !== false && $key >= 0) {
+        if (false !== $key && $key >= 0) {
             unset($sessionsIds[$key]);
             $sessionsIds = array_values($sessionsIds);
         }
