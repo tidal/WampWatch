@@ -27,7 +27,7 @@ class Connection implements Contract\ConnectionInterface
     ) {
         $this->setRouter($router);
         $this->setRealm($realm);
-        if ($session !== null) {
+        if (null !== $session) {
             $this->confirm($session);
         }
     }

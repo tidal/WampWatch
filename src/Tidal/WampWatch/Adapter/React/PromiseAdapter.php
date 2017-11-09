@@ -57,15 +57,15 @@ class PromiseAdapter implements PromiseInterface
     public function then(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
     {
         $this->adaptee->then(function () use ($onFulfilled) {
-            if ($onFulfilled !== null) {
+            if (null !== $onFulfilled) {
                 return call_user_func_array($onFulfilled, func_get_args());
             }
         }, function () use ($onRejected) {
-            if ($onRejected !== null) {
+            if (null !== $onRejected) {
                 return call_user_func_array($onRejected, func_get_args());
             }
         }, function () use ($onProgress) {
-            if ($onProgress !== null) {
+            if (null !== $onProgress) {
                 return call_user_func_array($onProgress, func_get_args());
             }
         });
@@ -83,15 +83,15 @@ class PromiseAdapter implements PromiseInterface
     public function done(callable $onFulfilled = null, callable $onRejected = null, callable $onProgress = null)
     {
         $this->adaptee->done(function () use ($onFulfilled) {
-            if ($onFulfilled !== null) {
+            if (null !== $onFulfilled) {
                 return call_user_func_array($onFulfilled, func_get_args());
             }
         }, function () use ($onRejected) {
-            if ($onRejected !== null) {
+            if (null !== $onRejected) {
                 return call_user_func_array($onRejected, func_get_args());
             }
         }, function () use ($onProgress) {
-            if ($onProgress !== null) {
+            if (null !== $onProgress) {
                 return call_user_func_array($onProgress, func_get_args());
             }
         });
