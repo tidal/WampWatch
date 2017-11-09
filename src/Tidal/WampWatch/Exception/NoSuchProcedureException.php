@@ -64,6 +64,6 @@ class NoSuchProcedureException extends \OutOfBoundsException
      */
     public static function isNoProcedureError($errorResponse)
     {
-        return $errorResponse == self::ERROR_RESPONSE;
+        return self::ERROR_RESPONSE == $errorResponse;
     }
 }

@@ -47,7 +47,7 @@ class NotAuthorizedException extends \OutOfBoundsException
      */
     public static function isNotAuthrorizedError($errorResponse)
     {
-        return $errorResponse == self::ERROR_RESPONSE;
+        return self::ERROR_RESPONSE == $errorResponse;
     }
 
     /**
